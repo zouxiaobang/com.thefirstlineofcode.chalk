@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.firstlinecode.chalk</groupId>
+		<artifactId>com.firstlinecode.chalk.parent</artifactId>
+		<version>0.2.0.RELEASE</version>
+	</parent>
+
+	<groupId>com.firstlinecode.chalk</groupId>
+	<artifactId>com.firstlinecode.chalk.examples</artifactId>
+	<name>com.firstlinecode.chalk.examples</name>
+	<packaging>jar</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk</groupId>
+			<artifactId>com.firstlinecode.chalk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.gem.client</groupId>
+			<artifactId>com.firstlinecode.gem.client.bxmpp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<artifactId>com.firstlinecode.chalk.xeps.ibr</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk.leps</groupId>
+			<artifactId>com.firstlinecode.chalk.leps.im</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<artifactId>com.firstlinecode.chalk.xeps.ping</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<artifactId>com.firstlinecode.chalk.xeps.muc</artifactId>
+		</dependency>
+	</dependencies>
+	
+</project>
+
