@@ -96,7 +96,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				bxmppProtocolFactory = createBxmppProtocolConverterFactory();
 				bxmppProtocolConverter = bxmppProtocolFactory.createConverter();
 			} catch (Exception e) {
-				logger.warn("Can't create BXMPP protocol converter. Please add gem bxmpp libraries to your classpath. Still use XML message format.");
+				logger.warn("Can't create BXMPP protocol converter. Please add gem bxmpp libraries to your classpath. Ignore to configure message format to binary. Still use XML message format.");
 				useBinaryFormat = false;
 			}
 		}
