@@ -28,10 +28,6 @@
 			<groupId>com.firstlinecode.basalt</groupId>
 			<artifactId>com.firstlinecode.basalt.protocol.im</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.firstlinecode.gem.client</groupId>
-			<artifactId>com.firstlinecode.gem.client.bxmpp</artifactId>
-		</dependency>
 	</dependencies>
 	
 </project>

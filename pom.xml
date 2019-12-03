@@ -14,7 +14,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<basalt.version>1.1.0.RELEASE</basalt.version>
 		<chalk.version>0.2.0.RELEASE</chalk.version>
-		<gem.version>0.2.0.RELEASE</gem.version>
 	</properties>
 
 	<modules>
@@ -132,11 +131,6 @@
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.gem.protocols</groupId>
-				<artifactId>com.firstlinecode.gem.protocols.bxmpp</artifactId>
-				<version>${gem.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>com.firstlinecode.basalt</groupId>
 				<artifactId>com.firstlinecode.basalt.protocol.im</artifactId>
 				<version>${basalt.version}</version>
@@ -196,12 +190,6 @@
 				<groupId>com.firstlinecode.chalk</groupId>
 				<artifactId>com.firstlinecode.chalk</artifactId>
 				<version>${chalk.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.firstlinecode.gem.client</groupId>
-				<artifactId>com.firstlinecode.gem.client.bxmpp</artifactId>
-				<version>${gem.version}</version>
-				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>

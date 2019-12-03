@@ -37,10 +37,6 @@
 			<artifactId>com.firstlinecode.chalk</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.gem.client</groupId>
-			<artifactId>com.firstlinecode.gem.client.bxmpp</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.firstlinecode.chalk.xeps</groupId>
 			<artifactId>com.firstlinecode.chalk.xeps.ibr</artifactId>
 		</dependency>
