@@ -121,7 +121,7 @@ public class Registration implements IRegistration {
 	@Override
 	public void remove() {
 		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Feature not implemented.");
 	}
 
 	@Override
