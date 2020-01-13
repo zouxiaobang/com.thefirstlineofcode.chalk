@@ -98,7 +98,7 @@ public abstract class AbstractStreamNegotiant implements IStreamNegotiant {
 		if (error instanceof StreamError) {
 			Stream closeStream = (Stream)oxmFactory.parse(readResponse());
 			
-			if (closeStream.getClose()) {
+			if (closeStream.isClose()) {
 				context.close();
 			}
 		}

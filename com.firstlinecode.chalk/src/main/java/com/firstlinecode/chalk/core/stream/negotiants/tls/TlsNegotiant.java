@@ -74,7 +74,7 @@ public class TlsNegotiant extends InitialStreamNegotiant {
 			
 			if (response instanceof Stream) {
 				Stream stream = (Stream)response;
-				if (stream.getClose()) {
+				if (stream.isClose()) {
 					context.close();
 				}
 			}

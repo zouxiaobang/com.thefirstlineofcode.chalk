@@ -184,7 +184,7 @@ public class Stream implements IStream, IConnectionListener {
 				com.firstlinecode.basalt.protocol.core.stream.Stream closeStream =
 					(com.firstlinecode.basalt.protocol.core.stream.Stream)object;
 				
-				if (closeStream.getClose()) {
+				if (closeStream.isClose()) {
 					occurred(new ConnectionException(Type.CONNECTION_CLOSED));
 				}
 			} else if (object instanceof Stanza) {

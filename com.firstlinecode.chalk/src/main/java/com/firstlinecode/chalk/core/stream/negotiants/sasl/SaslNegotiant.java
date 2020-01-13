@@ -201,7 +201,7 @@ public class SaslNegotiant extends InitialStreamNegotiant {
                 context.write(oxmFactory.translate(new Stream(true)));
                 Stream closeStream = (Stream)oxmFactory.parse(readResponse(DEFAULT_SASL_PROCESS_TIMEOUT));
 
-                if (Boolean.TRUE.equals(closeStream.getClose())) {
+                if (Boolean.TRUE.equals(closeStream.isClose())) {
                     context.close();
                 }
 
@@ -233,7 +233,7 @@ public class SaslNegotiant extends InitialStreamNegotiant {
         try {
             String message = readResponse(MAX_FAILURE_COUNT_EXCCEED_READ_RESPONSE_TIMEOUT);
             Stream closeStream = (Stream)oxmFactory.parse(message);
-            if (closeStream.getClose()) {
+            if (closeStream.isClose()) {
                 context.close();
             }
 

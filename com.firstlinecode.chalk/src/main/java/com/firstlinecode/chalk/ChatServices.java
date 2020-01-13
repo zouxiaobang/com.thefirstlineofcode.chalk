@@ -744,13 +744,17 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 
 			@Override
 			public void processResponse(IUnidirectionalStream<K> stream, K stanza) {
-				result = syncTask.processResult(stanza);
-				
-				lock.lock();
 				try {
-					condition.signal();
+					result = syncTask.processResult(stanza);
+				} catch (Exception e) {
+					throw new RuntimeException("Sync task failed to process result.", e);
 				} finally {
-					lock.unlock();
+					lock.lock();
+					try {
+						condition.signal();
+					} finally {
+						lock.unlock();
+					}
 				}
 			}
 
