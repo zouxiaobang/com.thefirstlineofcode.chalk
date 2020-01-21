@@ -567,6 +567,7 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 			execute(task, defaultTaskTimeout);
 		}
 		
+		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public void execute(ITask<?> task, int timeout) {
 			synchronized (ChatServices.this) {
@@ -703,18 +704,23 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 
 		@Override
 		public <K extends Stanza, V> V execute(ISyncTask<K, V> task) throws ErrorException {
-			return new SyncTaskTemplate<K, V>().execute(task);
+			return new SyncTaskTemplate<K, V>().execute(task, defaultTaskTimeout);
+		}
+		
+		@Override
+		public <K extends Stanza, V> V execute(ISyncTask<K, V> task, int timeout) throws ErrorException {
+			return new SyncTaskTemplate<K, V>().execute(task, timeout);
 		}
 	}
 	
 	private class SyncTaskTemplate<K extends Stanza, V> {
-		public V execute(ISyncTask<K, V> syncTask) throws ErrorException {
+		public V execute(ISyncTask<K, V> syncTask, int timeout) throws ErrorException {
 			SyncTaskWrapper task = new SyncTaskWrapper(syncTask);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Ready to execute a task. Task class is {}.", syncTask.getClass().getName());
 			}
 			
-			taskService.execute(task);
+			taskService.execute(task, timeout);
 			
 			try {
 				return task.getResult();
