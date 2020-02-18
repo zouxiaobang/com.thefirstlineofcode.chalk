@@ -87,16 +87,6 @@
 	
 	<repositories>
 		<repository>
-                        <id>jcenter</id>
-                        <name>JCenter Repository</name>
-                        <url>https://jcenter.bintray.com/</url>
-                </repository>
-                <repository>
-                        <id>central</id>
-                        <name>Central Repository</name>
-                        <url>https://repo1.maven.org/maven2</url>
-                </repository>
-		<repository>
                         <id>com.firstlinecode.releases</id>
                         <name>FirstLineCode Repository - Releases</name>
                         <url>http://47.115.36.99/repository/maven-releases/</url>
@@ -106,6 +96,16 @@
                         <name>FirstLineCode Repository - Snapshots</name>
                         <url>http://47.115.36.99/repository/maven-snapshots/</url>
                 </repository>	
+		<repository>
+                        <id>jcenter</id>
+                        <name>JCenter Repository</name>
+                        <url>https://jcenter.bintray.com/</url>
+                </repository>
+                <repository>
+                        <id>central</id>
+                        <name>Central Repository</name>
+                        <url>https://repo1.maven.org/maven2</url>
+                </repository>
 	</repositories>
 
 	<dependencyManagement>
