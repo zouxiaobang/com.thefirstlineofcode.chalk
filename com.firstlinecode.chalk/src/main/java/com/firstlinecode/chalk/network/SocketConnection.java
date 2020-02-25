@@ -34,12 +34,12 @@ import org.slf4j.LoggerFactory;
 
 import com.firstlinecode.basalt.protocol.Constants;
 import com.firstlinecode.basalt.protocol.core.ProtocolException;
-import com.firstlinecode.basalt.protocol.oxm.binary.BinaryUtils;
-import com.firstlinecode.basalt.protocol.oxm.binary.IBinaryXmppProtocolConverter;
-import com.firstlinecode.basalt.protocol.oxm.binary.IBinaryXmppProtocolFactory;
-import com.firstlinecode.basalt.protocol.oxm.preprocessing.IMessagePreprocessor;
-import com.firstlinecode.basalt.protocol.oxm.preprocessing.OutOfMaxBufferSizeException;
-import com.firstlinecode.basalt.protocol.oxm.preprocessing.XmlMessagePreprocessorAdapter;
+import com.firstlinecode.basalt.oxm.binary.BinaryUtils;
+import com.firstlinecode.basalt.oxm.binary.IBinaryXmppProtocolConverter;
+import com.firstlinecode.basalt.oxm.binary.IBinaryXmppProtocolFactory;
+import com.firstlinecode.basalt.oxm.preprocessing.IMessagePreprocessor;
+import com.firstlinecode.basalt.oxm.preprocessing.OutOfMaxBufferSizeException;
+import com.firstlinecode.basalt.oxm.preprocessing.XmlMessagePreprocessorAdapter;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 
 public class SocketConnection implements IConnection, HandshakeCompletedListener {

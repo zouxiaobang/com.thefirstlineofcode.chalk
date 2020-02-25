@@ -4,8 +4,8 @@ import java.util.Properties;
 
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
-import com.firstlinecode.basalt.protocol.oxm.convention.NamingConventionParserFactory;
-import com.firstlinecode.basalt.protocol.oxm.convention.NamingConventionTranslatorFactory;
+import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
+import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
 import com.firstlinecode.chalk.IChatSystem;
 import com.firstlinecode.chalk.IPlugin;
 import com.firstlinecode.basalt.xeps.delay.Delay;

@@ -6,8 +6,8 @@ import java.security.NoSuchAlgorithmException;
 
 import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.protocol.core.stream.Stream;
-import com.firstlinecode.basalt.protocol.oxm.IOxmFactory;
-import com.firstlinecode.basalt.protocol.oxm.OxmService;
+import com.firstlinecode.basalt.oxm.IOxmFactory;
+import com.firstlinecode.basalt.oxm.OxmService;
 import com.firstlinecode.chalk.core.stream.INegotiationContext;
 import com.firstlinecode.chalk.core.stream.NegotiationException;
 import com.firstlinecode.chalk.core.stream.StandardStreamer;

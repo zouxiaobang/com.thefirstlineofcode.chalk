@@ -21,10 +21,10 @@ import java.util.concurrent.Executors;
 
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
 import com.firstlinecode.basalt.protocol.core.stream.Stream;
-import com.firstlinecode.basalt.protocol.oxm.IOxmFactory;
-import com.firstlinecode.basalt.protocol.oxm.OxmService;
-import com.firstlinecode.basalt.protocol.oxm.parsing.IParserFactory;
-import com.firstlinecode.basalt.protocol.oxm.translating.ITranslatorFactory;
+import com.firstlinecode.basalt.oxm.IOxmFactory;
+import com.firstlinecode.basalt.oxm.OxmService;
+import com.firstlinecode.basalt.oxm.parsing.IParserFactory;
+import com.firstlinecode.basalt.oxm.translating.ITranslatorFactory;
 import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
 import com.firstlinecode.chalk.core.stream.INegotiationListener;
 import com.firstlinecode.chalk.core.stream.IStream;

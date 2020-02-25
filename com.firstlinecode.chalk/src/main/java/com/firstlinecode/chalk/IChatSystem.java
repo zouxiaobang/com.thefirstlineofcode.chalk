@@ -3,8 +3,8 @@ package com.firstlinecode.chalk;
 import java.util.Properties;
 
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
-import com.firstlinecode.basalt.protocol.oxm.parsing.IParserFactory;
-import com.firstlinecode.basalt.protocol.oxm.translating.ITranslatorFactory;
+import com.firstlinecode.basalt.oxm.parsing.IParserFactory;
+import com.firstlinecode.basalt.oxm.translating.ITranslatorFactory;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 
 public interface IChatSystem {

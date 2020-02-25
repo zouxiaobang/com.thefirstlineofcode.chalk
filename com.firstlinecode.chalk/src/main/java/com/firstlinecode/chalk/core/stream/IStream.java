@@ -2,7 +2,7 @@ package com.firstlinecode.chalk.core.stream;
 
 import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.protocol.core.stanza.Stanza;
-import com.firstlinecode.basalt.protocol.oxm.IOxmFactory;
+import com.firstlinecode.basalt.oxm.IOxmFactory;
 import com.firstlinecode.chalk.core.IErrorListener;
 import com.firstlinecode.chalk.core.stanza.IStanzaListener;
 import com.firstlinecode.chalk.network.IConnection;

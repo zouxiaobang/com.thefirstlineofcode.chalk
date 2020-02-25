@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
 import com.firstlinecode.basalt.protocol.core.stanza.Iq;
-import com.firstlinecode.basalt.protocol.oxm.convention.NamingConventionParserFactory;
+import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.firstlinecode.basalt.xeps.xdata.XData;
 import com.firstlinecode.chalk.IChatSystem;
 import com.firstlinecode.chalk.IPlugin;

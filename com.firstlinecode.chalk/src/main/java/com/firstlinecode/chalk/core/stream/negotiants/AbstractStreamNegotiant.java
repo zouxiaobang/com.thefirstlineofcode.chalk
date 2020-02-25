@@ -7,7 +7,7 @@ import java.util.Queue;
 import com.firstlinecode.basalt.protocol.core.IError;
 import com.firstlinecode.basalt.protocol.core.stream.Stream;
 import com.firstlinecode.basalt.protocol.core.stream.error.StreamError;
-import com.firstlinecode.basalt.protocol.oxm.IOxmFactory;
+import com.firstlinecode.basalt.oxm.IOxmFactory;
 import com.firstlinecode.chalk.core.stream.INegotiationContext;
 import com.firstlinecode.chalk.core.stream.IStreamNegotiant;
 import com.firstlinecode.chalk.core.stream.NegotiationException;

@@ -2,7 +2,7 @@ package com.firstlinecode.chalk.xeps.oob;
 
 import java.util.Properties;
 
-import com.firstlinecode.basalt.protocol.oxm.convention.NamingConventionTranslatorFactory;
+import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
 import com.firstlinecode.chalk.IChatSystem;
 import com.firstlinecode.chalk.IPlugin;
 import com.firstlinecode.basalt.xeps.oob.IqOob;
