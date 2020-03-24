@@ -6,12 +6,12 @@ import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
 
 public class SaslAuthenticationFailure implements IAuthenticationFailure {
 	
-	private SaslNegotiant sasl;
+	private ISaslNegotiant sasl;
 	private Failure.ErrorCondition errorCondition;
 	private boolean retriable;
 	private int count;
 	
-	public SaslAuthenticationFailure(SaslNegotiant sasl, Failure.ErrorCondition errorCondition, boolean retriable, int count) {
+	public SaslAuthenticationFailure(ISaslNegotiant sasl, Failure.ErrorCondition errorCondition, boolean retriable, int count) {
 		this.sasl = sasl;
 		this.errorCondition = errorCondition;
 		this.retriable = retriable;

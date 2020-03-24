@@ -1,34 +1,5 @@
-package com.firstlinecode.chalk.core.stream.negotiants.sasl;
+package com.firstlinecode.chalk.android.core.stream.negotiants.sasl;
 
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.List;
-
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.sasl.RealmCallback;
-import javax.security.sasl.Sasl;
-import javax.security.sasl.SaslClient;
-import javax.security.sasl.SaslException;
-
-import com.firstlinecode.basalt.protocol.Constants;
-import com.firstlinecode.basalt.protocol.core.IError;
-import com.firstlinecode.basalt.protocol.core.ProtocolChain;
-import com.firstlinecode.basalt.protocol.core.stream.Bind;
-import com.firstlinecode.basalt.protocol.core.stream.Feature;
-import com.firstlinecode.basalt.protocol.core.stream.Features;
-import com.firstlinecode.basalt.protocol.core.stream.Session;
-import com.firstlinecode.basalt.protocol.core.stream.Stream;
-import com.firstlinecode.basalt.protocol.core.stream.sasl.Abort;
-import com.firstlinecode.basalt.protocol.core.stream.sasl.Auth;
-import com.firstlinecode.basalt.protocol.core.stream.sasl.Challenge;
-import com.firstlinecode.basalt.protocol.core.stream.sasl.Failure;
-import com.firstlinecode.basalt.protocol.core.stream.sasl.Mechanisms;
-import com.firstlinecode.basalt.protocol.core.stream.sasl.Response;
-import com.firstlinecode.basalt.protocol.core.stream.sasl.Success;
 import com.firstlinecode.basalt.oxm.IOxmFactory;
 import com.firstlinecode.basalt.oxm.OxmService;
 import com.firstlinecode.basalt.oxm.annotation.AnnotatedParserFactory;
@@ -37,15 +8,35 @@ import com.firstlinecode.basalt.oxm.parsers.core.stream.BindParser;
 import com.firstlinecode.basalt.oxm.parsers.core.stream.sasl.FailureParserFactory;
 import com.firstlinecode.basalt.oxm.translators.SimpleObjectTranslatorFactory;
 import com.firstlinecode.basalt.oxm.translators.core.stream.sasl.AuthTranslatorFactory;
-import com.firstlinecode.chalk.core.stream.IAuthenticationCallback;
-import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
-import com.firstlinecode.chalk.core.stream.INegotiationContext;
-import com.firstlinecode.chalk.core.stream.NegotiationException;
-import com.firstlinecode.chalk.core.stream.StandardStreamer;
-import com.firstlinecode.chalk.core.stream.UsernamePasswordToken;
+import com.firstlinecode.basalt.protocol.Constants;
+import com.firstlinecode.basalt.protocol.core.IError;
+import com.firstlinecode.basalt.protocol.core.ProtocolChain;
+import com.firstlinecode.basalt.protocol.core.stream.Bind;
+import com.firstlinecode.basalt.protocol.core.stream.Feature;
+import com.firstlinecode.basalt.protocol.core.stream.Features;
+import com.firstlinecode.basalt.protocol.core.stream.Session;
+import com.firstlinecode.basalt.protocol.core.stream.sasl.*;
+import com.firstlinecode.basalt.protocol.core.stream.Stream;
+import com.firstlinecode.chalk.core.stream.*;
 import com.firstlinecode.chalk.core.stream.negotiants.InitialStreamNegotiant;
+import com.firstlinecode.chalk.core.stream.negotiants.sasl.ISaslNegotiant;
+import com.firstlinecode.chalk.core.stream.negotiants.sasl.SaslAuthenticationFailure;
+import com.firstlinecode.chalk.core.stream.negotiants.sasl.SaslError;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.utils.Base64;
+import com.firstlinecode.javax.sercurity.auth.callback.NameCallback;
+import com.firstlinecode.javax.sercurity.auth.callback.PasswordCallback;
+import com.firstlinecode.javax.sercurity.sasl.RealmCallback;
+import com.firstlinecode.javax.sercurity.sasl.Sasl;
+import com.firstlinecode.javax.sercurity.sasl.SaslClient;
+import com.firstlinecode.javax.sercurity.sasl.SaslException;
+
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.List;
 
 
 public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegotiant {
@@ -295,10 +286,10 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
 
     protected String chooseMechanism(Mechanisms mechanisms) {
         if (mechanisms.getMechanisms().contains(DIGEST_MD5_MECHANISM))
-        	return DIGEST_MD5_MECHANISM;
-        
+            return DIGEST_MD5_MECHANISM;
+
         if (mechanisms.getMechanisms().contains(CRAM_MD5_MECHANISM))
-        	return CRAM_MD5_MECHANISM;
+            return CRAM_MD5_MECHANISM;
         
         if (mechanisms.getMechanisms().contains(PLAIN_MECHANISM))
         	return PLAIN_MECHANISM;

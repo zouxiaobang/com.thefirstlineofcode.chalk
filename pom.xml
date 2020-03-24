@@ -22,6 +22,7 @@
 		<module>com.firstlinecode.chalk.leps</module>
 		<module>com.firstlinecode.chalk.demo</module>
 		<module>com.firstlinecode.chalk.examples</module>
+		<module>com.firstlinecode.chalk.android</module>
 	</modules>
 
 	<build>
