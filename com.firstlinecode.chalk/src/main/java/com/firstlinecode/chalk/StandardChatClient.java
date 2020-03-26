@@ -17,7 +17,7 @@ import com.firstlinecode.chalk.core.stream.negotiants.tls.IPeerCertificateTruste
 import com.firstlinecode.chalk.network.ConnectionException;
 
 public class StandardChatClient extends AbstractChatClient implements IAuthenticationCallback {
-	private IPeerCertificateTruster peerCertificateTruster;
+	protected IPeerCertificateTruster peerCertificateTruster;
 	private IAuthenticationFailure authFailure;
 	
 	public StandardChatClient(StandardStreamConfig streamConfig) {
