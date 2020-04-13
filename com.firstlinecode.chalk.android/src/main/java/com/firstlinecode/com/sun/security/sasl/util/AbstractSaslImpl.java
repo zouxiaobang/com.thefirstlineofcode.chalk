@@ -33,7 +33,7 @@ public abstract class AbstractSaslImpl {
 
     protected String myClassName;
 
-    protected AbstractSaslImpl(Map props, String className) throws SaslException {
+    protected AbstractSaslImpl(Map<?, ?> props, String className) throws SaslException {
         myClassName = className;
 
         // Parse properties  to set desired context options

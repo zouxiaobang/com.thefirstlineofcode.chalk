@@ -80,7 +80,7 @@ final class DigestMD5Client extends DigestMD5Base implements SaslClient {
      * @throws SaslException if no authentication ID or password is supplied
      */
     DigestMD5Client(String authzid, String protocol, String serverName,
-                    Map props, CallbackHandler cbh) throws SaslException {
+                    Map<?, ?> props, CallbackHandler cbh) throws SaslException {
 
         super(props, MY_CLASS_NAME, 2, protocol + "/" + serverName, cbh);
 

@@ -137,7 +137,7 @@ abstract class DigestMD5Base extends AbstractSaslImpl {
      *
      * @throws SaslException If invalid value found in props.
      */
-    protected DigestMD5Base(Map props, String className, int firstStep,
+    protected DigestMD5Base(Map<?, ?> props, String className, int firstStep,
                             String digestUri, CallbackHandler cbh) throws SaslException {
         super(props, className); // sets QOP, STENGTH and BUFFER_SIZE
 

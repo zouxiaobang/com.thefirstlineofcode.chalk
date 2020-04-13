@@ -28,7 +28,7 @@ final public class PolicyUtils {
      * @param props The security policy properties to check
      * @return true if passes; false if fails
      */
-    public static boolean checkPolicy(int flags, Map props) {
+    public static boolean checkPolicy(int flags, Map<?, ?> props) {
         if (props == null) {
             return true;
         }
@@ -68,7 +68,7 @@ final public class PolicyUtils {
      *
      */
     public static String[] filterMechs(String[] mechs, int[] policies,
-                                       Map props) {
+                                       Map<?, ?> props) {
         if (props == null) {
             return mechs.clone();
         }
