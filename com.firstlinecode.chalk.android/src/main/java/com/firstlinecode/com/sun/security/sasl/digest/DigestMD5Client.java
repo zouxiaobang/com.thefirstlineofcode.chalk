@@ -56,7 +56,7 @@ final class DigestMD5Client extends DigestMD5Base implements SaslClient {
     private static final int CHARSET = 5;
     private static final int CIPHER = 6;
     private static final int RESPONSE_AUTH = 7;
-    private static final int STALE = 8;
+    // private static final int STALE = 8;
 
     private int nonceCount; // number of times nonce has been used/seen
 
