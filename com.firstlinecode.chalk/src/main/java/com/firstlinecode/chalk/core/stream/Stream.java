@@ -6,6 +6,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.firstlinecode.basalt.oxm.IOxmFactory;
+import com.firstlinecode.basalt.oxm.OxmService;
+import com.firstlinecode.basalt.oxm.parsing.FlawedProtocolObject;
 import com.firstlinecode.basalt.protocol.core.IError;
 import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.protocol.core.ProtocolException;
@@ -16,8 +19,6 @@ import com.firstlinecode.basalt.protocol.core.stanza.error.ServiceUnavailable;
 import com.firstlinecode.basalt.protocol.core.stanza.error.StanzaError;
 import com.firstlinecode.basalt.protocol.core.stream.error.StreamError;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
-import com.firstlinecode.basalt.oxm.IOxmFactory;
-import com.firstlinecode.basalt.oxm.OxmService;
 import com.firstlinecode.chalk.core.IErrorListener;
 import com.firstlinecode.chalk.core.stanza.IStanzaListener;
 import com.firstlinecode.chalk.network.ConnectionException;
@@ -172,14 +173,6 @@ public class Stream implements IStream, IConnectionListener {
 				for (IErrorListener errorListener : errorListeners) {
 					errorListener.occurred((IError)object);
 				}
-			} else if (object instanceof Stanza) {
-				for (IStanzaWatcher stanzaWatcher : stanzaWatchers) {
-					stanzaWatcher.received((Stanza)object, message);
-				}
-				
-				for (IStanzaListener stanzaListener : stanzaListeners) {
-					stanzaListener.received((Stanza)object);
-				}
 			} else if (object instanceof com.firstlinecode.basalt.protocol.core.stream.Stream) {
 				com.firstlinecode.basalt.protocol.core.stream.Stream closeStream =
 					(com.firstlinecode.basalt.protocol.core.stream.Stream)object;
@@ -189,22 +182,28 @@ public class Stream implements IStream, IConnectionListener {
 				}
 			} else if (object instanceof Stanza) {
 				Stanza stanza = (Stanza)object;
+				boolean flawedFound = removeFlawed(stanza);
+				
+				
 				if (stanza instanceof Iq) {
 					Iq iq = (Iq)stanza;
 					
+					// (rfc3921 2.4)
 					// If an entity receives an IQ stanza of type "get" or "set" containing a child element
 					// qualified by a namespace it does not understand, the entity SHOULD return an
 					// IQ stanza of type "error" with an error condition of <service-unavailable/>.
-					if (iq.getType() == Iq.Type.SET || iq.getType() == Iq.Type.GET) {
+					if (flawedFound && iq.getType() == Iq.Type.SET || iq.getType() == Iq.Type.GET) {
 						for (IErrorListener errorListener : errorListeners) {
 							errorListener.occurred(new ServiceUnavailable());
 						}
 					}
 				} else if (stanza instanceof Message) {
+					// (rfc3921 2.4)
 					// If an entity receives a message stanza whose only child element is qualified by a
 					// namespace it does not understand, it MUST ignore the entire stanza.
 					Message messageStanza = (Message)stanza;
-					if (messageStanza.getSubjects().size() == 0 &&
+					if (flawedFound &&
+							messageStanza.getSubjects().size() == 0 &&
 							messageStanza.getBodies().size() == 0 &&
 							messageStanza.getObjects().size() == 0 &&
 							messageStanza.getThread() == null) {
@@ -224,6 +223,23 @@ public class Stream implements IStream, IConnectionListener {
 				// ???
 				throw new RuntimeException(String.format("Unknown object[%s] received.", object.getClass().getName()));
 			}
+		}
+
+		private boolean removeFlawed(Stanza stanza) {
+			FlawedProtocolObject flawed = null;
+			for (Object protocolObject : stanza.getObjects()) {
+				if (protocolObject instanceof FlawedProtocolObject) {
+					flawed = (FlawedProtocolObject)protocolObject;
+				}
+			}
+			
+			if (flawed == null)
+				return false;
+			
+			stanza.getObjects().remove(flawed);
+			stanza.getObjectProtocols().remove(FlawedProtocolObject.class);
+			
+			return true;
 		}
 		
 	}
