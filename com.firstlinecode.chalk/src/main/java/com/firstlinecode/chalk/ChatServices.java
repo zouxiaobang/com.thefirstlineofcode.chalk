@@ -294,11 +294,11 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 	}
 	
 	private class IqService implements IIqService, IIqListener {
-		private ConcurrentMap<Protocol, IIqListener> protocolAndListeners;
+		private ConcurrentMap<Protocol, IIqListener> protocolToListeners;
 		
 		public IqService() {
 			iqListeners.add(this);
-			protocolAndListeners = new ConcurrentHashMap<>();
+			protocolToListeners = new ConcurrentHashMap<>();
 		}
 
 		@Override
@@ -319,12 +319,12 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 
 		@Override
 		public void addListener(Protocol protocol, IIqListener listener) {
-			protocolAndListeners.put(protocol, listener);
+			protocolToListeners.put(protocol, listener);
 		}
 
 		@Override
 		public void removeListener(Protocol protocol) {
-			protocolAndListeners.remove(protocol);
+			protocolToListeners.remove(protocol);
 		}
 
 		@Override
@@ -334,7 +334,7 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 			}
 			
 			Protocol protocol = iq.getObjectProtocol(iq.getObject().getClass());
-			IIqListener listener = protocolAndListeners.get(protocol);
+			IIqListener listener = protocolToListeners.get(protocol);
 			
 			if (listener != null) {
 				listener.received(iq);

@@ -276,7 +276,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 						continue;
 					
 					if (logger.isTraceEnabled()) {
-						logger.trace(String.format("Received %d bytes: %s", bytes.length, BinaryUtils.getBytesString(bytes)));
+						logger.trace(String.format("Received %d bytes: %s", bytes.length, BinaryUtils.getHexStringFromBytes(bytes)));
 					}
 					
 					String[] messages = processMessages(bytes);
@@ -397,7 +397,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 						output.flush();
 						
 						if (logger.isTraceEnabled()) {
-							logger.trace(String.format("Sent %d bytes: %s", bytes.length, BinaryUtils.getBytesString(bytes)));
+							logger.trace(String.format("Sent %d bytes: %s", bytes.length, BinaryUtils.getHexStringFromBytes(bytes)));
 						}
 						
 						for (IConnectionListener listener : listeners) {
