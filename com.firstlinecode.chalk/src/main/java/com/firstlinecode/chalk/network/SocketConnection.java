@@ -536,11 +536,17 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 
 	@Override
 	public boolean isClosed() {
+		if (socket == null)
+			return true;
+		
 		return socket.isClosed();
 	}
 	
 	@Override
 	public boolean isConnected() {
+		if (socket == null)
+			return false;
+		
 		return socket.isConnected();
 	}
 
