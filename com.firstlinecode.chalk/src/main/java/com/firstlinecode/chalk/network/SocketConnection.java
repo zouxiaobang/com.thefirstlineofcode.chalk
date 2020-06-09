@@ -166,7 +166,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	public void close() {
 		stopThreads();
 		
-		if (socket.isConnected()) {
+		if (socket != null && socket.isConnected()) {
 			try {
 				socket.close();
 			} catch (IOException e) {
