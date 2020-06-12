@@ -24,6 +24,8 @@ import com.firstlinecode.chalk.core.stream.negotiants.sasl.SaslAuthenticationFai
 import com.firstlinecode.chalk.core.stream.negotiants.sasl.SaslError;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.utils.Base64;
+import com.firstlinecode.com.sun.security.sasl.ClientFactoryImpl;
+import com.firstlinecode.com.sun.security.sasl.digest.FactoryImpl;
 import com.firstlinecode.javax.sercurity.auth.callback.NameCallback;
 import com.firstlinecode.javax.sercurity.auth.callback.PasswordCallback;
 import com.firstlinecode.javax.sercurity.sasl.RealmCallback;
@@ -35,8 +37,12 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import java.io.IOException;
+import java.security.Security;
 import java.util.Hashtable;
 import java.util.List;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.Provider;
 
 
 public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegotiant {
@@ -59,6 +65,8 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
     private boolean abortSasl;
 
     static {
+        Security.addProvider(new SaslProvider());
+
         InitialStreamNegotiant.oxmFactory.register(ProtocolChain.first(Features.PROTOCOL).next(Bind.PROTOCOL),
                 new AnnotatedParserFactory<>(BindParser.class)
         );
@@ -346,4 +354,23 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
 			lock.notify();
 		}
 	}
+
+	private static class SaslProvider extends Provider {
+        private static final long serialVersionUID = 8622598936488630849L;
+        private static final String INFO = "Sun SASL provider(implements client mechanisms for: DIGEST-MD5, GSSAPI, EXTERNAL, PLAIN, CRAM-MD5, NTLM; server mechanisms for: DIGEST-MD5, GSSAPI, CRAM-MD5, NTLM)";
+
+        public SaslProvider() {
+            super("SunSASL", 1.8D, INFO);
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    SaslProvider.this.put("SaslClientFactory.DIGEST-MD5", FactoryImpl.class.getName());
+                    SaslProvider.this.put("SaslClientFactory.EXTERNAL", ClientFactoryImpl.class.getName());
+                    SaslProvider.this.put("SaslClientFactory.PLAIN", ClientFactoryImpl.class.getName());
+                    SaslProvider.this.put("SaslClientFactory.CRAM-MD5", ClientFactoryImpl.class.getName());
+                    return null;
+                }
+            });
+        }
+    }
 }
