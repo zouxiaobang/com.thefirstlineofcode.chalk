@@ -4,10 +4,10 @@ import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.firstlinecode.basalt.oxm.IOxmFactory;
 import com.firstlinecode.basalt.protocol.core.IError;
 import com.firstlinecode.basalt.protocol.core.stream.Stream;
 import com.firstlinecode.basalt.protocol.core.stream.error.StreamError;
-import com.firstlinecode.basalt.oxm.IOxmFactory;
 import com.firstlinecode.chalk.core.stream.INegotiationContext;
 import com.firstlinecode.chalk.core.stream.IStreamNegotiant;
 import com.firstlinecode.chalk.core.stream.NegotiationException;
@@ -15,6 +15,7 @@ import com.firstlinecode.chalk.network.ConnectionException;
 
 public abstract class AbstractStreamNegotiant implements IStreamNegotiant {
 	protected static final long DEFAULT_READ_RESPONSE_TIMEOUT = 1000 * 15;
+	protected static final long DEFAULT_READ_RESPONSE_INTERVAL = 200;
 	
 	protected Queue<String> responses = new LinkedList<>();
 	protected ConnectionException exception;
@@ -78,19 +79,24 @@ public abstract class AbstractStreamNegotiant implements IStreamNegotiant {
 	}
 	
 	protected String readResponse(long timeout) throws ConnectionException {
-		if (responses.size() == 0)
-			waitResponse(timeout);
-		
-		synchronized (lock) {
-			if (responses.size() == 0 && exception == null)
-				throw new ConnectionException(ConnectionException.Type.READ_RESPONSE_TIMEOUT);
+		long waitedTime = 0;
+		while (Long.compare(waitedTime, timeout) < 0) {
+			if (responses.size() == 0 && exception == null) {
+				long waitingTime = Math.min(timeout - waitedTime, DEFAULT_READ_RESPONSE_INTERVAL);
+				waitResponse(waitingTime);
+				waitedTime += waitingTime;
+			}
 			
-			try {
-				return responses.poll();
-			} catch (EmptyStackException e) {
-				throw new RuntimeException("null response???");
+			if (responses.size() != 0) {
+				try {
+					return responses.poll();
+				} catch (EmptyStackException e) {
+					throw new RuntimeException("null response???");
+				}
 			}
 		}
+		
+		throw new ConnectionException(ConnectionException.Type.READ_RESPONSE_TIMEOUT);
 	}
 	
 	protected void processError(IError error, INegotiationContext context, IOxmFactory oxmFactory)
