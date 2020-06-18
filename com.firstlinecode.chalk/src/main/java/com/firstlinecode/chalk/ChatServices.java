@@ -563,13 +563,8 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 		private ITimeoutHandler timeoutHandler;
 		
 		@Override
-		public void execute(ITask<?> task) {
-			execute(task, defaultTaskTimeout);
-		}
-		
-		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public void execute(ITask<?> task, int timeout) {
+		public void execute(ITask<?> task) {
 			synchronized (ChatServices.this) {
 				if (chatClient.getState() == State.CONNECTED && !stopFlag) {
 					taskThreadPool.execute(createTaskTriggerThread(task));
@@ -701,26 +696,21 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 		public ITimeoutHandler getDefaultTimeoutHandler() {
 			return timeoutHandler;
 		}
-
-		@Override
-		public <K extends Stanza, V> V execute(ISyncTask<K, V> task) throws ErrorException {
-			return new SyncTaskTemplate<K, V>().execute(task, defaultTaskTimeout);
-		}
 		
 		@Override
-		public <K extends Stanza, V> V execute(ISyncTask<K, V> task, int timeout) throws ErrorException {
-			return new SyncTaskTemplate<K, V>().execute(task, timeout);
+		public <K extends Stanza, V> V execute(ISyncTask<K, V> task) throws ErrorException {
+			return new SyncTaskTemplate<K, V>().execute(task);
 		}
 	}
 	
 	private class SyncTaskTemplate<K extends Stanza, V> {
-		public V execute(ISyncTask<K, V> syncTask, int timeout) throws ErrorException {
+		public V execute(ISyncTask<K, V> syncTask) throws ErrorException {
 			SyncTaskWrapper task = new SyncTaskWrapper(syncTask);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Ready to execute a task. Task class is {}.", syncTask.getClass().getName());
 			}
 			
-			taskService.execute(task, timeout);
+			taskService.execute(task);
 			
 			try {
 				return task.getResult();
@@ -811,9 +801,21 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 					if (ret != null)
 						return ret;
 					
-					condition.await(60 * 5, TimeUnit.SECONDS);
+					int timeout = 60 * 5 * 1000;
+					while (timeout > 0) {
+						int waitingTime = Math.min(timeout, 200);
+						if (!condition.await(waitingTime, TimeUnit.MILLISECONDS)) {
+							timeout -= waitingTime;
+							
+							V result = processResult();
+							if (result != null)
+								return result;
+						} else {
+							return processResult();
+						}
+					}
 					
-					return processResult();
+					throw new ErrorException(new RemoteServerTimeout());
 				} finally {
 					lock.unlock();
 				}
