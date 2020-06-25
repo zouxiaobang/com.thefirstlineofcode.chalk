@@ -22,24 +22,23 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.security.cert.X509Certificate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.firstlinecode.basalt.protocol.Constants;
-import com.firstlinecode.basalt.protocol.core.ProtocolException;
 import com.firstlinecode.basalt.oxm.binary.BinaryUtils;
 import com.firstlinecode.basalt.oxm.binary.IBinaryXmppProtocolConverter;
 import com.firstlinecode.basalt.oxm.binary.IBinaryXmppProtocolFactory;
 import com.firstlinecode.basalt.oxm.preprocessing.IMessagePreprocessor;
 import com.firstlinecode.basalt.oxm.preprocessing.OutOfMaxBufferSizeException;
 import com.firstlinecode.basalt.oxm.preprocessing.XmlMessagePreprocessorAdapter;
+import com.firstlinecode.basalt.protocol.Constants;
+import com.firstlinecode.basalt.protocol.core.ProtocolException;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 
 public class SocketConnection implements IConnection, HandshakeCompletedListener {
@@ -477,39 +476,22 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 		}
 		
 		TrustManager[] trustAllCerts = new TrustManager[] {
-				new X509ExtendedTrustManager() {
-					
+				new X509TrustManager() {
+
+					@Override
+					public void checkClientTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
+							throws CertificateException {
+						
+					}
+
+					@Override
+					public void checkServerTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
+							throws CertificateException {
+					}
+
 					@Override
 					public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 						return null;
-					}
-					
-					@Override
-					public void checkServerTrusted(java.security.cert.X509Certificate[] arg0, String arg1) throws CertificateException {
-					}
-					
-					@Override
-					public void checkClientTrusted(java.security.cert.X509Certificate[] arg0, String arg1) throws CertificateException {
-					}
-					
-					@Override
-					public void checkServerTrusted(java.security.cert.X509Certificate[] arg0, String arg1, SSLEngine arg2)
-							throws CertificateException {
-					}
-					
-					@Override
-					public void checkServerTrusted(java.security.cert.X509Certificate[] arg0, String arg1, Socket arg2)
-							throws CertificateException {
-					}
-					
-					@Override
-					public void checkClientTrusted(java.security.cert.X509Certificate[] arg0, String arg1, SSLEngine arg2)
-							throws CertificateException {
-					}
-					
-					@Override
-					public void checkClientTrusted(java.security.cert.X509Certificate[] arg0, String arg1, Socket arg2)
-							throws CertificateException {
 					}
 				}
 		};
