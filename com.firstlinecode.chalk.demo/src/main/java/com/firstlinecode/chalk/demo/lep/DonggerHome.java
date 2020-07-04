@@ -25,16 +25,6 @@ public class DonggerHome extends LepClient {
 	public DonggerHome(Demo demo) {
 		super(demo, "Dongger/home");
 	}
-	
-/*	@Override
-	public void received(String message) {
-		print(String.format("received: %s", message));
-	}
-
-	@Override
-	public void sent(String message) {
-		print(String.format("sent: %s", message));
-	}*/
 
 	@Override
 	public void retrieved(Roster roster) {
