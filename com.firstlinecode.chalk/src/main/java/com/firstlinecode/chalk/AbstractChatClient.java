@@ -19,12 +19,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.firstlinecode.basalt.protocol.core.ProtocolChain;
-import com.firstlinecode.basalt.protocol.core.stream.Stream;
 import com.firstlinecode.basalt.oxm.IOxmFactory;
 import com.firstlinecode.basalt.oxm.OxmService;
 import com.firstlinecode.basalt.oxm.parsing.IParserFactory;
 import com.firstlinecode.basalt.oxm.translating.ITranslatorFactory;
+import com.firstlinecode.basalt.protocol.core.ProtocolChain;
+import com.firstlinecode.basalt.protocol.core.stream.Stream;
 import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
 import com.firstlinecode.chalk.core.stream.INegotiationListener;
 import com.firstlinecode.chalk.core.stream.IStream;
@@ -37,6 +37,8 @@ import com.firstlinecode.chalk.network.IConnectionListener;
 
 public abstract class AbstractChatClient implements IChatClient, IConnectionListener,
 		INegotiationListener {
+	private static final int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
+	
 	protected StreamConfig streamConfig;
 	protected volatile State state;
 	private volatile IStreamer streamer;
@@ -61,6 +63,8 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 	
 	private volatile String closeStreamMessage;
 	
+	private int connectTimeout;
+	
 	public AbstractChatClient(StreamConfig streamConfig) {
 		this.streamConfig = streamConfig;
 		state = State.CLOSED;
@@ -78,9 +82,21 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 		apis = new ConcurrentHashMap<>();
 		
 		chatServices = new ChatServices(this);
+		
+		connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 	}
 	
-	public State getState() {
+	@Override
+	public void setConnectTimeout(int connectTimeout) {
+		this.connectTimeout = connectTimeout;
+	}
+	
+	@Override
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+
+	public synchronized State getState() {
 		return state;
 	}
 	
@@ -124,9 +140,14 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 		doConnect(authToken);
 		
 		try {
-			wait();
+			wait(connectTimeout);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
+		}
+		
+		if (!isConnected()) {
+			close(false);
+			throw new ConnectionException(ConnectionException.Type.TIMEOUT);
 		}
 		
 		if (exception != null) {
@@ -493,12 +514,12 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 	}
 
 	@Override
-	public boolean isConnected() {
+	public synchronized boolean isConnected() {
 		return state == State.CONNECTED;
 	}
 
 	@Override
-	public boolean isClosed() {
+	public synchronized boolean isClosed() {
 		return state == State.CLOSED;
 	}
 	
