@@ -42,11 +42,13 @@ import com.firstlinecode.basalt.protocol.core.ProtocolException;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 
 public class SocketConnection implements IConnection, HandshakeCompletedListener {
+
 	private static final Logger logger = LoggerFactory.getLogger(SocketConnection.class);
 	
 	private static final int DEFAULT_READ_QUEUE_SIZE = 64;
 	private static final int DEFAULT_WRITE_QUEUE_SIZE = 64;
-	private static final int DEFAULT_BLOCKING_TIMEOUT = 20;
+	private static final int DEFAULT_BLOCKING_TIMEOUT = 200;
+	private static final int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
 	
 	private Socket socket;
 	private BlockingQueue<String> sendingQueue;
@@ -108,6 +110,11 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	
 	@Override
 	public void connect(String host, int port) throws ConnectionException {
+		connect(host, port, DEFAULT_CONNECT_TIMEOUT);
+	}
+	
+	@Override
+	public void connect(String host, int port, int timeout) throws ConnectionException {
 		try {
 			InetSocketAddress address = new InetSocketAddress(host, port);
 			if (address.isUnresolved()) {
@@ -118,7 +125,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				socket = createSocket();
 			}
 			
-			socket.connect(address);
+			socket.connect(address, timeout);
 		} catch (IOException e) {
 			throw new ConnectionException(ConnectionException.Type.IO_ERROR, e);
 		}

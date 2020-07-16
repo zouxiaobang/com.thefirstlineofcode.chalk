@@ -37,8 +37,6 @@ import com.firstlinecode.chalk.network.IConnectionListener;
 
 public abstract class AbstractChatClient implements IChatClient, IConnectionListener,
 		INegotiationListener {
-	private static final int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
-	
 	protected StreamConfig streamConfig;
 	protected volatile State state;
 	private volatile IStreamer streamer;
@@ -63,8 +61,6 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 	
 	private volatile String closeStreamMessage;
 	
-	private int connectTimeout;
-	
 	public AbstractChatClient(StreamConfig streamConfig) {
 		this.streamConfig = streamConfig;
 		state = State.CLOSED;
@@ -82,18 +78,6 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 		apis = new ConcurrentHashMap<>();
 		
 		chatServices = new ChatServices(this);
-		
-		connectTimeout = DEFAULT_CONNECT_TIMEOUT;
-	}
-	
-	@Override
-	public void setConnectTimeout(int connectTimeout) {
-		this.connectTimeout = connectTimeout;
-	}
-	
-	@Override
-	public int getConnectTimeout() {
-		return connectTimeout;
 	}
 
 	public synchronized State getState() {
@@ -140,14 +124,9 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 		doConnect(authToken);
 		
 		try {
-			wait(connectTimeout);
+			wait();
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
-		}
-		
-		if (!isConnected()) {
-			close(false);
-			throw new ConnectionException(ConnectionException.Type.TIMEOUT);
 		}
 		
 		if (exception != null) {
@@ -164,7 +143,6 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 			} finally {
 				exception = null;
 			}
-			
 		}
 	}
 

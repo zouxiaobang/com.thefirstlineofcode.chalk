@@ -24,6 +24,11 @@ public class NegotiationContext implements INegotiationContext {
 	public void connect(String host, int port) throws ConnectionException {
 		connection.connect(host, port);
 	}
+	
+	@Override
+	public void connect(String host, int port, int timeout) throws ConnectionException {
+		connection.connect(host, port, timeout);
+	}
 
 	@Override
 	public void close() {

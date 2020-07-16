@@ -4,6 +4,7 @@ import javax.security.cert.X509Certificate;
 
 public interface IConnection {
 	void connect(String host, int port) throws ConnectionException;
+	void connect(String host, int port, int timeout) throws ConnectionException;
 	void close();
 	void write(String message);
 	

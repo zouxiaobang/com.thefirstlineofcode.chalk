@@ -34,9 +34,6 @@ public interface IChatClient {
 	void setDefaultExceptionHandler(IExceptionHandler exceptionHandler);
 	IExceptionHandler getExceptionHandler();
 	
-	void setConnectTimeout(int connectTimeout);
-	int getConnectTimeout();
-	
 	void connect(IAuthenticationToken authToken) throws ConnectionException, AuthFailureException;
 	boolean isConnected();
 	void close();
