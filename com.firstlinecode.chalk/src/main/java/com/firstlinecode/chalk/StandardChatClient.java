@@ -43,6 +43,8 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 			throw new IllegalArgumentException(String.format("Auth token type must be %s.", UsernamePasswordToken.class.getName()));
 		}
 		
+		authFailure = null;
+		
 		try {
 			super.connect(authToken);
 			
