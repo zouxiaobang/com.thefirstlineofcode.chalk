@@ -455,9 +455,9 @@ public abstract class Client implements Runnable, INegotiationListener, IMessage
 	protected void joinRoom(Invitation invitation) throws ErrorException {
 		IRoom room = muc.getRoom(invitation.getRoom());
 		if (invitation.getPassword() != null) {
-			room.enter(chatClient.getStream().getJid().getName(), invitation.getPassword());
+			room.enter(chatClient.getStream().getJid().getNode(), invitation.getPassword());
 		} else {
-			room.enter(chatClient.getStream().getJid().getName());
+			room.enter(chatClient.getStream().getJid().getNode());
 		}
 		
 	}

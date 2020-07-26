@@ -56,7 +56,7 @@ public class SmartSheepMobile extends LepClient {
 			}
 		} else if (event instanceof RoomMessageEvent) {
 			RoomMessageEvent messageEvent = ((RoomMessageEvent)event);
-			if ("first_room_of_agilest".equals(messageEvent.getRoomJid().getName()) &&
+			if ("first_room_of_agilest".equals(messageEvent.getRoomJid().getNode()) &&
 					"Hello, Smartsheep!".equals(messageEvent.getEventObject().getMessage())) {
 				IRoom room = muc.getRoom(messageEvent.getRoomJid());
 				room.send(new Message("Hello, Agilest!"));

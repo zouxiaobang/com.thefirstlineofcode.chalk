@@ -136,14 +136,14 @@ public class AgilestPad extends StandardClient {
 			}
 		} else if (event instanceof EnterEvent) {
 			EnterEvent enterEvent = (EnterEvent)event;
-			if ("first_room_of_agilest".equals(enterEvent.getRoomJid().getName()) &&
+			if ("first_room_of_agilest".equals(enterEvent.getRoomJid().getNode()) &&
 					enterEvent.getEventObject().getNick().equals("smartsheep")) {
 				IRoom room = muc.getRoom(new JabberId("first_room_of_agilest", mucHost.getDomain()));
 				room.send(new Message("Hello, Smartsheep!"));
 			}
 		} else if (event instanceof RoomMessageEvent) {
 			RoomMessageEvent messageEvent = ((RoomMessageEvent)event);
-			if ("first_room_of_agilest".equals(messageEvent.getRoomJid().getName()) &&
+			if ("first_room_of_agilest".equals(messageEvent.getRoomJid().getNode()) &&
 					"smartsheep".equals(messageEvent.getEventObject().getNick()) &&
 					"Hello, Agilest!".equals(messageEvent.getEventObject().getMessage())) {
 				IRoom room = muc.getRoom(messageEvent.getRoomJid());
@@ -156,7 +156,7 @@ public class AgilestPad extends StandardClient {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} if ("room0605".equals(messageEvent.getRoomJid().getName()) &&
+			} if ("room0605".equals(messageEvent.getRoomJid().getNode()) &&
 					"smartsheep".equals(messageEvent.getEventObject().getNick()) &&
 						"Hi, guys!".equals(messageEvent.getEventObject().getMessage())) {
 				try {
@@ -170,7 +170,7 @@ public class AgilestPad extends StandardClient {
 				
 				im.send(JID_DONGGER_HOME, new Message("I'll leave for a while."));
 				
-			} else if ("first_room_of_agilest".equals(messageEvent.getRoomJid().getName()) &&
+			} else if ("first_room_of_agilest".equals(messageEvent.getRoomJid().getNode()) &&
 					"dongger".equals(messageEvent.getEventObject().getNick())) {
 				IRoom room = muc.getRoom(messageEvent.getRoomJid());
 				room.send(new Message("Hello, Dongger!"));

@@ -218,7 +218,7 @@ public class DonggerHome extends StandardClient {
 			}
 		}  else if (event instanceof EnterEvent) {
 			EnterEvent enterEvent = (EnterEvent)event;
-			if ("first_room_of_agilest".equals(enterEvent.getRoomJid().getName()) &&
+			if ("first_room_of_agilest".equals(enterEvent.getRoomJid().getNode()) &&
 					"dongger".equals(enterEvent.getEventObject().getNick()) &&
 					enterEvent.getEventObject().getSessions() == 1) {
 				
@@ -234,7 +234,7 @@ public class DonggerHome extends StandardClient {
 			}
 		} else if (event instanceof RoomMessageEvent) {
 			RoomMessageEvent messageEvent = ((RoomMessageEvent)event);
-			if ("first_room_of_agilest".equals(messageEvent.getRoomJid().getName()) &&
+			if ("first_room_of_agilest".equals(messageEvent.getRoomJid().getNode()) &&
 					"agilest".equals(messageEvent.getEventObject().getNick())) {
 			
 				IRoom room = muc.getRoom(new JabberId("first_room_of_agilest", mucHost.getDomain()));

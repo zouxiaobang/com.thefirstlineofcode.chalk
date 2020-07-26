@@ -64,7 +64,7 @@ public class DonggerOffice extends StandardClient {
 		if (event instanceof InvitationEvent) {
 			Invitation invitation = (Invitation)event.getEventObject();
 			
-			if (!invitation.getInvitor().getName().equals("smartsheep"))
+			if (!invitation.getInvitor().getNode().equals("smartsheep"))
 				return;
 			
 			try {
@@ -82,7 +82,7 @@ public class DonggerOffice extends StandardClient {
 			}
 		} else if (event instanceof RoomMessageEvent) {
 			RoomMessageEvent messageEvent = ((RoomMessageEvent)event);
-			if ("room0605".equals(messageEvent.getRoomJid().getName()) &&
+			if ("room0605".equals(messageEvent.getRoomJid().getNode()) &&
 					"smartsheep".equals(messageEvent.getEventObject().getNick())) {	
 				try {
 					Thread.sleep(200);

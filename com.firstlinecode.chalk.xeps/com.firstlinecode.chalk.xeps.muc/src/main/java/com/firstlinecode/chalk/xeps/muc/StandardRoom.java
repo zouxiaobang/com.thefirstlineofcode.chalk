@@ -98,7 +98,7 @@ class StandardRoom implements IRoom, IRoomListener {
 			@Override
 			public void trigger(IUnidirectionalStream<Presence> stream) {
 				Presence presence = new Presence();
-				presence.setTo(new JabberId(roomJid.getName(), roomJid.getDomain(), nick));
+				presence.setTo(new JabberId(roomJid.getNode(), roomJid.getDomain(), nick));
 				presence.setObject(new Muc());
 				
 				stream.send(presence);
@@ -157,7 +157,7 @@ class StandardRoom implements IRoom, IRoomListener {
 
 	@Override
 	public String enter(final String nick, final String password) throws ErrorException {
-		final JabberId newOccupantJid = new JabberId(roomJid.getName(), roomJid.getDomain(), nick);
+		final JabberId newOccupantJid = new JabberId(roomJid.getNode(), roomJid.getDomain(), nick);
 		SyncOperationTemplate<Presence, String> template = new SyncOperationTemplate<>(chatServices);
 		this.nick = template.execute(new ISyncPresenceOperation<String>() {
 
@@ -169,7 +169,7 @@ class StandardRoom implements IRoom, IRoomListener {
 				}
 				
 				Presence presence = new Presence();
-				presence.setTo(new JabberId(roomJid.getName(), roomJid.getDomain(), nick));
+				presence.setTo(new JabberId(roomJid.getNode(), roomJid.getDomain(), nick));
 				presence.setObject(muc);
 				
 				stream.send(presence);
@@ -224,7 +224,7 @@ class StandardRoom implements IRoom, IRoomListener {
 			@Override
 			public void trigger(IUnidirectionalStream<Presence> stream) {
 				Presence presence = new Presence(Presence.Type.UNAVAILABLE);
-				presence.setTo(new JabberId(roomJid.getName(), roomJid.getDomain(), nick));
+				presence.setTo(new JabberId(roomJid.getNode(), roomJid.getDomain(), nick));
 				stream.send(presence);
 			}
 
@@ -237,7 +237,7 @@ class StandardRoom implements IRoom, IRoomListener {
 			public boolean isResultReceived(Presence presence) {
 				if (presence.getType() != Presence.Type.UNAVAILABLE ||
 						presence.getFrom() == null ||
-						!presence.getFrom().equals(new JabberId(roomJid.getName(), roomJid.getDomain(), nick))) {
+						!presence.getFrom().equals(new JabberId(roomJid.getNode(), roomJid.getDomain(), nick))) {
 					return false;
 				}
 				
@@ -662,7 +662,7 @@ class StandardRoom implements IRoom, IRoomListener {
 			throw new IllegalStateException("Enter the room before sending groupchat private message.");
 		}
 		
-		message.setTo(new JabberId(roomJid.getName(), roomJid.getDomain(), nick));
+		message.setTo(new JabberId(roomJid.getNode(), roomJid.getDomain(), nick));
 		
 		chatServices.getMessageService().send(message);
 	}
@@ -673,14 +673,14 @@ class StandardRoom implements IRoom, IRoomListener {
 			throw new IllegalStateException("Enter the room before changing nick.");
 		}
 		
-		final JabberId newOccupantJid = new JabberId(roomJid.getName(), roomJid.getDomain(), newNick);
+		final JabberId newOccupantJid = new JabberId(roomJid.getNode(), roomJid.getDomain(), newNick);
 		SyncOperationTemplate<Presence, String> template = new SyncOperationTemplate<>(chatServices);
 		this.nick = template.execute(new ISyncPresenceOperation<String>() {
 
 			@Override
 			public void trigger(IUnidirectionalStream<Presence> stream) {
 				Presence presence = new Presence();
-				presence.setTo(new JabberId(roomJid.getName(), roomJid.getDomain(), newNick));
+				presence.setTo(new JabberId(roomJid.getNode(), roomJid.getDomain(), newNick));
 				
 				stream.send(presence);
 			}
@@ -723,7 +723,7 @@ class StandardRoom implements IRoom, IRoomListener {
 	@Override
 	public void send(Presence presence) {
 		presence.setFrom(chatServices.getStream().getJid());
-		presence.setTo(new JabberId(roomJid.getName(), roomJid.getDomain(), nick));
+		presence.setTo(new JabberId(roomJid.getNode(), roomJid.getDomain(), nick));
 		
 		chatServices.getPresenceService().send(presence);
 	}

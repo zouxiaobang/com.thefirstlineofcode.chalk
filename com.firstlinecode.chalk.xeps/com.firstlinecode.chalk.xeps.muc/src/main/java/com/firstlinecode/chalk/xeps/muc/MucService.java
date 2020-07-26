@@ -217,7 +217,7 @@ public class MucService implements IMucService, IMessageListener, IPresenceListe
 
 	@Override
 	public int getTotalNumberOfRooms(final JabberId hostJid) throws ErrorException {
-		if (hostJid.getName() != null || hostJid.getResource() != null) {
+		if (hostJid.getNode() != null || hostJid.getResource() != null) {
 			throw new IllegalArgumentException("Need a domain only jid.");
 		}
 		
@@ -244,7 +244,7 @@ public class MucService implements IMucService, IMessageListener, IPresenceListe
 
 	@Override
 	public IRoom createInstantRoom(JabberId roomJid, String nick) throws ErrorException {
-		if (roomJid.getName() == null || roomJid.getResource() != null) {
+		if (roomJid.getNode() == null || roomJid.getResource() != null) {
 			throw new IllegalArgumentException("Room jid must be a bare jid.");
 		}
 		
@@ -257,7 +257,7 @@ public class MucService implements IMucService, IMessageListener, IPresenceListe
 	@Override
 	public <T> IRoom createReservedRoom(JabberId roomJid, String nick, IRoomConfigurator configurator)
 				throws ErrorException {
-		if (roomJid.getName() == null || roomJid.getResource() != null) {
+		if (roomJid.getNode() == null || roomJid.getResource() != null) {
 			throw new IllegalArgumentException("Room jid must be a bare jid.");
 		}
 		

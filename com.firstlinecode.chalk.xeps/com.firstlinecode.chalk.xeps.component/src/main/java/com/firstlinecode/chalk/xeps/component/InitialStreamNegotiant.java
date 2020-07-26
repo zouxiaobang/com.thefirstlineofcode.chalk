@@ -25,7 +25,7 @@ public class InitialStreamNegotiant extends AbstractStreamNegotiant {
 	@Override
 	protected void doNegotiate(INegotiationContext context) throws ConnectionException, NegotiationException {
 		JabberId componentJid = JabberId.parse(componentName);
-		if (componentJid.getResource() != null && componentJid.getName() != null) {
+		if (componentJid.getResource() != null && componentJid.getNode() != null) {
 			throw new IllegalArgumentException(String.format("Illegal component jid: %s.", componentJid));
 		}
 		
