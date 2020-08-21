@@ -186,7 +186,8 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
                 }
                 
                 if (waitFailureAction) {
-                	throw new ConnectionException(ConnectionException.Type.READ_RESPONSE_TIMEOUT);
+                	abortSasl = true;
+                	waitFailureAction = false;
                 }
             }
         } catch (InterruptedException e) {
