@@ -13,5 +13,6 @@ public interface IIqService {
 	void addListener(Protocol protocol, IIqListener listener);
 	void removeListener(Protocol protocol);
 	
+	IIqListener getListener(Protocol protocol);
 	List<IIqListener> getListeners();
 }

@@ -346,6 +346,11 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 			return Collections.unmodifiableList(iqListeners);
 		}
 		
+		@Override
+		public IIqListener getListener(Protocol protocol) {
+			return protocolToListeners.get(protocol);
+		}
+		
 	}
 	
 	private class PresenceService implements IPresenceService {
