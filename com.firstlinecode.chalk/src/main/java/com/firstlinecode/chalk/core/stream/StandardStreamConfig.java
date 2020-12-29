@@ -10,7 +10,7 @@ public class StandardStreamConfig extends StreamConfig {
 	}
 	
 	private static KeepaliveConfig createDefaultKeepaliveConfig() {
-		return new KeepaliveConfig(30, 120);
+		return new KeepaliveConfig();
 	}
 
 	public StandardStreamConfig(String host, int port, KeepaliveConfig keepaliveConfig) {
