@@ -6,9 +6,9 @@ import com.firstlinecode.basalt.protocol.core.ProtocolChain;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
-import com.firstlinecode.chalk.IChatSystem;
-import com.firstlinecode.chalk.IPlugin;
 import com.firstlinecode.basalt.xeps.delay.Delay;
+import com.firstlinecode.chalk.core.IChatSystem;
+import com.firstlinecode.chalk.core.IPlugin;
 
 public class DelayPlugin implements IPlugin {
 

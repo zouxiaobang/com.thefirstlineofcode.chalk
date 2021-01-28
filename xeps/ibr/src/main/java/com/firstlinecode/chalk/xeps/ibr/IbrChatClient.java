@@ -8,7 +8,7 @@ import javax.security.cert.X509Certificate;
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
 import com.firstlinecode.basalt.protocol.core.stream.Features;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
-import com.firstlinecode.chalk.AbstractChatClient;
+import com.firstlinecode.chalk.core.AbstractChatClient;
 import com.firstlinecode.chalk.core.stream.AbstractStreamer;
 import com.firstlinecode.chalk.core.stream.IStreamNegotiant;
 import com.firstlinecode.chalk.core.stream.IStreamer;

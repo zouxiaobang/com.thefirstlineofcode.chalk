@@ -1,6 +1,6 @@
 package com.firstlinecode.chalk.examples;
 
-import com.firstlinecode.chalk.StandardChatClient;
+import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.IConnectionListener;
 

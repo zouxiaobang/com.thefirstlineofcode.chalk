@@ -1,6 +1,6 @@
 package com.firstlinecode.chalk.examples;
 
-import com.firstlinecode.chalk.StandardChatClient;
+import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 
 public abstract class MultiClientsExample extends AbstractExample {

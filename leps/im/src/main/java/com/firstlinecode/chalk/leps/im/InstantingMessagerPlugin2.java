@@ -14,8 +14,8 @@ import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
 import com.firstlinecode.basalt.oxm.parsers.SimpleObjectParserFactory;
-import com.firstlinecode.chalk.IChatSystem;
-import com.firstlinecode.chalk.IPlugin;
+import com.firstlinecode.chalk.core.IChatSystem;
+import com.firstlinecode.chalk.core.IPlugin;
 import com.firstlinecode.chalk.im.InstantingMessagerPlugin;
 import com.firstlinecode.chalk.xeps.delay.DelayPlugin;
 

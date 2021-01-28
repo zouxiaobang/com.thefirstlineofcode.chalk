@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk;
+package com.firstlinecode.chalk.core;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,8 +14,6 @@ import com.firstlinecode.basalt.protocol.core.stanza.error.RemoteServerTimeout;
 import com.firstlinecode.basalt.protocol.core.stanza.error.StanzaError;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence;
-import com.firstlinecode.chalk.core.ErrorException;
-import com.firstlinecode.chalk.core.IErrorListener;
 import com.firstlinecode.chalk.core.stanza.IIqListener;
 import com.firstlinecode.chalk.im.stanza.IMessageListener;
 import com.firstlinecode.chalk.im.stanza.IPresenceListener;

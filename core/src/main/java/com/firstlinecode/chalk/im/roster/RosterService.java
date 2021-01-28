@@ -10,9 +10,9 @@ import com.firstlinecode.basalt.protocol.core.stanza.Iq;
 import com.firstlinecode.basalt.protocol.core.stanza.error.StanzaError;
 import com.firstlinecode.basalt.protocol.im.roster.Item;
 import com.firstlinecode.basalt.protocol.im.roster.Roster;
-import com.firstlinecode.chalk.IChatServices;
-import com.firstlinecode.chalk.ITask;
-import com.firstlinecode.chalk.IUnidirectionalStream;
+import com.firstlinecode.chalk.core.IChatServices;
+import com.firstlinecode.chalk.core.ITask;
+import com.firstlinecode.chalk.core.IUnidirectionalStream;
 import com.firstlinecode.chalk.core.stanza.IIqListener;
 import com.firstlinecode.chalk.im.roster.RosterError.Reason;
 

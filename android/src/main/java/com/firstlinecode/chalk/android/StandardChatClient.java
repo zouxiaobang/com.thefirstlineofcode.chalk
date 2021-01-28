@@ -14,7 +14,7 @@ import javax.security.cert.X509Certificate;
  * @date 2017/10/26
  * @option 适用于Android Client的StandardChatClient
  */
-public class StandardChatClient extends com.firstlinecode.chalk.StandardChatClient {
+public class StandardChatClient extends com.firstlinecode.chalk.core.StandardChatClient {
     public StandardChatClient(StandardStreamConfig streamConfig) {
         super(streamConfig);
     }

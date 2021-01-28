@@ -3,9 +3,9 @@ package com.firstlinecode.chalk.xeps.rsm;
 import java.util.Properties;
 
 import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
-import com.firstlinecode.chalk.IChatSystem;
-import com.firstlinecode.chalk.IPlugin;
 import com.firstlinecode.basalt.xeps.rsm.Set;
+import com.firstlinecode.chalk.core.IChatSystem;
+import com.firstlinecode.chalk.core.IPlugin;
 
 public class RsmPlugin implements IPlugin {
 

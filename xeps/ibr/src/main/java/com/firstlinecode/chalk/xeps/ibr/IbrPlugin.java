@@ -2,8 +2,8 @@ package com.firstlinecode.chalk.xeps.ibr;
 
 import java.util.Properties;
 
-import com.firstlinecode.chalk.IChatSystem;
-import com.firstlinecode.chalk.IPlugin;
+import com.firstlinecode.chalk.core.IChatSystem;
+import com.firstlinecode.chalk.core.IPlugin;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 

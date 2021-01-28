@@ -1,6 +1,6 @@
 package com.firstlinecode.chalk.xeps.ping;
 
-import com.firstlinecode.chalk.IChatServices;
+import com.firstlinecode.chalk.core.IChatServices;
 
 public class PingImpl implements IPing {
 	private static final int DEFAULT_TIMEOUT = 2 * 1000;

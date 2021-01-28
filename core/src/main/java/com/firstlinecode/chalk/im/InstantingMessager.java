@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence;
-import com.firstlinecode.chalk.IChatServices;
+import com.firstlinecode.chalk.core.IChatServices;
 import com.firstlinecode.chalk.im.roster.IRosterService;
 import com.firstlinecode.chalk.im.roster.RosterService;
 import com.firstlinecode.chalk.im.stanza.IMessageListener;

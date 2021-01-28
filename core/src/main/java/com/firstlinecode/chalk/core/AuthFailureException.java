@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk;
+package com.firstlinecode.chalk.core;
 
 public class AuthFailureException extends Exception {
 	private static final long serialVersionUID = 8052873857188360437L;

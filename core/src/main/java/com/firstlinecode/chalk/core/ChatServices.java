@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk;
+package com.firstlinecode.chalk.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,9 +30,7 @@ import com.firstlinecode.basalt.protocol.core.stanza.error.RemoteServerTimeout;
 import com.firstlinecode.basalt.protocol.core.stanza.error.StanzaError;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence;
-import com.firstlinecode.chalk.IChatClient.State;
-import com.firstlinecode.chalk.core.ErrorException;
-import com.firstlinecode.chalk.core.IErrorListener;
+import com.firstlinecode.chalk.core.IChatClient.State;
 import com.firstlinecode.chalk.core.stanza.IIqListener;
 import com.firstlinecode.chalk.core.stanza.IStanzaListener;
 import com.firstlinecode.chalk.core.stream.IStream;

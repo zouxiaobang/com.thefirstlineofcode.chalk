@@ -2,10 +2,10 @@ package com.firstlinecode.chalk.xeps.ping;
 
 import com.firstlinecode.basalt.protocol.core.stanza.Iq;
 import com.firstlinecode.basalt.protocol.core.stanza.error.RemoteServerTimeout;
-import com.firstlinecode.chalk.IChatServices;
-import com.firstlinecode.chalk.ISyncTask;
-import com.firstlinecode.chalk.IUnidirectionalStream;
 import com.firstlinecode.chalk.core.ErrorException;
+import com.firstlinecode.chalk.core.IChatServices;
+import com.firstlinecode.chalk.core.ISyncTask;
+import com.firstlinecode.chalk.core.IUnidirectionalStream;
 import com.firstlinecode.basalt.xeps.ping.Ping;
 
 public class TaskModePing implements IPing {

@@ -12,7 +12,7 @@ import com.firstlinecode.basalt.protocol.core.stanza.Stanza;
 import com.firstlinecode.basalt.protocol.datetime.DateTime;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence;
-import com.firstlinecode.chalk.IChatServices;
+import com.firstlinecode.chalk.core.IChatServices;
 import com.firstlinecode.chalk.core.stanza.IIqListener;
 import com.firstlinecode.chalk.im.roster.IRosterService;
 import com.firstlinecode.chalk.im.roster.RosterService;

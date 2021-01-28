@@ -3,8 +3,8 @@ package com.firstlinecode.chalk.examples;
 import org.bson.Document;
 
 import com.firstlinecode.basalt.protocol.core.JabberId;
-import com.firstlinecode.chalk.IChatClient;
-import com.firstlinecode.chalk.StandardChatClient;
+import com.firstlinecode.chalk.core.IChatClient;
+import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;

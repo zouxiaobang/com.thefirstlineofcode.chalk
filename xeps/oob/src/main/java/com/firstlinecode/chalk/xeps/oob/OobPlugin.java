@@ -3,10 +3,10 @@ package com.firstlinecode.chalk.xeps.oob;
 import java.util.Properties;
 
 import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
-import com.firstlinecode.chalk.IChatSystem;
-import com.firstlinecode.chalk.IPlugin;
 import com.firstlinecode.basalt.xeps.oob.IqOob;
 import com.firstlinecode.basalt.xeps.oob.XOob;
+import com.firstlinecode.chalk.core.IChatSystem;
+import com.firstlinecode.chalk.core.IPlugin;
 
 public class OobPlugin implements IPlugin {
 

@@ -6,7 +6,7 @@ import com.firstlinecode.basalt.protocol.im.roster.Roster;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence.Show;
-import com.firstlinecode.chalk.AuthFailureException;
+import com.firstlinecode.chalk.core.AuthFailureException;
 import com.firstlinecode.chalk.core.ErrorException;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.demo.Demo;

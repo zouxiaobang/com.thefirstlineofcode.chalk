@@ -3,11 +3,11 @@ package com.firstlinecode.chalk.xeps.ping;
 import com.firstlinecode.basalt.protocol.core.stanza.Iq;
 import com.firstlinecode.basalt.protocol.core.stanza.error.RemoteServerTimeout;
 import com.firstlinecode.basalt.protocol.core.stanza.error.StanzaError;
-import com.firstlinecode.chalk.IChatServices;
-import com.firstlinecode.chalk.ISyncIqOperation;
-import com.firstlinecode.chalk.IUnidirectionalStream;
-import com.firstlinecode.chalk.SyncOperationTemplate;
 import com.firstlinecode.chalk.core.ErrorException;
+import com.firstlinecode.chalk.core.IChatServices;
+import com.firstlinecode.chalk.core.ISyncIqOperation;
+import com.firstlinecode.chalk.core.IUnidirectionalStream;
+import com.firstlinecode.chalk.core.SyncOperationTemplate;
 import com.firstlinecode.basalt.xeps.ping.Ping;
 
 public class LegacyModePing implements IPing {

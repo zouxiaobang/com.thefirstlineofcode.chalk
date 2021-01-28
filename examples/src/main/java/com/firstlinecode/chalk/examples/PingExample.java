@@ -1,8 +1,8 @@
 package com.firstlinecode.chalk.examples;
 
-import com.firstlinecode.chalk.AuthFailureException;
-import com.firstlinecode.chalk.IChatClient;
-import com.firstlinecode.chalk.StandardChatClient;
+import com.firstlinecode.chalk.core.AuthFailureException;
+import com.firstlinecode.chalk.core.IChatClient;
+import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.core.stream.UsernamePasswordToken;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.xeps.ping.IPing;

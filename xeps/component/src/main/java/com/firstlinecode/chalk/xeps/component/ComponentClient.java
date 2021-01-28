@@ -3,8 +3,8 @@ package com.firstlinecode.chalk.xeps.component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.firstlinecode.chalk.AbstractChatClient;
-import com.firstlinecode.chalk.AuthFailureException;
+import com.firstlinecode.chalk.core.AbstractChatClient;
+import com.firstlinecode.chalk.core.AuthFailureException;
 import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
 import com.firstlinecode.chalk.core.stream.IStream;
 import com.firstlinecode.chalk.core.stream.IStreamer;

@@ -2,10 +2,10 @@ package com.firstlinecode.chalk.xeps.disco;
 
 import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.protocol.core.stanza.Iq;
-import com.firstlinecode.chalk.IChatServices;
-import com.firstlinecode.chalk.ISyncTask;
-import com.firstlinecode.chalk.IUnidirectionalStream;
 import com.firstlinecode.chalk.core.ErrorException;
+import com.firstlinecode.chalk.core.IChatServices;
+import com.firstlinecode.chalk.core.ISyncTask;
+import com.firstlinecode.chalk.core.IUnidirectionalStream;
 import com.firstlinecode.basalt.xeps.disco.DiscoInfo;
 import com.firstlinecode.basalt.xeps.disco.DiscoItems;
 import com.firstlinecode.basalt.xeps.disco.Identity;

@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk;
+package com.firstlinecode.chalk.core;
 
 import com.firstlinecode.chalk.core.stream.IStream;
 

@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk;
+package com.firstlinecode.chalk.core;
 
 public interface IOrder {
 	public static final int ORDER_MIN = 0;

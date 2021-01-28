@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.firstlinecode.basalt.protocol.core.JabberId;
-import com.firstlinecode.chalk.IChatServices;
+import com.firstlinecode.chalk.core.IChatServices;
 import com.firstlinecode.chalk.im.roster.IRosterService;
 import com.firstlinecode.chalk.im.subscription.ISubscriptionListener;
 import com.firstlinecode.chalk.im.subscription.ISubscriptionService;

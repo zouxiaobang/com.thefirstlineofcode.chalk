@@ -8,7 +8,7 @@ import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.protocol.im.roster.Roster;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence;
-import com.firstlinecode.chalk.StandardChatClient;
+import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.im.IInstantingMessager;
 import com.firstlinecode.chalk.im.InstantingMessagerPlugin;
 import com.firstlinecode.chalk.im.roster.IRosterListener;

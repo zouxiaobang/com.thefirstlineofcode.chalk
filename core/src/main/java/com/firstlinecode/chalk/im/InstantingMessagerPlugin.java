@@ -7,9 +7,9 @@ import com.firstlinecode.basalt.protocol.core.stanza.Iq;
 import com.firstlinecode.basalt.protocol.im.roster.Roster;
 import com.firstlinecode.basalt.protocol.im.roster.RosterParser;
 import com.firstlinecode.basalt.protocol.im.roster.RosterTranslatorFactory;
+import com.firstlinecode.chalk.core.IChatSystem;
+import com.firstlinecode.chalk.core.IPlugin;
 import com.firstlinecode.basalt.oxm.annotation.AnnotatedParserFactory;
-import com.firstlinecode.chalk.IChatSystem;
-import com.firstlinecode.chalk.IPlugin;
 
 public class InstantingMessagerPlugin implements IPlugin {
 

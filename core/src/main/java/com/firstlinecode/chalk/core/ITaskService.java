@@ -1,7 +1,6 @@
-package com.firstlinecode.chalk;
+package com.firstlinecode.chalk.core;
 
 import com.firstlinecode.basalt.protocol.core.stanza.Stanza;
-import com.firstlinecode.chalk.core.ErrorException;
 
 public interface ITaskService {
 	void execute(ITask<?> task);
