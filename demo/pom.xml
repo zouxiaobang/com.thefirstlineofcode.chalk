@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.firstlinecode.chalk</groupId>
+		<artifactId>com.firstlinecode.chalk.parent</artifactId>
+		<version>0.2.0.RELEASE</version>
+	</parent>
+
+	<groupId>com.firstlinecode.chalk</groupId>
+	<artifactId>chalk-demo</artifactId>
+	<name>Chalk demo</name>
+	<packaging>jar</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+			</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk</groupId>
+			<artifactId>chalk-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<artifactId>chalk-xeps-ibr</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk.leps</groupId>
+			<artifactId>chalk-leps-im</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<artifactId>chalk-xeps-ping</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<artifactId>chalk-xeps-muc</artifactId>
+		</dependency>
+	</dependencies>
+	
+</project>
+

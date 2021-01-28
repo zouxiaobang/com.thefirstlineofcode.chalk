@@ -17,12 +17,12 @@
 	</properties>
 
 	<modules>
-		<module>com.firstlinecode.chalk</module>
-		<module>com.firstlinecode.chalk.xeps</module>
-		<module>com.firstlinecode.chalk.leps</module>
-		<module>com.firstlinecode.chalk.demo</module>
-		<module>com.firstlinecode.chalk.examples</module>
-		<module>com.firstlinecode.chalk.android</module>
+		<module>core</module>
+		<module>xeps</module>
+		<module>leps</module>
+		<module>demo</module>
+		<module>examples</module>
+		<module>android</module>
 	</modules>
 
 	<build>
@@ -135,125 +135,125 @@
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt</groupId>
-				<artifactId>com.firstlinecode.basalt.oxm</artifactId>
+				<artifactId>basalt-oxm</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt</groupId>
-				<artifactId>com.firstlinecode.basalt.protocol.im</artifactId>
+				<artifactId>basalt-xmpp-im</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.ping</artifactId>
+				<artifactId>basalt-xeps-ping</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.disco</artifactId>
+				<artifactId>basalt-xeps-disco</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.muc</artifactId>
+				<artifactId>basalt-xeps-muc</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.leps</groupId>
-				<artifactId>com.firstlinecode.basalt.leps.im</artifactId>
+				<artifactId>basalt-leps-im</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.rsm</artifactId>
+				<artifactId>basalt-xeps-rsm</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.xdata</artifactId>
+				<artifactId>basalt-xeps-xdata</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.delay</artifactId>
+				<artifactId>basalt-xeps-delay</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.address</artifactId>
+				<artifactId>basalt-xeps-address</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.oob</artifactId>
+				<artifactId>basalt-xeps-oob</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.basalt.xeps</groupId>
-				<artifactId>com.firstlinecode.basalt.xeps.ibr</artifactId>
+				<artifactId>basalt-xeps-ibr</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>com.firstlinecode.chalk</groupId>
-				<artifactId>com.firstlinecode.chalk</artifactId>
+				<artifactId>chalk-core</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.disco</artifactId>
+				<artifactId>chalk-xeps-disco</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.ping</artifactId>
+				<artifactId>chalk-xeps-ping</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.rsm</artifactId>
-				<version>${chalk.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.xdata</artifactId>
+				<artifactId>chalk-xeps-rsm</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.delay</artifactId>
+				<artifactId>chalk-xeps-xdata</artifactId>
+				<version>${chalk.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<artifactId>chalk-xeps-delay</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.address</artifactId>
+				<artifactId>chalk-xeps-address</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.muc</artifactId>
+				<artifactId>chalk-xeps-muc</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.oob</artifactId>
+				<artifactId>chalk-xeps-oob</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.ibr</artifactId>
+				<artifactId>chalk-xeps-ibr</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.leps</groupId>
-				<artifactId>com.firstlinecode.chalk.leps.im</artifactId>
+				<artifactId>chalk-leps-im</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.firstlinecode.chalk.xeps</groupId>
-				<artifactId>com.firstlinecode.chalk.xeps.component</artifactId>
+				<artifactId>chalk-xeps-component</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 		</dependencies>
