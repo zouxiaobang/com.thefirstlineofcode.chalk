@@ -11,6 +11,7 @@ import com.firstlinecode.chalk.network.IConnection;
 import com.firstlinecode.chalk.network.IConnectionListener;
 
 
+@SuppressWarnings("deprecation")
 public class NegotiationContext implements INegotiationContext {
 	private IConnection connection;
 	private Map<Object, Object> attributes;

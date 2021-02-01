@@ -21,6 +21,7 @@ import com.firstlinecode.chalk.core.stream.StandardStreamer;
 import com.firstlinecode.chalk.core.stream.negotiants.InitialStreamNegotiant;
 import com.firstlinecode.chalk.network.ConnectionException;
 
+@SuppressWarnings("deprecation")
 public class TlsNegotiant extends InitialStreamNegotiant {
 	protected static final int DEFAULT_TLS_PROCESS_TIMEOUT = 1000 * 15;
 	protected static IOxmFactory oxmFactory = OxmService.createStreamOxmFactory();

@@ -16,6 +16,7 @@ import com.firstlinecode.chalk.core.stream.negotiants.sasl.SaslError;
 import com.firstlinecode.chalk.core.stream.negotiants.tls.IPeerCertificateTruster;
 import com.firstlinecode.chalk.network.ConnectionException;
 
+@SuppressWarnings("deprecation")
 public class StandardChatClient extends AbstractChatClient implements IAuthenticationCallback {
 	protected IPeerCertificateTruster peerCertificateTruster;
 	private IAuthenticationFailure authFailure;

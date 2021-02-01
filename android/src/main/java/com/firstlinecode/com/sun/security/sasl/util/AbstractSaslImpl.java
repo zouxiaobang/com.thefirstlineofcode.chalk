@@ -1,8 +1,5 @@
 package com.firstlinecode.com.sun.security.sasl.util;
 
-import com.firstlinecode.javax.sercurity.sasl.Sasl;
-import com.firstlinecode.javax.sercurity.sasl.SaslException;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
@@ -10,7 +7,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import sun.misc.HexDumpEncoder;
+import com.firstlinecode.javax.sercurity.sasl.Sasl;
+import com.firstlinecode.javax.sercurity.sasl.SaslException;
 
 /**
  * @Author: xb.zou

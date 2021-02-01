@@ -2,6 +2,7 @@ package com.firstlinecode.chalk.network;
 
 import javax.security.cert.X509Certificate;
 
+@SuppressWarnings("deprecation")
 public interface IConnection {
 	void connect(String host, int port) throws ConnectionException;
 	void connect(String host, int port, int timeout) throws ConnectionException;
