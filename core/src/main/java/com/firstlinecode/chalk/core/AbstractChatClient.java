@@ -199,7 +199,6 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 			this.properties = properties;
 		}
 		
-		@SuppressWarnings("deprecation")
 		public void register() {
 			if (count == 0) {
 				try {
@@ -253,7 +252,6 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 		return (T)doCreateApiObject(api);
 	}
 
-	@SuppressWarnings("deprecation")
 	private Object doCreateApiObject(Api api) {
 		Object object = null;
 		
@@ -309,7 +307,6 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 		return object;
 	}
 
-	@SuppressWarnings("deprecation")
 	private void setChatServicesToApiObject(Api api, Object object) {
 		Method method = null;
 		try {

@@ -29,7 +29,6 @@ public class Main {
 		new Main().run(args);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void run(String[] args) throws Exception {
 		Options options;
 		try {

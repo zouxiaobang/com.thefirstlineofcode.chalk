@@ -41,7 +41,6 @@ import com.firstlinecode.basalt.protocol.Constants;
 import com.firstlinecode.basalt.protocol.core.ProtocolException;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 
-@SuppressWarnings("deprecation")
 public class SocketConnection implements IConnection, HandshakeCompletedListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(SocketConnection.class);
