@@ -40,7 +40,7 @@ public class Stream implements IStream, IConnectionListener {
 	
 	private ExecutorService threadPool;
 	
-	private IKeepaliveManager keepaliveManager;
+	private IKeepAliveManager keepaliveManager;
 	
 	public Stream(JabberId jid, StreamConfig streamConfig, IConnection connection) {
 		this(jid, streamConfig, connection, null);
@@ -61,15 +61,15 @@ public class Stream implements IStream, IConnectionListener {
 		
 		threadPool = Executors.newCachedThreadPool();
 		
-		keepaliveManager = new KeepaliveManager(getKeepaliveConfig());
+		keepaliveManager = new KeepAliveManager(getKeepaliveConfig());
 		keepaliveManager.start(this);
 	}
 
-	private KeepaliveConfig getKeepaliveConfig() {
+	private KeepAliveConfig getKeepaliveConfig() {
 		if (streamConfig instanceof StandardStreamConfig)
-			return ((StandardStreamConfig)streamConfig).getKeepaliveConfig();
+			return ((StandardStreamConfig)streamConfig).getKeepAliveConfig();
 		
-		return new KeepaliveConfig();
+		return new KeepAliveConfig();
 	}
 	
 	@Override
@@ -340,7 +340,7 @@ public class Stream implements IStream, IConnectionListener {
 	}
 
 	@Override
-	public IKeepaliveManager getKeepaliveManager() {
+	public IKeepAliveManager getKeepaliveManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}

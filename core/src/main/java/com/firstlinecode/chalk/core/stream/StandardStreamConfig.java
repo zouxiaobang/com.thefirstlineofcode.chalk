@@ -3,20 +3,20 @@ package com.firstlinecode.chalk.core.stream;
 public class StandardStreamConfig extends StreamConfig {
 	private String resource;
 	private boolean tlsPreferred;
-	private KeepaliveConfig keepaliveConfig;
+	private KeepAliveConfig keepAliveConfig;
 	
 	public StandardStreamConfig(String host, int port) {
-		this(host, port, createDefaultKeepaliveConfig());
+		this(host, port, createDefaultKeepAliveConfig());
 	}
 	
-	private static KeepaliveConfig createDefaultKeepaliveConfig() {
-		return new KeepaliveConfig();
+	private static KeepAliveConfig createDefaultKeepAliveConfig() {
+		return new KeepAliveConfig();
 	}
 
-	public StandardStreamConfig(String host, int port, KeepaliveConfig keepaliveConfig) {
+	public StandardStreamConfig(String host, int port, KeepAliveConfig keepAliveConfig) {
 		super(host, port);
 		
-		this.keepaliveConfig = keepaliveConfig;
+		this.keepAliveConfig = keepAliveConfig;
 		this.resource = null;
 		this.tlsPreferred = false;
 	}
@@ -37,8 +37,8 @@ public class StandardStreamConfig extends StreamConfig {
 		this.resource = resource;
 	}
 	
-	public KeepaliveConfig getKeepaliveConfig() {
-		return keepaliveConfig;
+	public KeepAliveConfig getKeepAliveConfig() {
+		return keepAliveConfig;
 	}
 
 }

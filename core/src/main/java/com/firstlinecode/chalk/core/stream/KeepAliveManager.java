@@ -1,23 +1,23 @@
 package com.firstlinecode.chalk.core.stream;
 
-public class KeepaliveManager implements IKeepaliveManager {
-	private KeepaliveConfig config;
+public class KeepAliveManager implements IKeepAliveManager {
+	private KeepAliveConfig config;
 	private IStream stream;
 	private boolean started;
 	
-	public KeepaliveManager(KeepaliveConfig config) {
+	public KeepAliveManager(KeepAliveConfig config) {
 		this.config = config;
 		
 		started = false;
 	}
 
 	@Override
-	public KeepaliveConfig getConfig() {
+	public KeepAliveConfig getConfig() {
 		return config;
 	}
 
 	@Override
-	public void changeConfig(KeepaliveConfig config) {
+	public void changeConfig(KeepAliveConfig config) {
 		if (started)
 			stop();
 		

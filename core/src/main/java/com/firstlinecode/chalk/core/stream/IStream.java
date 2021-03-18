@@ -40,5 +40,5 @@ public interface IStream {
 	
 	IConnection getConnection();
 	
-	IKeepaliveManager getKeepaliveManager();
+	IKeepAliveManager getKeepaliveManager();
 }
