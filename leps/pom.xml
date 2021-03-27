@@ -12,7 +12,7 @@
 	<groupId>com.firstlinecode.chalk</groupId>
 	<artifactId>leps</artifactId>
 	<packaging>pom</packaging>
-	<name>XMPP Client LEPs Libraries</name>
+	<name>Chalk XMPP Client LEPs Libraries</name>
 
 	<modules>
 		<module>im</module>

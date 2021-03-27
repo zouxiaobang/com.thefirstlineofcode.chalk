@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-address</artifactId>
-	<name>XEPs address</name>
+	<name>Chalk XEPs Address</name>
 	
 	<dependencies>
 		<dependency>

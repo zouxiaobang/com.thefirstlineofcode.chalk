@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-delay</artifactId>
-	<name>XEPs delay</name>
+	<name>Chalk XEPs Delay</name>
 	
 	<dependencies>
 		<dependency>

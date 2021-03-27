@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk</groupId>
 	<artifactId>chalk-demo</artifactId>
-	<name>Chalk demo</name>
+	<name>Chalk Demo</name>
 	<packaging>jar</packaging>
 	
 	<dependencies>

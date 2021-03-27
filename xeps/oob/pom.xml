@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-oob</artifactId>
-	<name>XEPs oob</name>
+	<name>Chalk XEPs OOB</name>
 	
 	<dependencies>
 		<dependency>

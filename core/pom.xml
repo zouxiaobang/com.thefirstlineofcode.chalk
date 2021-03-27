@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk</groupId>
 	<artifactId>chalk-core</artifactId>
-	<name>Chalk core library</name>
+	<name>Chalk Core Library</name>
 	
 	<dependencies>
 		<dependency>

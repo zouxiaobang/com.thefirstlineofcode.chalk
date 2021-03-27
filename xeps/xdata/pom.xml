@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-xdata</artifactId>
-	<name>XEPs xdata</name>
+	<name>Chalk XEPs XData</name>
 	
 	<dependencies>
 		<dependency>

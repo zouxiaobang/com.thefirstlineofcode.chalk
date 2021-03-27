@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-rsm</artifactId>
-	<name>XEPs rsm</name>
+	<name>Chalk XEPs RSM</name>
 	
 	<dependencies>
 		<dependency>

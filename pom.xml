@@ -8,7 +8,7 @@
 	<artifactId>com.firstlinecode.chalk.parent</artifactId>
 	<packaging>pom</packaging>
 	<version>0.2.0.RELEASE</version>
-	<name>XMPP Client Libraries</name>
+	<name>Chalk XMPP Client Libraries</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

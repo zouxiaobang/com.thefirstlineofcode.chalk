@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-ibr</artifactId>
-	<name>XEPs ibr</name>
+	<name>Chalk XEPs IBR</name>
 	
 	<dependencies>
 		<dependency>

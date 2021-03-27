@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-ping</artifactId>
-	<name>XEPs ping</name>
+	<name>Chalk XEPs Ping</name>
 	
 	<dependencies>
 		<dependency>

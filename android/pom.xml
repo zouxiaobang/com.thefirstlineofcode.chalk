@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk</groupId>
 	<artifactId>chalk-android</artifactId>
-	<name>Chalk for android</name>
+	<name>Chalk for Android</name>
 	
 	<dependencies>
 		<dependency>

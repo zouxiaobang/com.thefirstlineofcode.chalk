@@ -13,7 +13,7 @@
 
 	<groupId>com.firstlinecode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-disco</artifactId>
-	<name>XEPs disco</name>
+	<name>Chalk XEPs Disco</name>
 	
 	<dependencies>
 		<dependency>
