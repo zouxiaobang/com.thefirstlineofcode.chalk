@@ -25,7 +25,11 @@ public class KeepAliveConfig {
 	
 	@Override
 	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return super.equals(obj);
+		if (obj instanceof KeepAliveConfig) {
+			KeepAliveConfig other = (KeepAliveConfig)obj;
+			return other.interval == this.interval && other.timeout == this.timeout;
+		}
+		
+		return false;
 	}
 }
