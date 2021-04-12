@@ -97,7 +97,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				bxmppProtocolFactory = createBxmppProtocolConverterFactory();
 				bxmppProtocolConverter = bxmppProtocolFactory.createConverter();
 			} catch (Exception e) {
-				logger.warn("Can't create BXMPP protocol converter. Please add gem bxmpp libraries to your classpath. Ignore to configure message format to binary. Still use XML message format.");
+				logger.warn("Can't create BXMPP protocol converter. Please add gem BXMPP libraries to your classpath. Ignore to configure message format to binary. Still use XML message format.");
 				useBinaryFormat = false;
 			}
 		}
@@ -281,8 +281,16 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 					if (bytes == null)
 						continue;
 					
-					if (logger.isTraceEnabled()) {
-						logger.trace(String.format("Received %d bytes: %s", bytes.length, BinaryUtils.getHexStringFromBytes(bytes)));
+					if (useBinaryFormat) {
+						messagePreprocessor = bxmppProtocolFactory.createPreprocessor();
+						if (logger.isTraceEnabled()) {
+							logger.trace(String.format("Received %d bytes: %s.", bytes.length, BinaryUtils.getHexStringFromBytes(bytes)));
+						}
+					} else {
+						messagePreprocessor = new XmlMessagePreprocessorAdapter();
+						if (logger.isTraceEnabled()) {
+							logger.trace(String.format("Received a string: %s", new String(bytes)));
+						}
 					}
 					
 					String[] messages = processMessages(bytes);
@@ -403,7 +411,11 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 						output.flush();
 						
 						if (logger.isTraceEnabled()) {
-							logger.trace(String.format("Sent %d bytes: %s", bytes.length, BinaryUtils.getHexStringFromBytes(bytes)));
+							if (useBinaryFormat) {								
+								logger.trace(String.format("Sent %d bytes: %s.", bytes.length, BinaryUtils.getHexStringFromBytes(bytes)));
+							} else {
+								logger.trace(String.format("Sent a string: %s", message));								
+							}
 						}
 						
 						for (IConnectionListener listener : listeners) {

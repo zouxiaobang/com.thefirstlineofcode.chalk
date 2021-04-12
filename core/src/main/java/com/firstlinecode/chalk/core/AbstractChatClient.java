@@ -19,6 +19,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.firstlinecode.basalt.oxm.IOxmFactory;
 import com.firstlinecode.basalt.oxm.OxmService;
 import com.firstlinecode.basalt.oxm.parsing.IParserFactory;
@@ -37,6 +40,8 @@ import com.firstlinecode.chalk.network.IConnectionListener;
 
 public abstract class AbstractChatClient implements IChatClient, IConnectionListener,
 		INegotiationListener {
+	private Logger logger = LoggerFactory.getLogger(AbstractChatClient.class);
+	
 	protected StreamConfig streamConfig;
 	protected volatile State state;
 	private volatile IStreamer streamer;
@@ -153,6 +158,9 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 		
 		exception = null;
 		stream = null;
+		
+		if (logger.isDebugEnabled())
+			logger.debug("Chat client is trying to connect to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
 		streamer = createStreamer(streamConfig);
 		streamer.negotiate(authToken);
@@ -400,6 +408,9 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 			}
 			
 			stream = null;
+			
+			if (logger.isDebugEnabled())
+				logger.debug("Chat client has disconnected from XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		}
 		
 		state = State.CLOSED;
@@ -442,6 +453,9 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 		chatServices.start();
 		
 		state = State.CONNECTED;
+		
+		if (logger.isDebugEnabled())
+			logger.debug("Chat client has connected to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
 		for (INegotiationListener listener : negotiationListeners) {
 			listener.done(stream);

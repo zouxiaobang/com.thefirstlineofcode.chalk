@@ -2,6 +2,9 @@ package com.firstlinecode.chalk.core.stream;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.firstlinecode.basalt.oxm.OxmService;
 import com.firstlinecode.basalt.oxm.annotation.AnnotatedParserFactory;
 import com.firstlinecode.basalt.oxm.parsers.core.stream.StreamParser;
@@ -16,6 +19,8 @@ import com.firstlinecode.chalk.network.IConnectionListener;
 import com.firstlinecode.chalk.network.SocketConnection;
 
 public abstract class AbstractStreamer implements IStreamer, IConnectionListener {
+	private static final Logger logger = LoggerFactory.getLogger(AbstractStreamer.class);
+	
 	private static final String PROPERTY_NAME_CHALK_NEGOTIATION_READ_RESPONSE_TIMEOUT = "chalk.negotiation.read.response.timeout";
 	private static final int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
 	
@@ -112,12 +117,18 @@ public abstract class AbstractStreamer implements IStreamer, IConnectionListener
 				if (!context.isClosed())
 					context.close();
 				
+				if (logger.isDebugEnabled())
+					logger.debug("Negotiation exception.", e);
+				
 				if (negotiationListener != null) {
 					negotiationListener.occurred(e);
 				}
 				
 				return;
 			} catch (ConnectionException e) {
+				if (logger.isDebugEnabled())
+					logger.debug("Connection exception.", e);
+				
 				if (!context.isClosed())
 					context.close();
 				
@@ -185,6 +196,9 @@ public abstract class AbstractStreamer implements IStreamer, IConnectionListener
 
 	@Override
 	public void received(String message) {
+		if (logger.isTraceEnabled())
+			logger.trace("Streamer received a message: {}", message);
+		
 		if (!done && connectionListener != null) {
 			connectionListener.received(message);
 		}
@@ -192,6 +206,9 @@ public abstract class AbstractStreamer implements IStreamer, IConnectionListener
 
 	@Override
 	public void sent(String message) {
+		if (logger.isTraceEnabled())
+			logger.trace("Streamer sent a message: {}", message);
+		
 		if (!done && connectionListener != null) {
 			connectionListener.sent(message);
 		}
