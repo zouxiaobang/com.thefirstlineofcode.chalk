@@ -198,7 +198,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 	}
 
 	@Override
-	public void heartBeatReceived(int length) {
+	public void heartBeatsReceived(int length) {
 		lastMessageReceived = currentTime();
 	}
 

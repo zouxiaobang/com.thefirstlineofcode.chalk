@@ -307,7 +307,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 						for (String message : messages) {
 							if (isHeartBeats(message)) {
 								for (IConnectionListener listener : listeners) {
-									listener.heartBeatReceived(message.toCharArray().length);
+									listener.heartBeatsReceived(message.toCharArray().length);
 								}
 							} else {
 								for (IConnectionListener listener : listeners) {
