@@ -1,5 +1,7 @@
 package com.firstlinecode.chalk.core.stream;
 
+import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveConfig;
+
 public class StandardStreamConfig extends StreamConfig {
 	private String resource;
 	private boolean tlsPreferred;

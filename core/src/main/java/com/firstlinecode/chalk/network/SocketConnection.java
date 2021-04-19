@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.firstlinecode.basalt.oxm.binary.BinaryUtils;
-import com.firstlinecode.basalt.oxm.binary.IBinaryXmppProtocolConverter;
 import com.firstlinecode.basalt.oxm.binary.IBinaryXmppProtocolFactory;
 import com.firstlinecode.basalt.oxm.preprocessing.IMessagePreprocessor;
 import com.firstlinecode.basalt.oxm.preprocessing.OutOfMaxBufferSizeException;
@@ -51,7 +50,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	private static final int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
 	
 	private Socket socket;
-	private BlockingQueue<String> sendingQueue;
+	private BlockingQueue<byte[]> sendingQueue;
 	private BlockingQueue<byte[]> receivingQueue;
 	
 	private Thread receivingThread;
@@ -67,7 +66,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	
 	private boolean useBinaryFormat = false;
 	private IBinaryXmppProtocolFactory bxmppProtocolFactory;
-	private IBinaryXmppProtocolConverter bxmppProtocolConverter;
 	
 	public SocketConnection() {
 		this(null);
@@ -95,7 +93,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			useBinaryFormat = true;
 			try {
 				bxmppProtocolFactory = createBxmppProtocolConverterFactory();
-				bxmppProtocolConverter = bxmppProtocolFactory.createConverter();
 			} catch (Exception e) {
 				logger.warn("Can't create BXMPP protocol converter. Please add gem BXMPP libraries to your classpath. Ignore to configure message format to binary. Still use XML message format.");
 				useBinaryFormat = false;
@@ -218,9 +215,9 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			receivingThread = null;
 		}
 	}
-
+	
 	@Override
-	public void write(String message) {
+	public void write(byte[] bytes) {
 		if (stopThreadsFlag || isClosed()) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Can't write message. stopThreadsFlag is {}. isClosed() is {}.",
@@ -231,9 +228,18 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 		}
 		
 		try {
-			sendingQueue.put(message);
+			sendingQueue.put(bytes);
 		} catch (InterruptedException e) {
-			// ignore, connection is closed
+			// Ignore, connection is closed
+		}
+	}
+	
+	@Override
+	public void write(String message) {
+		if (useBinaryFormat) {
+			write(bxmppProtocolFactory.createConverter().toBinary(message));
+		} else {
+			write(message.getBytes());
 		}
 	}
 
@@ -394,19 +400,13 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			byte[] bytes = null;
 			while (true) {
 				try {
-					message = sendingQueue.poll(blockingTimeout, TimeUnit.MILLISECONDS);
+					bytes = sendingQueue.poll(blockingTimeout, TimeUnit.MILLISECONDS);
 					
 					if (stopThreadsFlag) {
 						break;
 					}
 					
-					if (message != null) {
-						if (useBinaryFormat) {
-							bytes = bxmppProtocolConverter.toBinary(message);
-						} else {
-							bytes = message.getBytes(Constants.DEFAULT_CHARSET);
-						}
-						
+					if (bytes != null) {						
 						output.write(bytes);
 						output.flush();
 						

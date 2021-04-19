@@ -39,7 +39,12 @@ public class NegotiationContext implements INegotiationContext {
 	public void write(String message) {
 		connection.write(message);
 	}
-
+	
+	@Override
+	public void write(byte[] bytes) {
+		connection.write(bytes);
+	}
+	
 	@Override
 	public void addListener(IConnectionListener listener) {
 		connection.addListener(listener);
@@ -99,5 +104,4 @@ public class NegotiationContext implements INegotiationContext {
 	public boolean isConnected() {
 		return connection.isConnected();
 	}
-
 }

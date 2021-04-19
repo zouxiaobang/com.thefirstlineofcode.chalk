@@ -5,6 +5,7 @@ import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.protocol.core.stanza.Stanza;
 import com.firstlinecode.chalk.core.IErrorListener;
 import com.firstlinecode.chalk.core.stanza.IStanzaListener;
+import com.firstlinecode.chalk.core.stream.keepalive.IKeepAliveManager;
 import com.firstlinecode.chalk.network.IConnection;
 import com.firstlinecode.chalk.network.IConnectionListener;
 

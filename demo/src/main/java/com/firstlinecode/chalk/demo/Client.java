@@ -368,12 +368,6 @@ public abstract class Client implements Runnable, INegotiationListener, IMessage
 		chatClient.close();
 	}
 	
-	/*@Override
-	public void received(String message) {}
-
-	@Override
-	public void sent(String message) {}*/
-	
 	@Override
 	public void received(String message) {
 		printIn(String.format("Received: %s.", message));

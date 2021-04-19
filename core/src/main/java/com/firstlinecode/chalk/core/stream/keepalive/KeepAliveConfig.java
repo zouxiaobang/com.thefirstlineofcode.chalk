@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk.core.stream;
+package com.firstlinecode.chalk.core.stream.keepalive;
 
 public class KeepAliveConfig {
 	private static int DEFAULT_INTERVAL = 30;

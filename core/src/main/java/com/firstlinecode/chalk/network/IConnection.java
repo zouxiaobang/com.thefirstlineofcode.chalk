@@ -7,6 +7,7 @@ public interface IConnection {
 	void connect(String host, int port, int timeout) throws ConnectionException;
 	void close();
 	void write(String message);
+	void write(byte[] bytes);
 	
 	boolean isConnected();
 	boolean isClosed();

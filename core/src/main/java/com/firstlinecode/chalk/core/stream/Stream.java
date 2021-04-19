@@ -21,6 +21,9 @@ import com.firstlinecode.basalt.protocol.core.stream.error.StreamError;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.chalk.core.IErrorListener;
 import com.firstlinecode.chalk.core.stanza.IStanzaListener;
+import com.firstlinecode.chalk.core.stream.keepalive.IKeepAliveManager;
+import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveConfig;
+import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveManager;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionException.Type;
 import com.firstlinecode.chalk.network.IConnection;
@@ -61,8 +64,8 @@ public class Stream implements IStream, IConnectionListener {
 		
 		threadPool = Executors.newCachedThreadPool();
 		
-		keepaliveManager = new KeepAliveManager(getKeepaliveConfig());
-		keepaliveManager.start(this);
+		keepaliveManager = new KeepAliveManager(this, getKeepaliveConfig());
+		keepaliveManager.start();
 	}
 
 	private KeepAliveConfig getKeepaliveConfig() {
