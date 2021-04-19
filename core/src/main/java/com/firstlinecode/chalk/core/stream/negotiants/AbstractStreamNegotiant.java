@@ -12,8 +12,9 @@ import com.firstlinecode.chalk.core.stream.INegotiationContext;
 import com.firstlinecode.chalk.core.stream.IStreamNegotiant;
 import com.firstlinecode.chalk.core.stream.NegotiationException;
 import com.firstlinecode.chalk.network.ConnectionException;
+import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 
-public abstract class AbstractStreamNegotiant implements IStreamNegotiant {
+public abstract class AbstractStreamNegotiant extends ConnectionListenerAdapter implements IStreamNegotiant {
 	protected static final long DEFAULT_READ_RESPONSE_TIMEOUT = 1000 * 15;
 	protected static final long DEFAULT_READ_RESPONSE_INTERVAL = 200;
 	
@@ -37,7 +38,7 @@ public abstract class AbstractStreamNegotiant implements IStreamNegotiant {
 	}
 	
 	@Override
-	public void occurred(ConnectionException exception) {
+	public void exceptionOccurred(ConnectionException exception) {
 		this.exception = exception;
 		synchronized (lock) {
 			lock.notify();
@@ -45,7 +46,7 @@ public abstract class AbstractStreamNegotiant implements IStreamNegotiant {
 	}
 	
 	@Override
-	public void received(String message) {
+	public void messageReceived(String message) {
 		synchronized (lock) {
 			responses.offer(message);
 			lock.notify();
@@ -53,7 +54,7 @@ public abstract class AbstractStreamNegotiant implements IStreamNegotiant {
 	}
 	
 	@Override
-	public void sent(String message) {
+	public void messageSent(String message) {
 		// do nothing
 	}
 	

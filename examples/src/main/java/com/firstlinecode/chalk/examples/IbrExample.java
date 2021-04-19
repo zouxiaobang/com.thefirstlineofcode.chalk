@@ -1,22 +1,22 @@
 package com.firstlinecode.chalk.examples;
 
+import com.firstlinecode.basalt.xeps.ibr.IqRegister;
+import com.firstlinecode.basalt.xeps.ibr.RegistrationField;
+import com.firstlinecode.basalt.xeps.ibr.RegistrationForm;
 import com.firstlinecode.chalk.core.IChatClient;
 import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
-import com.firstlinecode.chalk.network.IConnectionListener;
+import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 import com.firstlinecode.chalk.xeps.ibr.IRegistration;
 import com.firstlinecode.chalk.xeps.ibr.IRegistrationCallback;
 import com.firstlinecode.chalk.xeps.ibr.IbrPlugin;
 import com.firstlinecode.chalk.xeps.ibr.RegistrationException;
-import com.firstlinecode.basalt.xeps.ibr.IqRegister;
-import com.firstlinecode.basalt.xeps.ibr.RegistrationField;
-import com.firstlinecode.basalt.xeps.ibr.RegistrationForm;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
-public class IbrExample implements Example, IConnectionListener {
+public class IbrExample extends ConnectionListenerAdapter implements Example {
 	private IChatClient chatClient;
 
 	@Override
@@ -57,15 +57,15 @@ public class IbrExample implements Example, IConnectionListener {
 	}
 
 	@Override
-	public void occurred(ConnectionException exception) {}
+	public void exceptionOccurred(ConnectionException exception) {}
 
 	@Override
-	public void received(String message) {
+	public void messageReceived(String message) {
 		System.out.println("<- " + message);
 	}
 
 	@Override
-	public void sent(String message) {
+	public void messageSent(String message) {
 		System.out.println("-> " + message);
 	}
 

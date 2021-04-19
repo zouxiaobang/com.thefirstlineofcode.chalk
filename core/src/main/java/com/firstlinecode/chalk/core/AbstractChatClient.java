@@ -36,10 +36,10 @@ import com.firstlinecode.chalk.core.stream.IStreamer;
 import com.firstlinecode.chalk.core.stream.NegotiationException;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
+import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 import com.firstlinecode.chalk.network.IConnectionListener;
 
-public abstract class AbstractChatClient implements IChatClient, IConnectionListener,
-		INegotiationListener {
+public abstract class AbstractChatClient extends ConnectionListenerAdapter implements IChatClient, INegotiationListener {
 	private Logger logger = LoggerFactory.getLogger(AbstractChatClient.class);
 	
 	protected StreamConfig streamConfig;
@@ -465,7 +465,7 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 	}
 
 	@Override
-	public void occurred(ConnectionException exception) {
+	public void exceptionOccurred(ConnectionException exception) {
 		if (state == State.CONNECTED) {
 			if (exception.getType() == ConnectionException.Type.CONNECTION_CLOSED ||
 					exception.getType() == ConnectionException.Type.END_OF_STREAM) {
@@ -477,7 +477,7 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 			}
 			
 			for (IConnectionListener connectionListener : connectionListeners) {
-				connectionListener.occurred(exception);
+				connectionListener.exceptionOccurred(exception);
 			}
 		} else if (state == State.CONNECTING) {
 			processNegotiationConnectionError(exception);
@@ -492,16 +492,16 @@ public abstract class AbstractChatClient implements IChatClient, IConnectionList
 	}
 
 	@Override
-	public void received(String message) {
+	public void messageReceived(String message) {
 		for (IConnectionListener connectionListener : connectionListeners) {
-			connectionListener.received(message);
+			connectionListener.messageReceived(message);
 		}
 	}
 
 	@Override
-	public void sent(String message) {
+	public void messageSent(String message) {
 		for (IConnectionListener connectionListener : connectionListeners) {
-			connectionListener.sent(message);
+			connectionListener.messageSent(message);
 		}
 	}
 

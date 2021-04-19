@@ -2,9 +2,9 @@ package com.firstlinecode.chalk.examples;
 
 import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.network.ConnectionException;
-import com.firstlinecode.chalk.network.IConnectionListener;
+import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 
-public abstract class AbstractClientThread extends Thread implements IConnectionListener {
+public abstract class AbstractClientThread extends ConnectionListenerAdapter implements Runnable {
 	protected MultiClientsExample example;
 	protected StandardChatClient chatClient;
 	
@@ -28,17 +28,17 @@ public abstract class AbstractClientThread extends Thread implements IConnection
 	}
 	
 	@Override
-	public void sent(String message) {
+	public void messageSent(String message) {
 		example.printString(getClass().getSimpleName() + " -> " + message);
 	}
 	
 	@Override
-	public void received(String message) {
+	public void messageReceived(String message) {
 		example.printString(getClass().getSimpleName() + " <- " + message);
 	}
 	
 	@Override
-	public void occurred(ConnectionException exception) {}
+	public void exceptionOccurred(ConnectionException exception) {}
 	
 	protected abstract String[] getUserNameAndPassword();
 	protected abstract void doRun() throws Exception;

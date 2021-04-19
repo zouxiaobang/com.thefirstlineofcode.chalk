@@ -8,11 +8,12 @@ public abstract class MultiClientsExample extends AbstractExample {
 	
 	@Override
 	protected void runExample() throws Exception {
-		Thread[] clients = createClients();
+		Runnable[] clients = createClients();
 		activatedClients = clients.length;
 		
-		for (Thread client : clients) {
-			client.start();
+		for (Runnable client : clients) {
+			Thread thread = new Thread(client);
+			thread.start();
 		}
 		
 		synchronized (this) {

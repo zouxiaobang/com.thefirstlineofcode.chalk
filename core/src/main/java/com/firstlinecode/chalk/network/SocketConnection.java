@@ -49,6 +49,8 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	private static final int DEFAULT_BLOCKING_TIMEOUT = 200;
 	private static final int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
 	
+	private static final char HEART_BEAT = ' ';
+	
 	private Socket socket;
 	private BlockingQueue<byte[]> sendingQueue;
 	private BlockingQueue<byte[]> receivingQueue;
@@ -152,7 +154,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 
 	private void processException(ConnectionException exception) {
 		for (IConnectionListener listener : listeners) {
-			listener.occurred(exception);
+			listener.exceptionOccurred(exception);
 		}
 		
 		// Method processException() is called by SendingThread and ReceivingThread.
@@ -303,9 +305,17 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 					
 					if (messages.length != 0) {
 						for (String message : messages) {
-							for (IConnectionListener listener : listeners) {
-								listener.received(message);
+							if (isHeartBeats(message)) {
+								for (IConnectionListener listener : listeners) {
+									listener.heartBeatReceived(message.toCharArray().length);
+								}
+							} else {
+								for (IConnectionListener listener : listeners) {
+									listener.messageReceived(message);
+								}
 							}
+							
+							
 						}
 					}
 				} catch (InterruptedException e) {
@@ -313,6 +323,15 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				}
 				
 			}
+		}
+
+		private boolean isHeartBeats(String message) {
+			for (char c : message.toCharArray()) {
+				if (c != HEART_BEAT)
+					return false;
+			}
+			
+			return true;
 		}
 
 		private String[] processMessages(byte[] bytes) {
@@ -419,7 +438,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 						}
 						
 						for (IConnectionListener listener : listeners) {
-							listener.sent(message);
+							listener.messageSent(message);
 						}
 					}
 				} catch (InterruptedException e) {

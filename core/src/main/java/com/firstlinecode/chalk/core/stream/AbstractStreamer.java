@@ -14,11 +14,12 @@ import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
 import com.firstlinecode.chalk.core.stream.negotiants.AbstractStreamNegotiant;
 import com.firstlinecode.chalk.network.ConnectionException;
+import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 import com.firstlinecode.chalk.network.IConnection;
 import com.firstlinecode.chalk.network.IConnectionListener;
 import com.firstlinecode.chalk.network.SocketConnection;
 
-public abstract class AbstractStreamer implements IStreamer, IConnectionListener {
+public abstract class AbstractStreamer extends ConnectionListenerAdapter implements IStreamer {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractStreamer.class);
 	
 	private static final String PROPERTY_NAME_CHALK_NEGOTIATION_READ_RESPONSE_TIMEOUT = "chalk.negotiation.read.response.timeout";
@@ -133,7 +134,7 @@ public abstract class AbstractStreamer implements IStreamer, IConnectionListener
 					context.close();
 				
 				if (connectionListener != null) {
-					connectionListener.occurred(e);
+					connectionListener.exceptionOccurred(e);
 				}
 				
 				return;
@@ -190,27 +191,27 @@ public abstract class AbstractStreamer implements IStreamer, IConnectionListener
 	}
 
 	@Override
-	public void occurred(ConnectionException exception) {
+	public void exceptionOccurred(ConnectionException exception) {
 		// ignore. connection exception is processed by negotiant
 	}
 
 	@Override
-	public void received(String message) {
+	public void messageReceived(String message) {
 		if (logger.isTraceEnabled())
 			logger.trace("Streamer received a message: {}", message);
 		
 		if (!done && connectionListener != null) {
-			connectionListener.received(message);
+			connectionListener.messageReceived(message);
 		}
 	}
 
 	@Override
-	public void sent(String message) {
+	public void messageSent(String message) {
 		if (logger.isTraceEnabled())
 			logger.trace("Streamer sent a message: {}", message);
 		
 		if (!done && connectionListener != null) {
-			connectionListener.sent(message);
+			connectionListener.messageSent(message);
 		}
 	}
 	

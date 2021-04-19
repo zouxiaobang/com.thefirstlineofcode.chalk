@@ -1,7 +1,8 @@
 package com.firstlinecode.chalk.network;
 
 public interface IConnectionListener {
-	void occurred(ConnectionException exception);
-	void received(String message);
-	void sent(String message);
+	void exceptionOccurred(ConnectionException exception);
+	void messageReceived(String message);
+	void heartBeatReceived(int length);
+	void messageSent(String message);
 }

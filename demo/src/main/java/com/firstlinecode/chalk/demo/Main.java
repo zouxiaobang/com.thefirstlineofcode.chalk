@@ -6,20 +6,20 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.firstlinecode.basalt.xeps.ibr.IqRegister;
+import com.firstlinecode.basalt.xeps.ibr.RegistrationField;
+import com.firstlinecode.basalt.xeps.ibr.RegistrationForm;
 import com.firstlinecode.chalk.core.IChatClient;
 import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.demo.Demo.Protocol;
 import com.firstlinecode.chalk.network.ConnectionException;
-import com.firstlinecode.chalk.network.IConnectionListener;
+import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 import com.firstlinecode.chalk.xeps.ibr.IRegistration;
 import com.firstlinecode.chalk.xeps.ibr.IRegistrationCallback;
 import com.firstlinecode.chalk.xeps.ibr.IbrPlugin;
 import com.firstlinecode.chalk.xeps.ibr.RegistrationException;
-import com.firstlinecode.basalt.xeps.ibr.IqRegister;
-import com.firstlinecode.basalt.xeps.ibr.RegistrationField;
-import com.firstlinecode.basalt.xeps.ibr.RegistrationForm;
 
 public class Main {
 	public static void main(String[] args) throws RegistrationException {
@@ -73,20 +73,19 @@ public class Main {
 
 	private void createAccount(IChatClient chatClient, final String[] account) throws RegistrationException {
 		IRegistration registration = chatClient.createApi(IRegistration.class);
-		registration.addConnectionListener(new IConnectionListener() {
-			
+		registration.addConnectionListener(new ConnectionListenerAdapter() {			
 			@Override
-			public void sent(String message) {
+			public void messageSent(String message) {
 				printOut(message);
 			}
 			
 			@Override
-			public void received(String message) {
+			public void messageReceived(String message) {
 				printIn(message);
 			}
 			
 			@Override
-			public void occurred(ConnectionException exception) {
+			public void exceptionOccurred(ConnectionException exception) {
 				OutputStream os = new ByteArrayOutputStream();
 				PrintStream ps = new PrintStream(os);
 				exception.printStackTrace(ps);

@@ -35,7 +35,7 @@ import com.firstlinecode.chalk.leps.im.IMessageListener2;
 import com.firstlinecode.chalk.leps.im.subscription.ISubscriptionListener2;
 import com.firstlinecode.chalk.leps.im.subscription.SubscriptionError2;
 import com.firstlinecode.chalk.network.ConnectionException;
-import com.firstlinecode.chalk.network.IConnectionListener;
+import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 import com.firstlinecode.chalk.xeps.muc.IMucService;
 import com.firstlinecode.chalk.xeps.muc.IRoom;
 import com.firstlinecode.chalk.xeps.muc.IRoomListener;
@@ -57,9 +57,8 @@ import com.firstlinecode.chalk.xeps.muc.events.RoomEvent;
 import com.firstlinecode.chalk.xeps.muc.events.RoomMessageEvent;
 import com.firstlinecode.chalk.xeps.muc.events.RoomSubjectEvent;
 
-public abstract class Client implements Runnable, INegotiationListener, IMessageListener2,
-		IPresenceListener, IRosterListener, ISubscriptionListener2,
-				IConnectionListener, IRoomListener {
+public abstract class Client extends ConnectionListenerAdapter implements Runnable, INegotiationListener, IMessageListener2,
+		IPresenceListener, IRosterListener, ISubscriptionListener2, IRoomListener {
 	
 	protected static final String host = getHost();
 	protected static final int port = getPort();
@@ -360,7 +359,7 @@ public abstract class Client implements Runnable, INegotiationListener, IMessage
 	}
 
 	@Override
-	public void occurred(ConnectionException exception) {
+	public void exceptionOccurred(ConnectionException exception) {
 		OutputStream os = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(os);
 		exception.printStackTrace(ps);
@@ -369,12 +368,12 @@ public abstract class Client implements Runnable, INegotiationListener, IMessage
 	}
 	
 	@Override
-	public void received(String message) {
+	public void messageReceived(String message) {
 		printIn(String.format("Received: %s.", message));
 	}
 
 	@Override
-	public void sent(String message) {
+	public void messageSent(String message) {
 		printOut(String.format("Sent: %s.", message));
 	}
 	

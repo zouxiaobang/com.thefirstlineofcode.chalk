@@ -26,10 +26,11 @@ import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveConfig;
 import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveManager;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionException.Type;
+import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 import com.firstlinecode.chalk.network.IConnection;
 import com.firstlinecode.chalk.network.IConnectionListener;
 
-public class Stream implements IStream, IConnectionListener {
+public class Stream extends ConnectionListenerAdapter implements IStream {
 	private IConnection connection;
 	private volatile IOxmFactory oxmFactory;
 	
@@ -139,9 +140,9 @@ public class Stream implements IStream, IConnectionListener {
 	}
 
 	@Override
-	public void occurred(ConnectionException exception) {
+	public void exceptionOccurred(ConnectionException exception) {
 		for (IConnectionListener connectionListener : connectionListeners) {
-			connectionListener.occurred(exception);
+			connectionListener.exceptionOccurred(exception);
 		}
 	}
 	
@@ -155,7 +156,7 @@ public class Stream implements IStream, IConnectionListener {
 		@Override
 		public void run() {
 			for (IConnectionListener connectionListener : connectionListeners) {
-				connectionListener.received(message);
+				connectionListener.messageReceived(message);
 			}
 			
 			Object object = null;
@@ -193,7 +194,7 @@ public class Stream implements IStream, IConnectionListener {
 					(com.firstlinecode.basalt.protocol.core.stream.Stream)object;
 				
 				if (closeStream.isClose()) {
-					occurred(new ConnectionException(Type.CONNECTION_CLOSED));
+					exceptionOccurred(new ConnectionException(Type.CONNECTION_CLOSED));
 				}
 			} else if (object instanceof Stanza) {
 				Stanza stanza = (Stanza)object;
@@ -260,14 +261,14 @@ public class Stream implements IStream, IConnectionListener {
 	}
 
 	@Override
-	public void received(String message) {
+	public void messageReceived(String message) {
 		threadPool.execute(new MessageProcessingThread(message));
 	}
 	
 	@Override
-	public void sent(String message) {
+	public void messageSent(String message) {
 		for (IConnectionListener connectionListener : connectionListeners) {
-			connectionListener.sent(message);
+			connectionListener.messageSent(message);
 		}
 	}
 

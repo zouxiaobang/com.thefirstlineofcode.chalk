@@ -345,7 +345,7 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
     }
     
     @Override
-	public void occurred(ConnectionException exception) {
+	public void exceptionOccurred(ConnectionException exception) {
     	synchronized (this) {
     		if (exception.getType() == ConnectionException.Type.END_OF_STREAM && abortSasl)
         		return;
