@@ -17,6 +17,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			
 	private static final char CHAR_HEART_BEAT = ' ';
 	private static final byte BYTE_HEART_BEAT = (byte)CHAR_HEART_BEAT;
+	private static final int MIN_HEARTBEATS_CHECKING_INTERVAL = 1000; 
 	
 	private KeepAliveConfig config;
 	private IStream stream;
@@ -25,7 +26,9 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 	private KeepAliveThread keepAliveThread;
 	
 	private IKeepAliveCallback callback;
-	private Date lastMessageReceived;
+	private long lastMessageReceivedTime;
+	private long lastMessageSentTime;
+	private int heartbeatsCheckingInterval;
 	
 	public KeepAliveManager(IStream stream, KeepAliveConfig config) {
 		if (stream == null)
@@ -38,10 +41,13 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		}
 		
 		if (config == null)
-			throw new IllegalArgumentException("Null keep alive config.");
+			throw new IllegalArgumentException("Null keep-alive config.");
 		
 		this.config = config;
 		this.stream = stream;
+		
+		heartbeatsCheckingInterval = (config.getInterval() > MIN_HEARTBEATS_CHECKING_INTERVAL) ?
+				config.getInterval() : MIN_HEARTBEATS_CHECKING_INTERVAL;
 		
 		this.callback = createDefaultCallback();
 		started = false;
@@ -92,10 +98,13 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 	}
 	
 	protected void doStart() {
-		keepAliveThread = new KeepAliveThread();
+		if (keepAliveThread != null) {
+			keepAliveThread = new KeepAliveThread();
+		}
+		
 		keepAliveThread.start();
 		if (logger.isInfoEnabled()) {
-			logger.info("Keep alive thread has started.");
+			logger.info("Keep-alive thread has started.");
 		}		
 	}
 	
@@ -103,36 +112,41 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		private boolean stop;
 		
 		KeepAliveThread() {
-			super("Client Keep alive Thread");
+			super("Client Keep-alive Thread");
 		}
 		
 		@Override
 		public void run() {
 			started = false;
 			
-			lastMessageReceived = currentTime();
+			lastMessageReceivedTime = currentTime();
 			while (!stop) {
 				if (stream.isClosed()) {
 					if (logger.isWarnEnabled()) {
-						logger.warn("Keep alive manager can't work. Stream has closed.");
+						logger.warn("Keep-alive manager can't work. Stream has closed.");
 					}
 					break;						
 				}
 				
-				if (useBinaryFormat)
-					stream.getConnection().write(new byte[BYTE_HEART_BEAT]);
-				else
-					stream.getConnection().write(String.valueOf(CHAR_HEART_BEAT));
-				
-				try {
-					Thread.sleep(config.getInterval());
-				} catch (InterruptedException e) {
-					throw new RuntimeException("Keep alive thread throws an exception.", e);
+				if (getInactiveTime() > config.getInterval()) {
+					if (useBinaryFormat)
+						stream.getConnection().write(new byte[BYTE_HEART_BEAT]);
+					else
+						stream.getConnection().write(String.valueOf(CHAR_HEART_BEAT));
+					
+					if (logger.isTraceEnabled())
+						logger.trace("Keep-alive thread has sent a heartbeat.");
 				}
 				
-				if (currentTime().getTime() - lastMessageReceived.getTime() > config.getTimeout()) {
+				try {
+					Thread.sleep(heartbeatsCheckingInterval);
+				} catch (InterruptedException e) {
+					throw new RuntimeException("Keep-alive thread throws an exception.", e);
+				}
+				
+				if (getServerInactiveTime() > config.getTimeout()) {
 					if (logger.isWarnEnabled())
-						logger.warn("Keeping alive timeouted. Callback's timeout() will be called.");
+						logger.warn("Keeping-alive timeouted. Callback's timeout() will be called.");
 					
 					callback.timeout();
 				}
@@ -143,14 +157,22 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			}
 			started = false;
 		}
+
+		private long getInactiveTime() {
+			return currentTime() - lastMessageSentTime;
+		}
+
+		private long getServerInactiveTime() {
+			return currentTime() - lastMessageReceivedTime;
+		}
 		
 		public void exit() {
 			stop = true;
 		}
 	}
 	
-	private Date currentTime() {
-		return Calendar.getInstance().getTime();
+	private long currentTime() {
+		return Calendar.getInstance().getTime().getTime();
 	}
 	
 	@Override
@@ -178,12 +200,12 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		if (!stream.isConnected())
 			return;
 		
-		lastMessageReceived = currentTime();
+		lastMessageReceivedTime = currentTime();
 	}
 
 	@Override
 	public void messageSent(String message) {
-		// Do nothing.
+		lastMessageSentTime = currentTime();
 	}
 
 	@Override
@@ -195,11 +217,16 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			throw new IllegalStateException("Null keep alive thread.");
 		
 		keepAliveThread.exit();
+		try {
+			keepAliveThread.join();
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Can't exist keep-alive thread correctly.", e);
+		}
 	}
 
 	@Override
 	public void heartBeatsReceived(int length) {
-		lastMessageReceived = currentTime();
+		lastMessageReceivedTime = currentTime();
 	}
 
 }
