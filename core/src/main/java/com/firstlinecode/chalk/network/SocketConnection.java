@@ -8,6 +8,12 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -32,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.firstlinecode.basalt.oxm.binary.BinaryUtils;
+import com.firstlinecode.basalt.oxm.binary.IBinaryXmppProtocolConverter;
 import com.firstlinecode.basalt.oxm.binary.IBinaryXmppProtocolFactory;
 import com.firstlinecode.basalt.oxm.preprocessing.IMessagePreprocessor;
 import com.firstlinecode.basalt.oxm.preprocessing.OutOfMaxBufferSizeException;
@@ -39,6 +46,7 @@ import com.firstlinecode.basalt.oxm.preprocessing.XmlMessagePreprocessorAdapter;
 import com.firstlinecode.basalt.protocol.Constants;
 import com.firstlinecode.basalt.protocol.core.ProtocolException;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
+import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveManager;
 
 public class SocketConnection implements IConnection, HandshakeCompletedListener {
 
@@ -68,6 +76,11 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	
 	private boolean useBinaryFormat = false;
 	private IBinaryXmppProtocolFactory bxmppProtocolFactory;
+	private IBinaryXmppProtocolConverter bxmppProtocolConverter;
+	private IMessagePreprocessor messagePreprocessor;
+	
+	private Charset charset;
+	private CharsetDecoder decoder;
 	
 	public SocketConnection() {
 		this(null);
@@ -99,6 +112,15 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				logger.warn("Can't create BXMPP protocol converter. Please add gem BXMPP libraries to your classpath. Ignore to configure message format to binary. Still use XML message format.");
 				useBinaryFormat = false;
 			}
+			
+			bxmppProtocolConverter = bxmppProtocolFactory.createConverter();
+			messagePreprocessor = bxmppProtocolFactory.createPreprocessor();
+		} else {
+			messagePreprocessor = new XmlMessagePreprocessorAdapter();
+			charset = Charset.forName(Constants.DEFAULT_CHARSET);
+			decoder = charset.newDecoder()
+					.onMalformedInput(CodingErrorAction.REPLACE)
+						.onUnmappableCharacter(CodingErrorAction.REPLACE);
 		}
 	}
 	
@@ -193,7 +215,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			} catch (InterruptedException e) {
 				// ignore
 			}
-			
 			processingThread = null;
 		}
 		
@@ -203,7 +224,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			} catch (InterruptedException e) {
 				// ignore
 			}
-			
 			sendingThread = null;
 		}
 		
@@ -213,7 +233,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			} catch (InterruptedException e) {
 				// ignore
 			}
-			
 			receivingThread = null;
 		}
 	}
@@ -239,7 +258,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	@Override
 	public void write(String message) {
 		if (useBinaryFormat) {
-			write(bxmppProtocolFactory.createConverter().toBinary(message));
+			write(bxmppProtocolConverter.toBinary(message));
 		} else {
 			write(message.getBytes());
 		}
@@ -264,18 +283,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	}
 	
 	private class ProcessingThread extends Thread {
-		private IMessagePreprocessor messagePreprocessor;
-		
-		public ProcessingThread() {
-			super("Socket Connection Processing Thread");
-			
-			if (useBinaryFormat) {
-				messagePreprocessor = bxmppProtocolFactory.createPreprocessor();
-			} else {
-				messagePreprocessor = new XmlMessagePreprocessorAdapter();
-			}
-		}
-
 		public void run() {
 			while (true) {
 				try {
@@ -289,33 +296,25 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 					if (bytes == null)
 						continue;
 					
-					if (useBinaryFormat) {
-						messagePreprocessor = bxmppProtocolFactory.createPreprocessor();
-						if (logger.isTraceEnabled()) {
-							logger.trace(String.format("Received %d bytes: %s.", bytes.length, BinaryUtils.getHexStringFromBytes(bytes)));
-						}
-					} else {
-						messagePreprocessor = new XmlMessagePreprocessorAdapter();
-						if (logger.isTraceEnabled()) {
-							logger.trace(String.format("Received a string: %s", new String(bytes)));
-						}
-					}
-					
 					String[] messages = processMessages(bytes);
 					
 					if (messages.length != 0) {
 						for (String message : messages) {
 							if (isHeartBeats(message)) {
+								if (logger.isTraceEnabled())
+									logger.trace("{} heatbeats has received.", message.length());
+								
 								for (IConnectionListener listener : listeners) {
-									listener.heartBeatsReceived(message.toCharArray().length);
+									listener.heartBeatsReceived(message.length());
 								}
 							} else {
+								if (logger.isTraceEnabled())
+									traceMessageReceived(bytes);
+							
 								for (IConnectionListener listener : listeners) {
 									listener.messageReceived(message);
 								}
 							}
-							
-							
 						}
 					}
 				} catch (InterruptedException e) {
@@ -325,13 +324,13 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			}
 		}
 
-		private boolean isHeartBeats(String message) {
-			for (char c : message.toCharArray()) {
-				if (c != HEART_BEAT)
-					return false;
+		private void traceMessageReceived(byte[] bytes) {
+			if (useBinaryFormat) {
+				logger.trace("{} binary message bytes has received: {}.",
+						bytes.length, BinaryUtils.getHexStringFromBytes(bytes));
+			} else {
+				logger.trace("A XMPP string has received: {}.", new String(bytes));								
 			}
-			
-			return true;
 		}
 
 		private String[] processMessages(byte[] bytes) {
@@ -352,6 +351,15 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 		}
 	}
 	
+	private boolean isHeartBeats(String message) {
+		for (char c : message.toCharArray()) {
+			if (c != HEART_BEAT)
+				return false;
+		}
+		
+		return true;
+	}
+	
 	private class ReceivingThread extends Thread {
 		private static final int DEFAULT_BUFFER_SIZE = 1024 * 16;
 		private InputStream input;
@@ -370,22 +378,52 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			}
 			
 			byte[] buf = new byte[DEFAULT_BUFFER_SIZE];
+			int index = 0;
 			while (true) {
 				try {
-					int num = input.read(buf, 0, DEFAULT_BUFFER_SIZE);
-					
 					if (stopThreadsFlag) {
 						break;
 					}
 					
+					int num = input.read(buf, index, DEFAULT_BUFFER_SIZE - index);	
 					if (num == -1) {
-						// server interrupts the connection?
+						// Did server interrupt the connection?
 						// processException(new ConnectionException(ConnectionException.Type.END_OF_STREAM));
 						// break;
 						continue;
+					} else {
+						if (!useBinaryFormat) {
+							decoder.reset();
+							index = (index == 0) ? (num - 1) : (index + num);
+							CharBuffer charBuffer = CharBuffer.allocate(index + 1);
+							CoderResult coderResult = decoder.decode(ByteBuffer.wrap(buf, 0, index + 1),
+									charBuffer, false);
+							
+							if (coderResult.isUnmappable() || coderResult.isMalformed()) {
+								try {
+									coderResult.throwException();									
+								} catch (Exception e) {
+									if (logger.isErrorEnabled())
+										logger.error("Can't decode the message.", e);
+									
+									throw e;
+								}
+							} else if (coderResult.isUnderflow()) {
+								// Do nothing
+							} else {
+								// coderResult.isOverflow()
+								try {
+									coderResult.throwException();
+								} catch (Exception e) {									
+									throw new RuntimeException("Char buffer size is too short.???", e);
+								}
+							}
+						}
 					}
 					
-					receivingQueue.add(Arrays.copyOf(buf, num));
+					receivingQueue.add(Arrays.copyOf(buf, index + 1));
+					Arrays.fill(buf, (byte)0);
+					index = 0;
 				} catch (SocketTimeoutException e) {
 					if (stopThreadsFlag) {
 						break;
@@ -415,7 +453,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				return;
 			}
 			
-			String message = null;
 			byte[] bytes = null;
 			while (true) {
 				try {
@@ -425,16 +462,24 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 						break;
 					}
 					
-					if (bytes != null) {						
-						output.write(bytes);
-						output.flush();
-						
+					if (bytes == null)
+						continue;
+					
+					output.write(bytes);
+					output.flush();
+					
+					if (isHeartBeat(bytes)) {
 						if (logger.isTraceEnabled()) {
-							if (useBinaryFormat) {								
-								logger.trace(String.format("Sent %d bytes: %s.", bytes.length, BinaryUtils.getHexStringFromBytes(bytes)));
-							} else {
-								logger.trace(String.format("Sent a string: %s", message));								
+							logger.trace(String.format("A heartbeat has sent."));
+							
+							for (IConnectionListener listener : listeners) {
+								listener.heartBeatsReceived(1);
 							}
+						}
+					} else {
+						String message = null;
+						if (logger.isTraceEnabled()) {
+							message = traceMessageSent(bytes);
 						}
 						
 						for (IConnectionListener listener : listeners) {
@@ -449,6 +494,45 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				}
 			}
 		}
+
+		private String traceMessageSent(byte[] bytes) {
+			String message = null;
+			if (useBinaryFormat) {
+				message = bxmppProtocolConverter.toXml(bytes);
+				logger.trace("{} binary message bytes has sent: {}.",
+						bytes.length, BinaryUtils.getHexStringFromBytes(bytes));
+			} else {
+				message = new String(bytes);
+				logger.trace("A XMPP string has sent: {}.", message);								
+			}
+			
+			return message;
+		}
+	}
+	
+	private boolean isHeartBeat(byte[] bytes) {
+		if (useBinaryFormat) {
+			for (byte b : bytes) {
+				if (!isHeartBeatByte(b))
+					return false;
+			}
+		} else {
+			String message = new String(bytes);
+			for (int i = 0; i < message.length(); i++) {
+				if (!isHeartBeartChar(message.charAt(i)))
+					return false;
+			}
+		}
+		
+		return true;
+	}
+
+	private boolean isHeartBeatByte(byte b) {
+		return KeepAliveManager.BYTE_HEART_BEAT == b;
+	}
+
+	private boolean isHeartBeartChar(char c) {
+		return KeepAliveManager.CHAR_HEART_BEAT == c;
 	}
 
 	@Override

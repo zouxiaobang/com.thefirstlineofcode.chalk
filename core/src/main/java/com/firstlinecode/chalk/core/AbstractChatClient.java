@@ -27,7 +27,6 @@ import com.firstlinecode.basalt.oxm.OxmService;
 import com.firstlinecode.basalt.oxm.parsing.IParserFactory;
 import com.firstlinecode.basalt.oxm.translating.ITranslatorFactory;
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
-import com.firstlinecode.basalt.protocol.core.stream.Stream;
 import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
 import com.firstlinecode.chalk.core.stream.INegotiationListener;
 import com.firstlinecode.chalk.core.stream.IStream;
@@ -37,7 +36,7 @@ import com.firstlinecode.chalk.core.stream.NegotiationException;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
-import com.firstlinecode.chalk.network.IConnectionListener;
+import com.firstlinecode.chalk.network.IConnection;
 
 public abstract class AbstractChatClient extends ConnectionListenerAdapter implements IChatClient, INegotiationListener {
 	private Logger logger = LoggerFactory.getLogger(AbstractChatClient.class);
@@ -50,36 +49,33 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	private IErrorHandler errorHandler;
 	private IExceptionHandler exceptionHandler;
 	
-	private List<IConnectionListener> connectionListeners;
-	
 	protected IOxmFactory oxmFactory;
-	
 	protected IChatSystem chatSystem;
-	
-	private Map<Class<? extends IPlugin>, CounterPluginWrapper> plugins;
-	
-	private ConcurrentMap<Class<?>, Api> apis;
-	
 	protected ChatServices chatServices;
 	
+	private Map<Class<? extends IPlugin>, CounterPluginWrapper> plugins;
+	private ConcurrentMap<Class<?>, Api> apis;
 	private List<INegotiationListener> negotiationListeners;
+	private IConnection connection;
 	
-	private volatile String closeStreamMessage;
-	
-	public AbstractChatClient(StreamConfig streamConfig) {
-		this.streamConfig = streamConfig;
-		state = State.CLOSED;
+	public AbstractChatClient(StreamConfig streamConfig, IConnection connection) {
+		if (streamConfig == null)
+			throw new IllegalArgumentException("Null stream config.");
 		
-		connectionListeners = new OrderedList<>(new CopyOnWriteArrayList<IConnectionListener>());
+		if (connection == null)
+			throw new IllegalArgumentException("Null connection.");
+		
+		this.streamConfig = streamConfig;
+		this.connection = connection;
+		
+		state = State.CLOSED;
 		
 		negotiationListeners = new OrderedList<>(new CopyOnWriteArrayList<INegotiationListener>());
 		
 		oxmFactory = createOxmFactory();
 		
 		chatSystem = new ChatSystem();
-		
 		plugins = new HashMap<>();
-		
 		apis = new ConcurrentHashMap<>();
 		
 		chatServices = new ChatServices(this);
@@ -91,20 +87,6 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	
 	protected IOxmFactory createOxmFactory() {
 		return OxmService.createStandardOxmFactory();
-	}
-	
-	private String getCloseStreamMessage() {
-		if (closeStreamMessage != null)
-			return closeStreamMessage;
-		
-		synchronized (oxmFactory) {
-			if (closeStreamMessage != null)
-				return closeStreamMessage;
-			
-			closeStreamMessage = oxmFactory.translate(new Stream(true));
-			
-			return closeStreamMessage;
-		}
 	}
 	
 	@Override
@@ -162,11 +144,11 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		if (logger.isDebugEnabled())
 			logger.debug("Chat client is trying to connect to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
-		streamer = createStreamer(streamConfig);
+		streamer = createStreamer(streamConfig, connection);
 		streamer.negotiate(authToken);
 	}
 	
-	protected abstract IStreamer createStreamer(StreamConfig streamConfig);
+	protected abstract IStreamer createStreamer(StreamConfig streamConfig, IConnection connection);
 	
 	@Override
 	public void register(Class<? extends IPlugin> pluginClass) {
@@ -388,30 +370,19 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		if (state == State.CLOSED)
 			return;
 		
-		exception = null;
-		
+		exception = null;	
 		chatServices.stop();
 		
-		if (stream != null) {
-			if (graceful) {
-				stream.getConnection().write(getCloseStreamMessage());
-				
-				try {
-					wait(500);
-				} catch (InterruptedException e) {
-					// ignore;
-				}
-			}
-			
-			if (stream != null && !stream.isClosed()) {
-				stream.close();
-			}
-			
+		if (stream != null && !stream.isClosed()) {
+			stream.close(graceful);			
 			stream = null;
 			
 			if (logger.isDebugEnabled())
 				logger.debug("Chat client has disconnected from XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		}
+		
+		if (stream == null && state == State.CONNECTING)
+			connection.close();
 		
 		state = State.CLOSED;
 	}
@@ -446,7 +417,6 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		
 		stream.setOxmFactory(oxmFactory);
 		
-		stream.addConnectionListener(this);
 		stream.addErrorListener(chatServices);
 		stream.addStanzaListener(chatServices);
 		
@@ -457,11 +427,14 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		if (logger.isDebugEnabled())
 			logger.debug("Chat client has connected to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
+		
 		for (INegotiationListener listener : negotiationListeners) {
 			listener.done(stream);
 		}
 		
 		notify();
+		
+		stream.getKeepAliveManager().start();
 	}
 
 	@Override
@@ -474,10 +447,6 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 					
 					notify();
 				}
-			}
-			
-			for (IConnectionListener connectionListener : connectionListeners) {
-				connectionListener.exceptionOccurred(exception);
 			}
 		} else if (state == State.CONNECTING) {
 			processNegotiationConnectionError(exception);
@@ -493,16 +462,12 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 
 	@Override
 	public void messageReceived(String message) {
-		for (IConnectionListener connectionListener : connectionListeners) {
-			connectionListener.messageReceived(message);
-		}
+		// Do nothing.
 	}
 
 	@Override
 	public void messageSent(String message) {
-		for (IConnectionListener connectionListener : connectionListeners) {
-			connectionListener.messageSent(message);
-		}
+		// Do nothing.
 	}
 
 	@Override
@@ -528,21 +493,6 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	@Override
 	public List<INegotiationListener> getNegotiationListeners() {
 		return negotiationListeners;
-	}
-
-	@Override
-	public void addConnectionListener(IConnectionListener connectionListener) {
-		connectionListeners.add(connectionListener);
-	}
-
-	@Override
-	public void removeConnectionListener(IConnectionListener connectionListener) {
-		connectionListeners.remove(connectionListener);
-	}
-	
-	@Override
-	public List<IConnectionListener> getConnectionListeners() {
-		return connectionListeners;
 	}
 
 	@Override
@@ -674,6 +624,11 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	@Override
 	public IStream getStream() {
 		return stream;
+	}
+	
+	@Override
+	public IConnection getConnection() {
+		return connection;
 	}
 	
 	@Override

@@ -36,6 +36,8 @@ import com.firstlinecode.chalk.leps.im.subscription.ISubscriptionListener2;
 import com.firstlinecode.chalk.leps.im.subscription.SubscriptionError2;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
+import com.firstlinecode.chalk.network.IConnection;
+import com.firstlinecode.chalk.network.SocketConnection;
 import com.firstlinecode.chalk.xeps.muc.IMucService;
 import com.firstlinecode.chalk.xeps.muc.IRoom;
 import com.firstlinecode.chalk.xeps.muc.IRoomListener;
@@ -148,11 +150,7 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 	}
 	
 	protected void runChatClient() throws ConnectionException, AuthFailureException {
-		chatClient = new StandardChatClient(getStreamConfig());
-		
-		registerPlugins();
-		
-		chatClient.addConnectionListener(this);
+		createChatClient();
 		
 		beforeConnecting();
 		
@@ -167,9 +165,11 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 			print("Auth failed.");
 			
 			print("Reconnect...");
+			createChatClient();
 			try {
 				chatClient.connect(userNameAndPassword[0], userNameAndPassword[1]);
 			} catch (AuthFailureException ae) {
+				chatClient.close();
 				print("Auth failed.");
 				print("Invoke auth failure callback.");
 				processAuthFailure(ae);
@@ -214,6 +214,15 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 		afterConnected();
 		
 		im.getRosterService().retrieve();
+	}
+
+	protected void createChatClient() {
+		IConnection connection = new SocketConnection();
+		chatClient = new StandardChatClient(getStreamConfig(), connection);
+		
+		registerPlugins();
+		
+		connection.addListener(this);
 	}
 
 	@Override

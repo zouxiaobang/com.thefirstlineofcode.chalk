@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.firstlinecode.basalt.protocol.Constants;
+import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.chalk.core.stream.IStream;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
@@ -15,20 +16,21 @@ import com.firstlinecode.chalk.network.IConnectionListener;
 public class KeepAliveManager implements IKeepAliveManager, IConnectionListener {
 	private static final Logger logger = LoggerFactory.getLogger(KeepAliveManager.class);
 			
-	private static final char CHAR_HEART_BEAT = ' ';
-	private static final byte BYTE_HEART_BEAT = (byte)CHAR_HEART_BEAT;
-	private static final int MIN_HEARTBEATS_CHECKING_INTERVAL = 1000; 
+	public static final char CHAR_HEART_BEAT = ' ';
+	public  static final byte BYTE_HEART_BEAT = (byte)CHAR_HEART_BEAT;
 	
-	private KeepAliveConfig config;
-	private IStream stream;
-	private boolean started;
-	private boolean useBinaryFormat;
-	private KeepAliveThread keepAliveThread;
+	protected static final String XML_CLOSE_STREAM = "</stream:stream>";
+	protected static final byte[] BINARY_CLOSE_STREAM = new byte[] {-1, -4, -1};
 	
-	private IKeepAliveCallback callback;
-	private long lastMessageReceivedTime;
-	private long lastMessageSentTime;
-	private int heartbeatsCheckingInterval;
+	protected KeepAliveConfig config;
+	protected IStream stream;
+	protected boolean started;
+	protected boolean useBinaryFormat;
+	protected KeepAliveThread keepAliveThread;
+	
+	protected IKeepAliveCallback callback;
+	protected long lastMessageReceivedTime;
+	protected long lastMessageSentTime;
 	
 	public KeepAliveManager(IStream stream, KeepAliveConfig config) {
 		if (stream == null)
@@ -46,9 +48,6 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		this.config = config;
 		this.stream = stream;
 		
-		heartbeatsCheckingInterval = (config.getInterval() > MIN_HEARTBEATS_CHECKING_INTERVAL) ?
-				config.getInterval() : MIN_HEARTBEATS_CHECKING_INTERVAL;
-		
 		this.callback = createDefaultCallback();
 		started = false;
 	}
@@ -60,15 +59,29 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 	private class DefaultKeepAliveCallback implements IKeepAliveCallback {
 
 		@Override
-		public void received(Date time, boolean isHeartbeats) {
-			// TODO Auto-generated method stub
+		public void received(Date currentTime, boolean isHeartbeats) {
+			lastMessageReceivedTime = currentTime.getTime();
 			
+			if (logger.isTraceEnabled())
+				logger.trace(String.format("Keep-alive thread has received a heartbeat at %s.", currentTime.toString()));
+		}
+		
+		@Override
+		public void sent(Date currentTime, boolean isHeartbeats) {
+			lastMessageSentTime = currentTime.getTime();
+			
+			if (logger.isTraceEnabled())
+				logger.trace(String.format("Keep-alive thread has sent a heartbeat at %s.", currentTime.toString()));
 		}
 
 		@Override
-		public void timeout() {
-			// TODO Auto-generated method stub
-			
+		public void timeout(final IStream stream) {
+			new Thread() {
+				@Override
+				public void run() {
+					stream.close(true);
+				}
+			}.start();
 		}
 		
 	}
@@ -98,72 +111,79 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 	}
 	
 	protected void doStart() {
-		if (keepAliveThread != null) {
-			keepAliveThread = new KeepAliveThread();
+		if (keepAliveThread == null) {
+			keepAliveThread = new KeepAliveThread(stream.getJid());
 		}
 		
 		keepAliveThread.start();
 		if (logger.isInfoEnabled()) {
-			logger.info("Keep-alive thread has started.");
+			logger.info("Keep-alive thread of client connection({}) has started.", stream.getJid());
 		}		
 	}
 	
-	private class KeepAliveThread extends Thread {
+	protected class KeepAliveThread extends Thread {
 		private boolean stop;
+		private JabberId jid;
 		
-		KeepAliveThread() {
+		KeepAliveThread(JabberId jid) {
 			super("Client Keep-alive Thread");
+			this.jid = jid;
 		}
 		
 		@Override
 		public void run() {
-			started = false;
+			started = true;
 			
-			lastMessageReceivedTime = currentTime();
+			lastMessageSentTime = currentTime().getTime();
+			lastMessageReceivedTime = currentTime().getTime();
 			while (!stop) {
 				if (stream.isClosed()) {
 					if (logger.isWarnEnabled()) {
-						logger.warn("Keep-alive manager can't work. Stream has closed.");
+						logger.warn("Keep-alive thread of client connection({}) can't work. The stream has closed.", jid);
 					}
-					break;						
+					break;
 				}
 				
 				if (getInactiveTime() > config.getInterval()) {
-					if (useBinaryFormat)
+					if (useBinaryFormat) {
 						stream.getConnection().write(new byte[BYTE_HEART_BEAT]);
-					else
+					} else {
 						stream.getConnection().write(String.valueOf(CHAR_HEART_BEAT));
+					}
 					
-					if (logger.isTraceEnabled())
-						logger.trace("Keep-alive thread has sent a heartbeat.");
+					if (logger.isTraceEnabled()) {
+						logger.trace("Keep-alive thread of client connection({}) sent a heart beat.", jid);
+					}
+					
+					callback.sent(currentTime(), true);
 				}
 				
 				try {
-					Thread.sleep(heartbeatsCheckingInterval);
+					Thread.sleep(config.getCheckingInterval());
 				} catch (InterruptedException e) {
-					throw new RuntimeException("Keep-alive thread throws an exception.", e);
+					throw new RuntimeException("Keep-alive thread of client connection({}) throws an exception.", e);
 				}
 				
 				if (getServerInactiveTime() > config.getTimeout()) {
 					if (logger.isWarnEnabled())
-						logger.warn("Keeping-alive timeouted. Callback's timeout() will be called.");
+						logger.warn("Keeping-alive thread of client connection({}) has timeouted. Keep-alive callback's timeout() will be called.", jid);
 					
-					callback.timeout();
+					callback.timeout(stream);
 				}
 			}
 			
 			if (logger.isInfoEnabled()) {
-				logger.info("Keep alive thread has stopped.");
+				logger.info("Keep-alive thread of client connection({}) has stopped.", jid);
 			}
 			started = false;
 		}
 
-		private long getInactiveTime() {
-			return currentTime() - lastMessageSentTime;
+		protected long getInactiveTime() {
+			return currentTime().getTime() - lastMessageSentTime;
 		}
 
-		private long getServerInactiveTime() {
-			return currentTime() - lastMessageReceivedTime;
+		protected long getServerInactiveTime() {
+			return currentTime().getTime() - lastMessageReceivedTime;
 		}
 		
 		public void exit() {
@@ -171,18 +191,8 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		}
 	}
 	
-	private long currentTime() {
-		return Calendar.getInstance().getTime().getTime();
-	}
-	
-	@Override
-	public void setKeepAliveCallback(IKeepAliveCallback callback) {
-		this.callback = callback;
-	}
-
-	@Override
-	public IKeepAliveCallback getKeepAliveCallback() {
-		return callback;
+	protected Date currentTime() {
+		return Calendar.getInstance().getTime();
 	}
 
 	@Override
@@ -200,12 +210,15 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		if (!stream.isConnected())
 			return;
 		
-		lastMessageReceivedTime = currentTime();
+		callback.received(currentTime(), false);
 	}
 
 	@Override
 	public void messageSent(String message) {
-		lastMessageSentTime = currentTime();
+		if (!stream.isConnected())
+			return;
+		
+		callback.sent(currentTime(), false);
 	}
 
 	@Override
@@ -220,13 +233,23 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		try {
 			keepAliveThread.join();
 		} catch (InterruptedException e) {
-			throw new RuntimeException("Can't exist keep-alive thread correctly.", e);
+			throw new RuntimeException("Is thread interrupted???", e);
 		}
 	}
 
 	@Override
 	public void heartBeatsReceived(int length) {
-		lastMessageReceivedTime = currentTime();
+		callback.received(currentTime(), true);
+	}
+	
+	@Override
+	public void setCallback(IKeepAliveCallback callback) {
+		this.callback = callback;
+	}
+	
+	@Override
+	public IKeepAliveCallback getCallback() {
+		return callback;
 	}
 
 }

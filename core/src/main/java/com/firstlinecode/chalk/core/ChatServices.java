@@ -587,7 +587,11 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 			
 			@Override
 			public void run() {
-				task.trigger(new AlwaysTimeoutStream<>(task));
+				try {					
+					task.trigger(new AlwaysTimeoutStream<>(task));
+				} catch (RuntimeException e) {
+					processException(e);
+				}
 			}
 			
 			private class AlwaysTimeoutStream<Z extends Stanza> implements IUnidirectionalStream<Z> {
@@ -633,7 +637,11 @@ public class ChatServices implements IChatServices, IErrorListener, IStanzaListe
 			
 			@Override
 			public void run() {
-				task.trigger(stream);
+				try {
+					task.trigger(stream);					
+				} catch (RuntimeException e) {
+					processException(e);
+				}
 			}
 			
 		}

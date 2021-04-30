@@ -8,7 +8,7 @@ import com.firstlinecode.chalk.core.stream.INegotiationListener;
 import com.firstlinecode.chalk.core.stream.IStream;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
-import com.firstlinecode.chalk.network.IConnectionListener;
+import com.firstlinecode.chalk.network.IConnection;
 
 public interface IChatClient {
 	public enum State {
@@ -23,10 +23,6 @@ public interface IChatClient {
 	void addNegotiationListener(INegotiationListener negotiationListener);
 	void removeNegotiationListener(INegotiationListener negotiationListener);
 	List<INegotiationListener> getNegotiationListeners();
-	
-	void addConnectionListener(IConnectionListener connectionListener);
-	void removeConnectionListener(IConnectionListener connectionListener);
-	List<IConnectionListener> getConnectionListeners();
 	
 	void setDefaultErrorHandler(IErrorHandler errorHandler);
 	IErrorHandler getDefaultErrorHandler();
@@ -46,6 +42,7 @@ public interface IChatClient {
 	<T> T createApi(Class<T> apiType);
 	
 	IStream getStream();
+	IConnection getConnection();
 	
 	IChatServices getChatServices();
 	

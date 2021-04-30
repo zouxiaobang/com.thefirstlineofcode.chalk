@@ -15,7 +15,7 @@ public abstract class AbstractClientThread extends ConnectionListenerAdapter imp
 	
 	@Override
 	public void run() {
-		chatClient.addConnectionListener(this);
+		chatClient.getStream().addConnectionListener(this);
 		
 		try {
 			String[] userNameAndPassword = getUserNameAndPassword();

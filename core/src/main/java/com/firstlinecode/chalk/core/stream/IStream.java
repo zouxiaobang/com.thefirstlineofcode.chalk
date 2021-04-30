@@ -16,8 +16,10 @@ public interface IStream {
 	void send(Stanza stanza);
 	
 	boolean isConnected();
+	boolean isDone();
 	
 	void close();
+	void close(boolean graceful);
 	boolean isClosed();
 	
 	void addStanzaListener(IStanzaListener stanzaListener);
@@ -41,5 +43,5 @@ public interface IStream {
 	
 	IConnection getConnection();
 	
-	IKeepAliveManager getKeepaliveManager();
+	IKeepAliveManager getKeepAliveManager();
 }

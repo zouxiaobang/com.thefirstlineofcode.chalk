@@ -25,14 +25,10 @@ public abstract class AbstractStreamNegotiant extends ConnectionListenerAdapter 
 	protected long readResponseTimeout = DEFAULT_READ_RESPONSE_TIMEOUT;
 	
 	@Override
-	public void negotiate(INegotiationContext context) throws ConnectionException, NegotiationException {
+	public synchronized void negotiate(INegotiationContext context) throws ConnectionException, NegotiationException {
 		try {
 			doNegotiate(context);
 		} catch (RuntimeException e) {
-			synchronized (lock) {
-				lock.notify();
-			}
-			
 			throw e;
 		}
 	}
@@ -55,7 +51,7 @@ public abstract class AbstractStreamNegotiant extends ConnectionListenerAdapter 
 	
 	@Override
 	public void messageSent(String message) {
-		// do nothing
+		// Do nothing.
 	}
 	
 	private void waitResponse(long timeout) throws ConnectionException {
@@ -79,7 +75,7 @@ public abstract class AbstractStreamNegotiant extends ConnectionListenerAdapter 
 		return readResponse(getReadResponseTimeout());
 	}
 	
-	protected String readResponse(long timeout) throws ConnectionException {
+	protected synchronized String readResponse(long timeout) throws ConnectionException {
 		long waitedTime = 0;
 		while (Long.compare(waitedTime, timeout) < 0) {
 			if (responses.size() == 0 && exception == null) {
@@ -105,7 +101,7 @@ public abstract class AbstractStreamNegotiant extends ConnectionListenerAdapter 
 		if (error instanceof StreamError) {
 			Stream closeStream = (Stream)oxmFactory.parse(readResponse());
 			
-			if (closeStream.isClose()) {
+			if (closeStream != null && closeStream.isClose()) {
 				context.close();
 			}
 		}

@@ -9,6 +9,8 @@ import com.firstlinecode.basalt.protocol.core.stanza.Stanza;
 import com.firstlinecode.basalt.protocol.core.stanza.error.Conflict;
 import com.firstlinecode.basalt.protocol.core.stanza.error.NotAcceptable;
 import com.firstlinecode.basalt.protocol.core.stanza.error.RemoteServerTimeout;
+import com.firstlinecode.basalt.xeps.ibr.IqRegister;
+import com.firstlinecode.basalt.xeps.ibr.RegistrationForm;
 import com.firstlinecode.basalt.xeps.xdata.XData;
 import com.firstlinecode.chalk.core.AuthFailureException;
 import com.firstlinecode.chalk.core.ErrorException;
@@ -16,35 +18,38 @@ import com.firstlinecode.chalk.core.IChatClient;
 import com.firstlinecode.chalk.core.ISyncTask;
 import com.firstlinecode.chalk.core.IUnidirectionalStream;
 import com.firstlinecode.chalk.core.stream.INegotiationListener;
+import com.firstlinecode.chalk.core.stream.IStream;
+import com.firstlinecode.chalk.core.stream.IStreamNegotiant;
+import com.firstlinecode.chalk.core.stream.NegotiationException;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.IConnectionListener;
-import com.firstlinecode.basalt.xeps.ibr.IqRegister;
-import com.firstlinecode.basalt.xeps.ibr.RegistrationForm;
 
-public class Registration implements IRegistration {
+public class Registration implements IRegistration, INegotiationListener {
 	private StandardStreamConfig streamConfig;
 	private List<IConnectionListener> connectionListeners = new ArrayList<>();
 	private List<INegotiationListener> negotiationListeners = new ArrayList<>();
 	
 	@Override
 	public void register(IRegistrationCallback callback) throws RegistrationException {
-		IChatClient chatClient = new IbrChatClient(streamConfig);
-		chatClient.register(InternalIbrPlugin.class);
+		IbrChatClient ibrChatClient = new IbrChatClient(streamConfig);
+		ibrChatClient.register(InternalIbrPlugin.class);
 		
 		for (IConnectionListener connectionListener : connectionListeners) {
-			chatClient.addConnectionListener(connectionListener);
+			ibrChatClient.getConnection().addListener(connectionListener);
 		}
 		
 		for (INegotiationListener negotiationListener : negotiationListeners) {
-			chatClient.addNegotiationListener(negotiationListener);
+			ibrChatClient.addNegotiationListener(negotiationListener);
 		}
 		
+		ibrChatClient.addNegotiationListener(this);
+		
 		try {
-			chatClient.connect(null);
+			ibrChatClient.connect(null);
 		} catch (ConnectionException e) {
-			if (!chatClient.isClosed())
-				chatClient.close();
+			if (!ibrChatClient.isClosed())
+				ibrChatClient.close();
 			
 			throw new RegistrationException(IbrError.CONNECTION_ERROR, e);
 		} catch (AuthFailureException e) {
@@ -53,8 +58,8 @@ public class Registration implements IRegistration {
 		
 		
 		try {
-			Object filled = callback.fillOut(getRegistrationForm(chatClient));
-			chatClient.getChatServices().getTaskService().execute(new RegisterTask(filled));
+			Object filled = callback.fillOut(getRegistrationForm(ibrChatClient));
+			ibrChatClient.getChatServices().getTaskService().execute(new RegisterTask(filled));
 		} catch (ErrorException e) {
 			IError error = e.getError();
 			if (error.getDefinedCondition().equals(RemoteServerTimeout.DEFINED_CONDITION)) {
@@ -67,8 +72,8 @@ public class Registration implements IRegistration {
 				throw new RegistrationException(IbrError.UNKNOWN, e);
 			}
 		} finally {
-			if (!chatClient.isClosed())
-				chatClient.close();
+			if (!ibrChatClient.isClosed())
+				ibrChatClient.close();
 		}
 	}
 	
@@ -142,6 +147,30 @@ public class Registration implements IRegistration {
 	@Override
 	public void removeNegotiationListener(INegotiationListener listener) {
 		negotiationListeners.remove(listener);
+	}
+
+	@Override
+	public void before(IStreamNegotiant source) {
+		// Do nothing.
+		
+	}
+
+	@Override
+	public void after(IStreamNegotiant source) {
+		// Do nothing.
+		
+	}
+
+	@Override
+	public void occurred(NegotiationException exception) {
+		// Do nothing.
+		
+	}
+
+	@Override
+	public void done(IStream stream) {
+		if (stream.getKeepAliveManager().isStarted())
+			stream.getKeepAliveManager().stop();
 	}
 
 }

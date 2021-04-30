@@ -128,6 +128,7 @@ public class DonggerHome extends StandardClient {
 	
 	@Override
 	protected void processAuthFailure(AuthFailureException e) throws AuthFailureException, ConnectionException {
+		createChatClient();
 		chatClient.connect("dongger", "a_stupid_man");
 	}
 	

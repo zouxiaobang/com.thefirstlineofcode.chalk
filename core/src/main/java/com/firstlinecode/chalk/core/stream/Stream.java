@@ -26,11 +26,16 @@ import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveConfig;
 import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveManager;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionException.Type;
-import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 import com.firstlinecode.chalk.network.IConnection;
 import com.firstlinecode.chalk.network.IConnectionListener;
 
-public class Stream extends ConnectionListenerAdapter implements IStream {
+public class Stream implements IStream, IConnectionListener, INegotiationListener {
+	public enum State {
+		NEGOTIANTING,
+		DONE,
+		CLOSED
+	}
+	
 	private IConnection connection;
 	private volatile IOxmFactory oxmFactory;
 	
@@ -41,10 +46,12 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 	
 	private JabberId jid;
 	private StreamConfig streamConfig;
+	private volatile String closeStreamMessage;
+	private boolean done;
 	
 	private ExecutorService threadPool;
 	
-	private IKeepAliveManager keepaliveManager;
+	private IKeepAliveManager keepAliveManager;
 	
 	public Stream(JabberId jid, StreamConfig streamConfig, IConnection connection) {
 		this(jid, streamConfig, connection, null);
@@ -54,7 +61,7 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 		this.jid = jid;
 		this.streamConfig = streamConfig;
 		this.connection = connection;
-		this.oxmFactory = oxmFactory;
+		this.oxmFactory = oxmFactory != null ? oxmFactory : getOxmFactory();
 		
 		stanzaListeners = new CopyOnWriteArrayList<>();
 		errorListeners = new CopyOnWriteArrayList<>();
@@ -64,9 +71,9 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 		connection.addListener(this);
 		
 		threadPool = Executors.newCachedThreadPool();
+		keepAliveManager = new KeepAliveManager(this, getKeepaliveConfig());
 		
-		keepaliveManager = new KeepAliveManager(this, getKeepaliveConfig());
-		keepaliveManager.start();
+		done = false;
 	}
 
 	private KeepAliveConfig getKeepaliveConfig() {
@@ -98,7 +105,6 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 	@Override
 	public void send(Stanza stanza) {
 		String message = getOxmFactory().translate(stanza);
-		
 		connection.write(message);
 		
 		for (IStanzaWatcher stanzaWatcher : stanzaWatchers) {
@@ -128,19 +134,53 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 
 	@Override
 	public void close() {
-		if (!connection.isClosed())
-			connection.close();
-		
-		threadPool.shutdown();
+		close(true);
 	}
 	
 	@Override
-	public boolean isClosed() {
+	public void close(boolean graceful) {
+		if (keepAliveManager != null && keepAliveManager.isStarted()) {
+			keepAliveManager.stop();
+		}
+		
+		if (connection.isClosed())
+			return;
+		
+		if (graceful) {
+			String closeStreamMessage = getCloseStreamMessage();
+			connection.write(closeStreamMessage);
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// Ignore.
+			}
+		}
+		
+		connection.close();
+		threadPool.shutdown();
+	}
+	
+	private String getCloseStreamMessage() {
+		if (closeStreamMessage != null)
+			return closeStreamMessage;
+		
+		synchronized (oxmFactory) {
+			if (closeStreamMessage != null)
+				return closeStreamMessage;
+			
+			closeStreamMessage = oxmFactory.translate(new com.firstlinecode.basalt.protocol.core.stream.Stream(true));
+			return closeStreamMessage;
+		}
+	}
+	
+	@Override
+	public synchronized boolean isClosed() {
 		return connection.isClosed();
 	}
 
 	@Override
-	public void exceptionOccurred(ConnectionException exception) {
+	public synchronized void exceptionOccurred(ConnectionException exception) {
 		for (IConnectionListener connectionListener : connectionListeners) {
 			connectionListener.exceptionOccurred(exception);
 		}
@@ -199,7 +239,6 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 			} else if (object instanceof Stanza) {
 				Stanza stanza = (Stanza)object;
 				boolean flawedFound = removeFlawed(stanza);
-				
 				
 				if (stanza instanceof Iq) {
 					Iq iq = (Iq)stanza;
@@ -262,6 +301,10 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 
 	@Override
 	public void messageReceived(String message) {
+		for (IConnectionListener connectionListener : connectionListeners) {
+			connectionListener.messageReceived(message);
+		}
+		
 		threadPool.execute(new MessageProcessingThread(message));
 	}
 	
@@ -319,7 +362,7 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 	}
 	
 	@Override
-	public boolean isConnected() {
+	public synchronized boolean isConnected() {
 		return connection.isConnected();
 	}
 
@@ -344,8 +387,42 @@ public class Stream extends ConnectionListenerAdapter implements IStream {
 	}
 
 	@Override
-	public IKeepAliveManager getKeepaliveManager() {
-		// TODO Auto-generated method stub
-		return null;
+	public IKeepAliveManager getKeepAliveManager() {
+		return keepAliveManager;
+	}
+
+	@Override
+	public void heartBeatsReceived(int length) {
+		for (IConnectionListener connectionListener : connectionListeners) {
+			connectionListener.heartBeatsReceived(length);
+		}
+	}
+
+	@Override
+	public boolean isDone() {
+		return done;
+	}
+
+	@Override
+	public void before(IStreamNegotiant source) {
+		// Do nothing.
+	}
+
+	@Override
+	public void after(IStreamNegotiant source) {
+		// Do nothing.
+	}
+
+	@Override
+	public void occurred(NegotiationException exception) {
+		// Do nothing.		
+	}
+
+	@Override
+	public synchronized void done(IStream stream) {
+		if (stream != this)
+			throw new RuntimeException("The stream argument isn't this instance.");
+		
+		done = true;
 	}
 }

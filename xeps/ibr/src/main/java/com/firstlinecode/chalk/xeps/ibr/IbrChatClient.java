@@ -5,9 +5,10 @@ import java.util.List;
 
 import javax.security.cert.X509Certificate;
 
+import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
 import com.firstlinecode.basalt.protocol.core.stream.Features;
-import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
+import com.firstlinecode.basalt.xeps.ibr.Register;
 import com.firstlinecode.chalk.core.AbstractChatClient;
 import com.firstlinecode.chalk.core.stream.AbstractStreamer;
 import com.firstlinecode.chalk.core.stream.IStreamNegotiant;
@@ -18,14 +19,17 @@ import com.firstlinecode.chalk.core.stream.negotiants.InitialStreamNegotiant;
 import com.firstlinecode.chalk.core.stream.negotiants.tls.IPeerCertificateTruster;
 import com.firstlinecode.chalk.core.stream.negotiants.tls.TlsNegotiant;
 import com.firstlinecode.chalk.network.IConnection;
-import com.firstlinecode.basalt.xeps.ibr.Register;
+import com.firstlinecode.chalk.network.SocketConnection;
 
 class IbrChatClient extends AbstractChatClient {
-	
 	private IPeerCertificateTruster peerCertificateTruster;
 
 	public IbrChatClient(StreamConfig streamConfig) {
-		super(streamConfig);
+		super(streamConfig, new SocketConnection());
+	}
+	
+	public IbrChatClient(StreamConfig streamConfig, IConnection connection) {
+		super(streamConfig, connection);
 	}
 	
 	public void setPeerCertificateTruster(IPeerCertificateTruster peerCertificateTruster) {
@@ -37,15 +41,15 @@ class IbrChatClient extends AbstractChatClient {
 	}
 
 	@Override
-	protected IStreamer createStreamer(StreamConfig streamConfig) {
-		IbrStreamer streamer = new IbrStreamer(getStreamConfig());
+	protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
+		IbrStreamer streamer = new IbrStreamer(getStreamConfig(), connection);
 		streamer.setConnectionListener(this);
 		streamer.setNegotiationListener(this);
 		
 		if (peerCertificateTruster != null) {
 			streamer.setPeerCertificateTruster(peerCertificateTruster);
 		} else {
-			// always trust peer certificate
+			// always trust all peer certificates.
 			streamer.setPeerCertificateTruster(new IPeerCertificateTruster() {				
 				@Override
 				public boolean accept(X509Certificate[] certificates) {
@@ -59,10 +63,6 @@ class IbrChatClient extends AbstractChatClient {
 
 	private class IbrStreamer extends AbstractStreamer {
 		private IPeerCertificateTruster certificateTruster;
-		
-		public IbrStreamer(StreamConfig streamConfig) {
-			this(streamConfig, null);
-		}
 		
 		public IbrStreamer(StreamConfig streamConfig, IConnection connection) {
 			super(streamConfig, connection);

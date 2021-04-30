@@ -15,13 +15,19 @@ import com.firstlinecode.chalk.core.stream.UsernamePasswordToken;
 import com.firstlinecode.chalk.core.stream.negotiants.sasl.SaslError;
 import com.firstlinecode.chalk.core.stream.negotiants.tls.IPeerCertificateTruster;
 import com.firstlinecode.chalk.network.ConnectionException;
+import com.firstlinecode.chalk.network.IConnection;
+import com.firstlinecode.chalk.network.SocketConnection;
 
 public class StandardChatClient extends AbstractChatClient implements IAuthenticationCallback {
 	protected IPeerCertificateTruster peerCertificateTruster;
 	private IAuthenticationFailure authFailure;
 	
 	public StandardChatClient(StandardStreamConfig streamConfig) {
-		super(streamConfig);
+		super(streamConfig, new SocketConnection());
+	}
+	
+	public StandardChatClient(StandardStreamConfig streamConfig, IConnection connection) {
+		super(streamConfig, connection);
 	}
 	
 	public void setPeerCertificateTruster(IPeerCertificateTruster peerCertificateTruster) {
@@ -61,8 +67,8 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 		}
 	}
 	
-	protected IStreamer createStreamer(StreamConfig streamConfig) {
-		IStandardStreamer standardStreamer = new StandardStreamer((StandardStreamConfig)streamConfig);
+	protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
+		IStandardStreamer standardStreamer = new StandardStreamer((StandardStreamConfig)streamConfig, connection);
 		standardStreamer.setConnectionListener(this);
 		standardStreamer.setNegotiationListener(this);
 		standardStreamer.setAuthenticationCallback(this);

@@ -16,7 +16,7 @@ public class PingExample extends AbstractExample {
 		IChatClient chatClient = new StandardChatClient(createStreamConfig());
 		chatClient.register(PingPlugin.class);
 		
-		chatClient.addConnectionListener(this);
+		chatClient.getStream().addConnectionListener(this);
 		try {
 			chatClient.connect(new UsernamePasswordToken("dongger", "a_stupid_man"));
 		} catch (ConnectionException e) {

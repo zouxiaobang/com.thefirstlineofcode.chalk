@@ -26,7 +26,7 @@ public class Demo implements IClientController {
 			System.out.println(String.format("%s starts %s.",
 					"Main program", clientClass.getSimpleName()));
 		} else {
-			System.out.println(String.format("%s starts %s",
+			System.out.println(String.format("%s starts %s.",
 					askerClass.getSimpleName(), clientClass.getSimpleName()));
 		}
 		

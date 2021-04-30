@@ -50,7 +50,7 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 	
 	public AbstractStreamer(StreamConfig streamConfig, IConnection connection) {
 		if (streamConfig == null)
-			throw new IllegalArgumentException("null stream config");
+			throw new IllegalArgumentException("Null stream config.");
 		
 		this.streamConfig = streamConfig;
 		System.setProperty(StreamConfig.PROPERTY_NAME_CHALK_MESSAGE_FORMAT, streamConfig.getProperty(StreamConfig.PROPERTY_NAME_CHALK_MESSAGE_FORMAT, Constants.MESSAGE_FORMAT_XML));
@@ -69,7 +69,7 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 		done = false;
 	}
 
-	protected SocketConnection createConnection(StreamConfig streamConfig) {
+	protected IConnection createConnection(StreamConfig streamConfig) {
 		return new SocketConnection();
 	}
 	
@@ -93,6 +93,11 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 	@Override
 	public int getConnectTimeout() {
 		return connectTimeout;
+	}
+	
+	@Override
+	public IConnection getConnection() {
+		return connection;
 	}
 	
 	private class NegotiationThread implements Runnable {
@@ -141,7 +146,6 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 			}
 			
 			done = true;
-			
 			if (negotiationListener != null) {
 				JabberId jid = (JabberId)context.getAttribute(StandardStreamer.NEGOTIATION_KEY_BINDED_CHAT_ID);
 				negotiationListener.done(new Stream(jid, streamConfig, connection));
@@ -192,14 +196,11 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 
 	@Override
 	public void exceptionOccurred(ConnectionException exception) {
-		// ignore. connection exception is processed by negotiant
+		// Ignore. Connection exception is processed by negotiant
 	}
 
 	@Override
 	public void messageReceived(String message) {
-		if (logger.isTraceEnabled())
-			logger.trace("Streamer received a message: {}", message);
-		
 		if (!done && connectionListener != null) {
 			connectionListener.messageReceived(message);
 		}
@@ -207,9 +208,6 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 
 	@Override
 	public void messageSent(String message) {
-		if (logger.isTraceEnabled())
-			logger.trace("Streamer sent a message: {}", message);
-		
 		if (!done && connectionListener != null) {
 			connectionListener.messageSent(message);
 		}

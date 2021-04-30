@@ -10,6 +10,8 @@ import com.firstlinecode.chalk.core.stream.IStream;
 import com.firstlinecode.chalk.core.stream.IStreamer;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
+import com.firstlinecode.chalk.network.IConnection;
+import com.firstlinecode.chalk.network.SocketConnection;
 import com.firstlinecode.chalk.xeps.ping.IPing;
 import com.firstlinecode.chalk.xeps.ping.PingPlugin;
 
@@ -28,7 +30,11 @@ public class ComponentClient extends AbstractChatClient {
 	private String secret;
 	
 	public ComponentClient(ComponentStreamConfig streamConfig) {
-		super(streamConfig);
+		this(streamConfig, new SocketConnection());
+	}
+	
+	public ComponentClient(ComponentStreamConfig streamConfig, IConnection connection) {
+		super(streamConfig, connection);
 		
 		maxPingFailures = DEFAULT_MAX_PING_FAILURES;
 		pingInterval = DEFAULT_PING_INTERVAL;
@@ -38,7 +44,7 @@ public class ComponentClient extends AbstractChatClient {
 	}
 	
 	@Override
-	protected IStreamer createStreamer(StreamConfig streamConfig) {
+	protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
 		ComponentStreamer componentStreamer = new ComponentStreamer((ComponentStreamConfig)streamConfig);
 		
 		componentStreamer.setConnectionListener(this);

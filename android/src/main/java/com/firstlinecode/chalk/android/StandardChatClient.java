@@ -1,13 +1,14 @@
 package com.firstlinecode.chalk.android;
 
+import javax.security.cert.X509Certificate;
+
 import com.firstlinecode.chalk.android.core.stream.StandardStreamer;
 import com.firstlinecode.chalk.core.stream.IStandardStreamer;
 import com.firstlinecode.chalk.core.stream.IStreamer;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.core.stream.negotiants.tls.IPeerCertificateTruster;
-
-import javax.security.cert.X509Certificate;
+import com.firstlinecode.chalk.network.IConnection;
 
 /**
  * @author xb.zou
@@ -20,8 +21,8 @@ public class StandardChatClient extends com.firstlinecode.chalk.core.StandardCha
     }
 
     @Override
-    protected IStreamer createStreamer(StreamConfig streamConfig) {
-        IStandardStreamer standardStreamer = new StandardStreamer((StandardStreamConfig)streamConfig);
+    protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
+        IStandardStreamer standardStreamer = new StandardStreamer((StandardStreamConfig)streamConfig, connection);
         standardStreamer.setConnectionListener(this);
         standardStreamer.setNegotiationListener(this);
         standardStreamer.setAuthenticationCallback(this);

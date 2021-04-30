@@ -1,5 +1,6 @@
 package com.firstlinecode.chalk.core.stream;
 
+import com.firstlinecode.chalk.network.IConnection;
 import com.firstlinecode.chalk.network.IConnectionListener;
 
 public interface IStreamer {
@@ -12,4 +13,5 @@ public interface IStreamer {
 	INegotiationListener getNegotiationListener();
 	void setAuthenticationCallback(IAuthenticationCallback authenticationCallback);
 	IAuthenticationCallback getAuthenticationCallback();
+	IConnection getConnection();
 }
