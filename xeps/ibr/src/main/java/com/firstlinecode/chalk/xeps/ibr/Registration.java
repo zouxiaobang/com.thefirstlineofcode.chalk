@@ -53,7 +53,7 @@ public class Registration implements IRegistration, INegotiationListener {
 			
 			throw new RegistrationException(IbrError.CONNECTION_ERROR, e);
 		} catch (AuthFailureException e) {
-			// it's impossible
+			// It's impossible
 		}
 		
 		
@@ -169,7 +169,8 @@ public class Registration implements IRegistration, INegotiationListener {
 
 	@Override
 	public void done(IStream stream) {
-		if (stream.getKeepAliveManager().isStarted())
+		if (stream.getKeepAliveManager() != null &&
+				stream.getKeepAliveManager().isStarted())
 			stream.getKeepAliveManager().stop();
 	}
 

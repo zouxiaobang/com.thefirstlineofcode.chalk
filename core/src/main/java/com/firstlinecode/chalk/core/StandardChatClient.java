@@ -129,4 +129,9 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 		
 		return false;
 	}
+
+	@Override
+	protected IConnection createConnection() {
+		return new SocketConnection();
+	}
 }

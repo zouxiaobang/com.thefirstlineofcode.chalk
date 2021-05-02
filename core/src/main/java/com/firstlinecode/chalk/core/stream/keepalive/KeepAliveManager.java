@@ -207,17 +207,11 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 
 	@Override
 	public void messageReceived(String message) {
-		if (!stream.isConnected())
-			return;
-		
 		callback.received(currentTime(), false);
 	}
 
 	@Override
 	public void messageSent(String message) {
-		if (!stream.isConnected())
-			return;
-		
 		callback.sent(currentTime(), false);
 	}
 

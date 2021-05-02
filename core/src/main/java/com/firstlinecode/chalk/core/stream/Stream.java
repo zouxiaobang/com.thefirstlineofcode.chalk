@@ -29,9 +29,8 @@ import com.firstlinecode.chalk.network.ConnectionException.Type;
 import com.firstlinecode.chalk.network.IConnection;
 import com.firstlinecode.chalk.network.IConnectionListener;
 
-public class Stream implements IStream, IConnectionListener, INegotiationListener {
+public class Stream implements IStream, IConnectionListener {
 	public enum State {
-		NEGOTIANTING,
 		DONE,
 		CLOSED
 	}
@@ -47,7 +46,6 @@ public class Stream implements IStream, IConnectionListener, INegotiationListene
 	private JabberId jid;
 	private StreamConfig streamConfig;
 	private volatile String closeStreamMessage;
-	private boolean done;
 	
 	private ExecutorService threadPool;
 	
@@ -72,8 +70,6 @@ public class Stream implements IStream, IConnectionListener, INegotiationListene
 		
 		threadPool = Executors.newCachedThreadPool();
 		keepAliveManager = new KeepAliveManager(this, getKeepaliveConfig());
-		
-		done = false;
 	}
 
 	private KeepAliveConfig getKeepaliveConfig() {
@@ -143,9 +139,9 @@ public class Stream implements IStream, IConnectionListener, INegotiationListene
 			keepAliveManager.stop();
 		}
 		
-		if (connection.isClosed())
+		if (connection == null)
 			return;
-		
+				
 		if (graceful) {
 			String closeStreamMessage = getCloseStreamMessage();
 			connection.write(closeStreamMessage);
@@ -158,6 +154,8 @@ public class Stream implements IStream, IConnectionListener, INegotiationListene
 		}
 		
 		connection.close();
+		connection = null;
+		
 		threadPool.shutdown();
 	}
 	
@@ -176,6 +174,9 @@ public class Stream implements IStream, IConnectionListener, INegotiationListene
 	
 	@Override
 	public synchronized boolean isClosed() {
+		if (connection == null)
+			return true;
+		
 		return connection.isClosed();
 	}
 
@@ -360,11 +361,6 @@ public class Stream implements IStream, IConnectionListener, INegotiationListene
 	public IConnection getConnection() {
 		return connection;
 	}
-	
-	@Override
-	public synchronized boolean isConnected() {
-		return connection.isConnected();
-	}
 
 	@Override
 	public StreamConfig getStreamConfig() {
@@ -396,33 +392,5 @@ public class Stream implements IStream, IConnectionListener, INegotiationListene
 		for (IConnectionListener connectionListener : connectionListeners) {
 			connectionListener.heartBeatsReceived(length);
 		}
-	}
-
-	@Override
-	public boolean isDone() {
-		return done;
-	}
-
-	@Override
-	public void before(IStreamNegotiant source) {
-		// Do nothing.
-	}
-
-	@Override
-	public void after(IStreamNegotiant source) {
-		// Do nothing.
-	}
-
-	@Override
-	public void occurred(NegotiationException exception) {
-		// Do nothing.		
-	}
-
-	@Override
-	public synchronized void done(IStream stream) {
-		if (stream != this)
-			throw new RuntimeException("The stream argument isn't this instance.");
-		
-		done = true;
 	}
 }

@@ -106,8 +106,12 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 			throw new IllegalStateException("Client has already connected.");
 		}
 		
-		state = State.CONNECTING;
+			
+		if (state == State.CONNECTING) {
+			throw new IllegalStateException("Client is connecting now.");
+		}
 		
+		state = State.CONNECTING;
 		doConnect(authToken);
 		
 		try {
@@ -141,13 +145,18 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		exception = null;
 		stream = null;
 		
+		if (connection == null) {
+			connection = createConnection();
+		}
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Chat client is trying to connect to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
-		
+				
 		streamer = createStreamer(streamConfig, connection);
 		streamer.negotiate(authToken);
 	}
 	
+	protected abstract IConnection createConnection();
 	protected abstract IStreamer createStreamer(StreamConfig streamConfig, IConnection connection);
 	
 	@Override
@@ -381,8 +390,10 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 				logger.debug("Chat client has disconnected from XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		}
 		
-		if (stream == null && state == State.CONNECTING)
+		if (stream == null && state == State.CONNECTING) {
 			connection.close();
+			connection = null;
+		}
 		
 		state = State.CLOSED;
 	}
@@ -427,14 +438,13 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		if (logger.isDebugEnabled())
 			logger.debug("Chat client has connected to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
+		stream.getKeepAliveManager().start();
+		
+		notify();
 		
 		for (INegotiationListener listener : negotiationListeners) {
 			listener.done(stream);
 		}
-		
-		notify();
-		
-		stream.getKeepAliveManager().start();
 	}
 
 	@Override
@@ -628,6 +638,10 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	
 	@Override
 	public IConnection getConnection() {
+		if (connection == null) {
+			connection = createConnection();
+		}
+		
 		return connection;
 	}
 	

@@ -36,8 +36,6 @@ import com.firstlinecode.chalk.leps.im.subscription.ISubscriptionListener2;
 import com.firstlinecode.chalk.leps.im.subscription.SubscriptionError2;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
-import com.firstlinecode.chalk.network.IConnection;
-import com.firstlinecode.chalk.network.SocketConnection;
 import com.firstlinecode.chalk.xeps.muc.IMucService;
 import com.firstlinecode.chalk.xeps.muc.IRoom;
 import com.firstlinecode.chalk.xeps.muc.IRoomListener;
@@ -154,8 +152,8 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 		
 		beforeConnecting();
 		
+		chatClient.getConnection().addListener(this);
 		String[] userNameAndPassword = getUserNameAndPassword();
-		
 		try {
 			chatClient.connect(userNameAndPassword[0], userNameAndPassword[1]);
 		} catch (ConnectionException e) {
@@ -165,7 +163,7 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 			print("Auth failed.");
 			
 			print("Reconnect...");
-			createChatClient();
+			chatClient.getConnection().addListener(this);
 			try {
 				chatClient.connect(userNameAndPassword[0], userNameAndPassword[1]);
 			} catch (AuthFailureException ae) {
@@ -217,12 +215,8 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 	}
 
 	protected void createChatClient() {
-		IConnection connection = new SocketConnection();
-		chatClient = new StandardChatClient(getStreamConfig(), connection);
-		
+		chatClient = new StandardChatClient(getStreamConfig());
 		registerPlugins();
-		
-		connection.addListener(this);
 	}
 
 	@Override
