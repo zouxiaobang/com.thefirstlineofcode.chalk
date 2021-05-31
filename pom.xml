@@ -7,13 +7,13 @@
 	<groupId>com.firstlinecode.chalk</groupId>
 	<artifactId>com.firstlinecode.chalk.parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.2.0.RELEASE</version>
+	<version>0.2.0-RELEASE</version>
 	<name>Chalk XMPP Client Libraries</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<basalt.version>1.1.0.RELEASE</basalt.version>
-		<chalk.version>0.2.0.RELEASE</chalk.version>
+		<basalt.version>1.1.0-RELEASE</basalt.version>
+		<chalk.version>0.2.0-RELEASE</chalk.version>
 	</properties>
 
 	<modules>
