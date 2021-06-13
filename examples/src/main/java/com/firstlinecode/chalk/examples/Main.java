@@ -2,17 +2,12 @@ package com.firstlinecode.chalk.examples;
 
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 
 import com.firstlinecode.basalt.protocol.Constants;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoDatabase;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
@@ -20,8 +15,21 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class Main {
+	private enum DeployMode {
+		LITE,
+		CLUSTER
+	}
+	
 	private static final String[] EXAMPLE_NAMES = new String[] {"ibr", "ping", "im"};
-	private static final Class<?>[] EXAMPLE_CLASS = new Class<?>[] {IbrExample.class, PingExample.class, ImExample.class};
+	private static final Class<?>[] CLUSTER_EXAMPLE_CLASS = new Class<?>[] {
+		IbrClusterExample.class,
+		PingClusterExample.class,
+		ImClusterExample.class
+	};
+	private static final Class<?>[] LITE_EXAMPLE_CLASS = new Class<?>[] {
+	};
+	
+	private DeployMode deployMode;
 	
 	public static void main(String[] args) throws Exception {
 		System.setProperty("chalk.negotiation.read.response.timeout", Integer.toString(10 * 60 * 1000));
@@ -39,26 +47,10 @@ public class Main {
 		}
 		
 		configureLog(options.logLevel);
-		
-		MongoClient dbClient = null;
-		MongoDatabase database = null;
-		if (isClusterDeployMode(options)) {
-			dbClient = createDatabase(options);
-			database = dbClient.getDatabase(options.dbName);			
-		}
+		deployMode = getDeployMode(options);
 		
 		if (options.examples == null) {
 			options.examples = EXAMPLE_NAMES;
-		}
-		
-		if (!isClusterDeployMode(options) && options.examples.length != 1) {
-			System.out.println("Error:");
-			System.out.println("You must provide one and only one example name as EXAMPLE_NAMES parameter when deployed in 'lite' mode.");
-			
-			System.out.println();
-			System.out.println("--------Usage--------");
-			printUsage();
-			return;
 		}
 		
 		for (int i = 0; i < options.examples.length; i++) {
@@ -69,27 +61,22 @@ public class Main {
 			
 			Example example = exampleClass.newInstance();
 			try {
-				example.run(options);
+				example.init(options);
+				example.run();
 			} catch (Exception e) {
 				throw e;
 			} finally {
-				if (isClusterDeployMode(options))
-					example.cleanDatabase(database);
+				example.clean();
 			}
 		}
+	}
+
+	private DeployMode getDeployMode(Options options) {
+		if ("cluster".equals(options.deployMode)) {
+			return DeployMode.CLUSTER;
+		}
 		
-		if (isClusterDeployMode(options))
-			dbClient.close();
-	}
-
-	private boolean isClusterDeployMode(Options options) {
-		return "cluster".equals(options.deployMode);
-	}
-
-	private MongoClient createDatabase(Options options) {
-		MongoClient client = new MongoClient(new ServerAddress(options.dbHost, options.dbPort),
-				Collections.singletonList(MongoCredential.createCredential(options.dbUser, options.dbName, options.dbPassword.toCharArray())));
-		return client;
+		return DeployMode.LITE;
 	}
 
 	private String getExampleNames() {
@@ -107,9 +94,16 @@ public class Main {
 
 	@SuppressWarnings("unchecked")
 	private Class<Example> getExampleClass(String exampleName) {
+		Class<?>[] exampleClasses;
+		if (deployMode == DeployMode.CLUSTER) {
+			exampleClasses = CLUSTER_EXAMPLE_CLASS;
+		} else {
+			exampleClasses = LITE_EXAMPLE_CLASS;			
+		}
+		
 		for (int i = 0; i < EXAMPLE_NAMES.length; i++) {
 			if (EXAMPLE_NAMES[i].equals(exampleName))
-				return (Class<Example>)EXAMPLE_CLASS[i];
+				return (Class<Example>)exampleClasses[i];
 		}
 		
 		return null;
@@ -130,11 +124,11 @@ public class Main {
 			String argValue = null;
 			int equalMarkIndex = args[i].indexOf('=');
 			if (equalMarkIndex == -1) {
-				argName = args[i];
+				argName = args[i].trim();
 				argValue = "TRUE";
 			} else {
-				argName = args[i].substring(2, equalMarkIndex);
-				argValue = args[i].substring(equalMarkIndex + 1, args[i].length());
+				argName = args[i].substring(2, equalMarkIndex).trim();
+				argValue = args[i].substring(equalMarkIndex + 1, args[i].length()).trim();
 			}
 			
 			if (mArgs.containsKey(argName)) {
@@ -180,10 +174,17 @@ public class Main {
 				options.dbUser = entry.getValue();
 			} else if ("db-password".equals(entry.getKey())) {
 				options.dbPassword = entry.getValue();
+			} else if ("server-home".equals(entry.getKey())) {
+				if (deployMode != DeployMode.LITE)
+					throw new IllegalArgumentException("Illegal argument: server-home. The argument is only legal in deploy lite mode.");
+				options.serverHome = entry.getValue();
 			} else {
 				throw new IllegalArgumentException(String.format("Unknown option %s.", entry.getKey()));
 			}
 		}
+		
+		if (deployMode == DeployMode.LITE && options.serverHome == null)
+			throw new IllegalStateException("Server home not be set. It must be set in deploy lite mode.");
 		
 		return options;
 	}
@@ -218,18 +219,20 @@ public class Main {
 	}
 	
 	private void printUsage() {
+		System.out.println("--------Usage--------");
 		System.out.println("java com.firstlinecode.chalk.examples.Main [OPTIONS] <EXAMPLE_NAMES>");
 		System.out.println("OPTIONS:");
 		System.out.println("--host=[]           Server address(Default is 'localhost'). ");
 		System.out.println("--port=[]           Server port(Default is '5222').");		
-		System.out.println("--log-level=[]      Log level('normal' or 'debug' or 'trace'. Default is 'normal').");
+		System.out.println("--log-level=[]      Log level('normal', 'debug' or 'trace'. Default is 'normal').");
 		System.out.println("--message-format=[] Chalk message format('xml' or 'binary'. Default is 'xml').");
 		System.out.println("--deploy-mode=[]    Server deploy mode('lite' or 'cluster'. Default is 'lite').");
 		System.out.println("--db-host=[]        Database host(Default is 'localhost').");
-		System.out.println("--db-port=[]        Database port(Default is '27017').");
+		System.out.println("--db-port=[]        Database port(Default is '27017' in cluster mode or '9001' in lite mode').");
 		System.out.println("--db-name=[]        Database name(Default is 'granite').");
 		System.out.println("--db-user=[]        Database user(Default is 'granite').");
 		System.out.println("--db-password=[]    Database password(Default is 'granite').");
+		System.out.println("--server-home=[]    Server home. It's only legal in deploy lite mode.");
 		System.out.println("EXAMPLE_NAMES:");
 		System.out.println("ibr                 In-Band Registratio(XEP-0077).");
 		System.out.println("ping                XMPP Ping(XEP-0077).");

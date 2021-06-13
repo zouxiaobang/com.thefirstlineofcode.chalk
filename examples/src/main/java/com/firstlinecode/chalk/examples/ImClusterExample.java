@@ -16,9 +16,8 @@ import com.firstlinecode.chalk.im.roster.RosterError;
 import com.firstlinecode.chalk.im.stanza.IMessageListener;
 import com.firstlinecode.chalk.im.subscription.ISubscriptionListener;
 import com.firstlinecode.chalk.im.subscription.SubscriptionError;
-import com.mongodb.client.MongoDatabase;
 
-public class ImExample extends MultiClientsExample {
+public class ImClusterExample extends MultiClientsClusterExample {
 	private static final String[][] USER_AND_PASSWORDS = new String[][] {
 		new String[] {"dongger", "a_stupid_man"},
 		new String[] {"agilest", "a_good_guy"}
@@ -27,7 +26,7 @@ public class ImExample extends MultiClientsExample {
 	private CountDownLatch waitAllClientsToReady = new CountDownLatch(3);
 	
 	private class DonggerOfficeThread extends AbstractClientThread {
-		public DonggerOfficeThread(StandardChatClient chatClient, MultiClientsExample example) {
+		public DonggerOfficeThread(StandardChatClient chatClient, MultiClientsClusterExample example) {
 			super(chatClient, example);
 		}
 
@@ -121,7 +120,7 @@ public class ImExample extends MultiClientsExample {
 	}
 
 	private class AgilestPadThread extends AbstractClientThread {
-		public AgilestPadThread(StandardChatClient chatClient, MultiClientsExample example) {
+		public AgilestPadThread(StandardChatClient chatClient, MultiClientsClusterExample example) {
 			super(chatClient, example);
 		}
 
@@ -210,7 +209,7 @@ public class ImExample extends MultiClientsExample {
 	}
 	
 	private class AgilestMobileThread extends AbstractClientThread {
-		public AgilestMobileThread(StandardChatClient chatClient, MultiClientsExample example) {
+		public AgilestMobileThread(StandardChatClient chatClient, MultiClientsClusterExample example) {
 			super(chatClient, example);
 		}
 
@@ -287,18 +286,24 @@ public class ImExample extends MultiClientsExample {
 	}
 
 	@Override
-	protected void cleanExampleData(MongoDatabase database) {
-		database.getCollection("subscription_notifications").deleteMany(new Document());
-		database.getCollection("subscriptions").deleteMany(new Document());
-	}
-
-	@Override
 	protected AbstractClientThread[] createClients() {
 		return new AbstractClientThread[] {
 				new DonggerOfficeThread(new ChatClient(createStreamConfig("office")), this),
 				new AgilestMobileThread(new ChatClient(createStreamConfig("mobile")), this),
 				new AgilestPadThread(new ChatClient(createStreamConfig("pad")), this)
 		};
+	}
+
+	@Override
+	public void run() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void cleanData() {
+		database.getCollection("subscription_notifications").deleteMany(new Document());
+		database.getCollection("subscriptions").deleteMany(new Document());
 	}
 
 }

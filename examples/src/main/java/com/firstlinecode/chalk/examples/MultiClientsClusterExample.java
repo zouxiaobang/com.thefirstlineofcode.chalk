@@ -3,11 +3,11 @@ package com.firstlinecode.chalk.examples;
 import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 
-public abstract class MultiClientsExample extends AbstractExample {
+public abstract class MultiClientsClusterExample extends AbstractClusterExample {
 	private int activatedClients;
 	
 	@Override
-	protected void runExample() throws Exception {
+	public void run() throws Exception {
 		Runnable[] clients = createClients();
 		activatedClients = clients.length;
 		
@@ -30,10 +30,10 @@ public abstract class MultiClientsExample extends AbstractExample {
 		public synchronized void close() {
 			super.close();
 			
-			synchronized (MultiClientsExample.this) {
+			synchronized (MultiClientsClusterExample.this) {
 				activatedClients--;
 				if (activatedClients == 0) {
-					MultiClientsExample.this.notify();
+					MultiClientsClusterExample.this.notify();
 				}
 			}
 		}
@@ -42,10 +42,10 @@ public abstract class MultiClientsExample extends AbstractExample {
 		protected synchronized void close(boolean graceful) {
 			super.close(graceful);
 			
-			synchronized (MultiClientsExample.this) {
+			synchronized (MultiClientsClusterExample.this) {
 				activatedClients--;
 				if (activatedClients == 0) {
-					MultiClientsExample.this.notify();
+					MultiClientsClusterExample.this.notify();
 				}
 			}
 		}

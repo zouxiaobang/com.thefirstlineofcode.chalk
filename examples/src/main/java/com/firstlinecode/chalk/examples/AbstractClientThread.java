@@ -5,10 +5,10 @@ import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 
 public abstract class AbstractClientThread extends ConnectionListenerAdapter implements Runnable {
-	protected MultiClientsExample example;
+	protected MultiClientsClusterExample example;
 	protected StandardChatClient chatClient;
 	
-	public AbstractClientThread(StandardChatClient chatClient, MultiClientsExample example) {
+	public AbstractClientThread(StandardChatClient chatClient, MultiClientsClusterExample example) {
 		this.chatClient = chatClient;
 		this.example = example;
 	}

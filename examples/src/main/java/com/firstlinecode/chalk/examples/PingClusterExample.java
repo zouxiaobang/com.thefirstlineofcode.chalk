@@ -7,12 +7,16 @@ import com.firstlinecode.chalk.core.stream.UsernamePasswordToken;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.xeps.ping.IPing;
 import com.firstlinecode.chalk.xeps.ping.PingPlugin;
-import com.mongodb.client.MongoDatabase;
 
-public class PingExample extends AbstractExample {
+public class PingClusterExample extends AbstractClusterExample {
 
 	@Override
-	protected void runExample() {
+	protected String[][] getUserNameAndPasswords() {
+		return new String[][] {new String[] {"dongger", "a_stupid_man"}};
+	}
+
+	@Override
+	public void run() throws Exception {
 		IChatClient chatClient = new StandardChatClient(createStreamConfig());
 		chatClient.register(PingPlugin.class);
 		
@@ -41,11 +45,11 @@ public class PingExample extends AbstractExample {
 	}
 
 	@Override
-	protected String[][] getUserNameAndPasswords() {
-		return new String[][] {new String[] {"dongger", "a_stupid_man"}};
-	}
+	protected void doInit() {}
 
 	@Override
-	protected void cleanExampleData(MongoDatabase database) {}
+	protected void cleanData() {
+		// No example data.
+	}
 	
 }

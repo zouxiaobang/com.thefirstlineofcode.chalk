@@ -1,7 +1,5 @@
 package com.firstlinecode.chalk.examples;
 
-import org.bson.Document;
-
 import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.xeps.ibr.IqRegister;
 import com.firstlinecode.basalt.xeps.ibr.RegistrationField;
@@ -16,32 +14,31 @@ import com.firstlinecode.chalk.xeps.ibr.IRegistration;
 import com.firstlinecode.chalk.xeps.ibr.IRegistrationCallback;
 import com.firstlinecode.chalk.xeps.ibr.IbrPlugin;
 import com.firstlinecode.chalk.xeps.ibr.RegistrationException;
-import com.mongodb.client.MongoDatabase;
 
 public abstract class AbstractExample extends ConnectionListenerAdapter implements Example {
 	protected Options options;
+	
+	public AbstractExample() {
+		super();
+	}
 
 	@Override
-	public void run(Options options) throws Exception {
+	public void init(Options options) {
 		this.options = options;
-		createUsers();
-		runExample();
-	}
-	
-	@Override
-	public void cleanDatabase(MongoDatabase database) {
-		cleanExampleData(database);
-		cleanUsers(database);
+		
+		try {
+			createUsers();
+		} catch (RegistrationException e) {
+			throw new RuntimeException("Can't create user.", e);
+		}
+		
+		doInit();
 	}
 
-	protected void cleanUsers(MongoDatabase database) {
-		database.getCollection("users").deleteMany(new Document());
-	}
+	protected void doInit() {}
 	
-	protected abstract void runExample() throws Exception;
-	protected abstract String[][] getUserNameAndPasswords();	
-	protected abstract void cleanExampleData(MongoDatabase database);
-	
+	protected abstract String[][] getUserNameAndPasswords();
+
 	protected StandardStreamConfig createStreamConfig(String resource) {
 		StandardStreamConfig streamConfig = new StandardStreamConfig(options.host, options.port);
 		streamConfig.setTlsPreferred(true);
@@ -51,11 +48,11 @@ public abstract class AbstractExample extends ConnectionListenerAdapter implemen
 		
 		return streamConfig;
 	}
-	
+
 	protected JabberId getJabberId(String user) {
 		return getJabberId(user, null);
 	}
-	
+
 	protected JabberId getJabberId(String user, String resource) {
 		if (resource == null) {
 			return JabberId.parse(String.format("%s@%s", user, options.host));			
@@ -63,7 +60,7 @@ public abstract class AbstractExample extends ConnectionListenerAdapter implemen
 		
 		return JabberId.parse(String.format("%s@%s/%s", user, options.host, resource));
 	}
-	
+
 	protected StandardStreamConfig createStreamConfig() {
 		return createStreamConfig("chalk_" + getExampleName() + "_example");
 	}
@@ -78,15 +75,19 @@ public abstract class AbstractExample extends ConnectionListenerAdapter implemen
 	}
 
 	protected void createUsers() throws RegistrationException {
+		String[][] userNameAndPaswords = getUserNameAndPasswords();
+		if (userNameAndPaswords == null || userNameAndPaswords.length == 0)
+			return;
+		
 		IChatClient chatClient = new StandardChatClient(createStreamConfig());
 		chatClient.register(IbrPlugin.class);
 		
 		IRegistration registration = chatClient.createApi(IRegistration.class);
 		registration.addConnectionListener(this);
 		
-		for (final String[] userNameAndPassword : getUserNameAndPasswords()) {
+		for (final String[] userNameAndPassword : userNameAndPaswords) {
 			registration.register(new IRegistrationCallback() {
-
+	
 				@Override
 				public Object fillOut(IqRegister iqRegister) {
 					if (iqRegister.getRegister() instanceof RegistrationForm) {
@@ -105,7 +106,7 @@ public abstract class AbstractExample extends ConnectionListenerAdapter implemen
 		
 		chatClient.close();
 	}
-	
+
 	@Override
 	public void exceptionOccurred(ConnectionException exception) {}
 
@@ -118,11 +119,11 @@ public abstract class AbstractExample extends ConnectionListenerAdapter implemen
 	public void messageSent(String message) {
 		printString("-> " + message);
 	}
-	
+
 	protected void printString(String string) {
 		System.out.println(string);
 	}
-	
+
 	protected void printException(Exception e) {
 		System.out.println("Exception:");
 		e.printStackTrace(System.out);
