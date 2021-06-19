@@ -27,6 +27,7 @@ public class Main {
 		ImClusterExample.class
 	};
 	private static final Class<?>[] LITE_EXAMPLE_CLASS = new Class<?>[] {
+		IbrLiteExample.class
 	};
 	
 	private DeployMode deployMode;
@@ -51,6 +52,10 @@ public class Main {
 		
 		if (options.examples == null) {
 			options.examples = EXAMPLE_NAMES;
+		}
+		
+		if (deployMode == DeployMode.LITE && options.examples.length != 1) {
+			throw new IllegalArgumentException("Only one example can be executed each time in deploy lite mode.");
 		}
 		
 		for (int i = 0; i < options.examples.length; i++) {
@@ -174,17 +179,10 @@ public class Main {
 				options.dbUser = entry.getValue();
 			} else if ("db-password".equals(entry.getKey())) {
 				options.dbPassword = entry.getValue();
-			} else if ("server-home".equals(entry.getKey())) {
-				if (deployMode != DeployMode.LITE)
-					throw new IllegalArgumentException("Illegal argument: server-home. The argument is only legal in deploy lite mode.");
-				options.serverHome = entry.getValue();
 			} else {
 				throw new IllegalArgumentException(String.format("Unknown option %s.", entry.getKey()));
 			}
 		}
-		
-		if (deployMode == DeployMode.LITE && options.serverHome == null)
-			throw new IllegalStateException("Server home not be set. It must be set in deploy lite mode.");
 		
 		return options;
 	}
@@ -232,7 +230,6 @@ public class Main {
 		System.out.println("--db-name=[]        Database name(Default is 'granite').");
 		System.out.println("--db-user=[]        Database user(Default is 'granite').");
 		System.out.println("--db-password=[]    Database password(Default is 'granite').");
-		System.out.println("--server-home=[]    Server home. It's only legal in deploy lite mode.");
 		System.out.println("EXAMPLE_NAMES:");
 		System.out.println("ibr                 In-Band Registratio(XEP-0077).");
 		System.out.println("ping                XMPP Ping(XEP-0077).");

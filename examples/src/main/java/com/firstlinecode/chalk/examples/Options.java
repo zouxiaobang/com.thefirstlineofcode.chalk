@@ -11,6 +11,5 @@ public class Options {
 	public String dbName = "granite";
 	public String dbUser = "granite";
 	public String dbPassword = "granite";
-	public String serverHome;
 	public String[] examples;
 }

@@ -308,8 +308,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 									listener.heartBeatsReceived(message.length());
 								}
 							} else {
-								if (logger.isTraceEnabled())
-									traceMessageReceived(bytes);
+								traceMessageReceived(bytes);
 							
 								for (IConnectionListener listener : listeners) {
 									listener.messageReceived(message);
@@ -325,6 +324,9 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 		}
 
 		private void traceMessageReceived(byte[] bytes) {
+			if (!logger.isTraceEnabled())
+				return;
+			
 			if (useBinaryFormat) {
 				logger.trace("{} binary message bytes has received: {}.",
 						bytes.length, BinaryUtils.getHexStringFromBytes(bytes));
@@ -477,10 +479,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 							}
 						}
 					} else {
-						String message = null;
-						if (logger.isTraceEnabled()) {
-							message = traceMessageSent(bytes);
-						}
+						String message = traceMessageSent(bytes);
 						
 						for (IConnectionListener listener : listeners) {
 							listener.messageSent(message);
@@ -499,11 +498,15 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			String message = null;
 			if (useBinaryFormat) {
 				message = bxmppProtocolConverter.toXml(bytes);
-				logger.trace("{} binary message bytes has sent: {}.",
-						bytes.length, BinaryUtils.getHexStringFromBytes(bytes));
+				if (logger.isTraceEnabled()) {
+					logger.trace("{} binary message bytes has sent: {}.",
+							bytes.length, BinaryUtils.getHexStringFromBytes(bytes));
+				}
 			} else {
 				message = new String(bytes);
-				logger.trace("A XMPP string has sent: {}.", message);								
+				if (logger.isTraceEnabled()) {					
+					logger.trace("A XMPP string has sent: {}.", message);								
+				}
 			}
 			
 			return message;

@@ -40,7 +40,7 @@ public class IbrLiteExample extends AbstractLiteExample {
 			chatClient.close();
 		}
 	}
-
+	
 	@Override
 	protected String[][] getUserNameAndPasswords() {
 		return null;

@@ -438,7 +438,8 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		if (logger.isDebugEnabled())
 			logger.debug("Chat client has connected to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
-		stream.getKeepAliveManager().start();
+		if (stream.getJid() != null)
+			stream.getKeepAliveManager().start();
 		
 		notify();
 		

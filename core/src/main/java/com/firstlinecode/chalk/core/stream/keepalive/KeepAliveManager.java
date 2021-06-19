@@ -161,7 +161,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 				try {
 					Thread.sleep(config.getCheckingInterval());
 				} catch (InterruptedException e) {
-					throw new RuntimeException("Keep-alive thread of client connection({}) throws an exception.", e);
+					throw new RuntimeException(String.format("Keep-alive thread of client connection(%s) throws an exception.", jid), e);
 				}
 				
 				if (getServerInactiveTime() > config.getTimeout()) {
