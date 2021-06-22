@@ -1,5 +1,6 @@
 package com.firstlinecode.chalk.core.stream.keepalive;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,9 +16,8 @@ import com.firstlinecode.chalk.network.IConnectionListener;
 
 public class KeepAliveManager implements IKeepAliveManager, IConnectionListener {
 	private static final Logger logger = LoggerFactory.getLogger(KeepAliveManager.class);
-			
-	public static final char CHAR_HEART_BEAT = ' ';
-	public  static final byte BYTE_HEART_BEAT = (byte)CHAR_HEART_BEAT;
+	
+	public static final byte[] BYTES_OF_HEART_BEAT_CHAR =  getBytesOfHeartBeatChar();
 	
 	protected static final String XML_CLOSE_STREAM = "</stream:stream>";
 	protected static final byte[] BINARY_CLOSE_STREAM = new byte[] {-1, -4, -1};
@@ -52,6 +52,14 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		started = false;
 	}
 	
+	private static byte[] getBytesOfHeartBeatChar() {
+		try {
+			return String.valueOf(CHAR_HEART_BEAT).getBytes(Constants.DEFAULT_CHARSET);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(String.format("%s not supported!", Constants.DEFAULT_CHARSET), e);
+		}
+	}
+	
 	protected IKeepAliveCallback createDefaultCallback() {
 		return new DefaultKeepAliveCallback();
 	}
@@ -63,7 +71,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			lastMessageReceivedTime = currentTime.getTime();
 			
 			if (logger.isTraceEnabled())
-				logger.trace(String.format("Keep-alive thread has received a heartbeat at %s.", currentTime.toString()));
+				logger.trace(String.format("Keep-alive thread has received a message at %s.", currentTime.toString()));
 		}
 		
 		@Override
@@ -93,12 +101,13 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 
 	@Override
 	public void changeConfig(KeepAliveConfig config) {
-		this.config = config;
-		
-		if (!isStarted())
+		if (!isStarted()) {
+			this.config = config;
 			return;
+		}
 		
 		stop();
+		this.config = config;
 		start();
 	}
 
@@ -118,7 +127,9 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		keepAliveThread.start();
 		if (logger.isInfoEnabled()) {
 			logger.info("Keep-alive thread of client connection({}) has started.", stream.getJid());
-		}		
+		}
+		
+		stream.getConnection().addListener(this);
 	}
 	
 	protected class KeepAliveThread extends Thread {
@@ -132,6 +143,9 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		
 		@Override
 		public void run() {
+			if (jid == null)
+				return;
+			
 			started = true;
 			
 			lastMessageSentTime = currentTime().getTime();
@@ -141,14 +155,14 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 					if (logger.isWarnEnabled()) {
 						logger.warn("Keep-alive thread of client connection({}) can't work. The stream has closed.", jid);
 					}
-					break;
+					return;
 				}
 				
 				if (getInactiveTime() > config.getInterval()) {
 					if (useBinaryFormat) {
 						stream.getConnection().write(new byte[BYTE_HEART_BEAT]);
 					} else {
-						stream.getConnection().write(String.valueOf(CHAR_HEART_BEAT));
+						stream.getConnection().write(BYTES_OF_HEART_BEAT_CHAR);
 					}
 					
 					if (logger.isTraceEnabled()) {
@@ -163,12 +177,15 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 				} catch (InterruptedException e) {
 					throw new RuntimeException(String.format("Keep-alive thread of client connection(%s) throws an exception.", jid), e);
 				}
-				
+
 				if (getServerInactiveTime() > config.getTimeout()) {
+					System.out.println("config.getTimeout() = " + config.getTimeout());
 					if (logger.isWarnEnabled())
 						logger.warn("Keeping-alive thread of client connection({}) has timeouted. Keep-alive callback's timeout() will be called.", jid);
 					
 					callback.timeout(stream);
+					
+					stop = true;
 				}
 			}
 			
@@ -207,6 +224,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 
 	@Override
 	public void messageReceived(String message) {
+		System.out.println(String.format("Message received: '%s'.", message));
 		callback.received(currentTime(), false);
 	}
 
@@ -220,6 +238,8 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		if (!isStarted())
 			return;
 		
+		stream.getConnection().removeListener(this);
+		
 		if (keepAliveThread == null)
 			throw new IllegalStateException("Null keep alive thread.");
 		
@@ -229,6 +249,8 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		} catch (InterruptedException e) {
 			throw new RuntimeException("Is thread interrupted???", e);
 		}
+		
+		keepAliveThread = null;
 	}
 
 	@Override

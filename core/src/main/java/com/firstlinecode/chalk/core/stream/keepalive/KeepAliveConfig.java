@@ -24,6 +24,7 @@ public class KeepAliveConfig {
 		if (interval > timeout)
 			throw new IllegalArgumentException("Timeout shouldn't be less than interval.");
 		
+		this.checkingInterval = checkingInterval;
 		this.interval = interval;
 		this.timeout = timeout;
 	}

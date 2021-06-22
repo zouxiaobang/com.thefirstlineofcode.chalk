@@ -1,7 +1,6 @@
 package com.firstlinecode.chalk.network;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,18 +45,15 @@ import com.firstlinecode.basalt.oxm.preprocessing.XmlMessagePreprocessorAdapter;
 import com.firstlinecode.basalt.protocol.Constants;
 import com.firstlinecode.basalt.protocol.core.ProtocolException;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
-import com.firstlinecode.chalk.core.stream.keepalive.KeepAliveManager;
+import com.firstlinecode.chalk.core.stream.keepalive.IKeepAliveManager;
 
 public class SocketConnection implements IConnection, HandshakeCompletedListener {
-
 	private static final Logger logger = LoggerFactory.getLogger(SocketConnection.class);
 	
 	private static final int DEFAULT_READ_QUEUE_SIZE = 64;
 	private static final int DEFAULT_WRITE_QUEUE_SIZE = 64;
 	private static final int DEFAULT_BLOCKING_TIMEOUT = 200;
 	private static final int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
-	
-	private static final char HEART_BEAT = ' ';
 	
 	private Socket socket;
 	private BlockingQueue<byte[]> sendingQueue;
@@ -355,7 +351,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	
 	private boolean isHeartBeats(String message) {
 		for (char c : message.toCharArray()) {
-			if (c != HEART_BEAT)
+			if (!(IKeepAliveManager.CHAR_HEART_BEAT == c))
 				return false;
 		}
 		
@@ -449,7 +445,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 		@Override
 		public void run() {
 			try {
-				output = new BufferedOutputStream(socket.getOutputStream());
+				output = socket.getOutputStream();
 			} catch (IOException e) {
 				processException(new ConnectionException(ConnectionException.Type.IO_ERROR, e));
 				return;
@@ -473,10 +469,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 					if (isHeartBeat(bytes)) {
 						if (logger.isTraceEnabled()) {
 							logger.trace(String.format("A heartbeat has sent."));
-							
-							for (IConnectionListener listener : listeners) {
-								listener.heartBeatsReceived(1);
-							}
 						}
 					} else {
 						String message = traceMessageSent(bytes);
@@ -531,11 +523,11 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	}
 
 	private boolean isHeartBeatByte(byte b) {
-		return KeepAliveManager.BYTE_HEART_BEAT == b;
+		return IKeepAliveManager.BYTE_HEART_BEAT == b;
 	}
 
 	private boolean isHeartBeartChar(char c) {
-		return KeepAliveManager.CHAR_HEART_BEAT == c;
+		return IKeepAliveManager.CHAR_HEART_BEAT == c;
 	}
 
 	@Override

@@ -1,7 +1,8 @@
-package com.firstlinecode.chalk.examples;
+package com.firstlinecode.chalk.examples.cluster;
 
 import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
+import com.firstlinecode.chalk.examples.AbstractClientThread;
 
 public abstract class MultiClientsClusterExample extends AbstractClusterExample {
 	private int activatedClients;

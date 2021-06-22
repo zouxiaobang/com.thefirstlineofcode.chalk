@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk.examples;
+package com.firstlinecode.chalk.examples.cluster;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -9,6 +9,7 @@ import com.firstlinecode.basalt.protocol.im.roster.Roster;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence;
 import com.firstlinecode.chalk.core.StandardChatClient;
+import com.firstlinecode.chalk.examples.AbstractClientThread;
 import com.firstlinecode.chalk.im.IInstantingMessager;
 import com.firstlinecode.chalk.im.InstantingMessagerPlugin;
 import com.firstlinecode.chalk.im.roster.IRosterListener;

@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk.examples;
+package com.firstlinecode.chalk.examples.cluster;
 
 import com.firstlinecode.basalt.xeps.ibr.IqRegister;
 import com.firstlinecode.basalt.xeps.ibr.RegistrationField;

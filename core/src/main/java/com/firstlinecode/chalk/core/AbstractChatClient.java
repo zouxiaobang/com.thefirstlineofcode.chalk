@@ -231,7 +231,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		Api api = apis.get(apiType);
 		
 		if (api == null)
-			throw new RuntimeException(String.format("Api %s not registered.", apiType.getName()));
+			throw new RuntimeException(String.format("Api %s not be registered.", apiType.getName()));
 		
 		if (api.singleton) {
 			if (api.singletonObject != null) {

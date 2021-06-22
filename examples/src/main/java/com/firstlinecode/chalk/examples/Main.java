@@ -8,6 +8,11 @@ import java.util.Map;
 import org.slf4j.LoggerFactory;
 
 import com.firstlinecode.basalt.protocol.Constants;
+import com.firstlinecode.chalk.examples.cluster.IbrClusterExample;
+import com.firstlinecode.chalk.examples.cluster.ImClusterExample;
+import com.firstlinecode.chalk.examples.cluster.PingClusterExample;
+import com.firstlinecode.chalk.examples.lite.IbrLiteExample;
+import com.firstlinecode.chalk.examples.lite.PingLiteExample;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
@@ -27,7 +32,8 @@ public class Main {
 		ImClusterExample.class
 	};
 	private static final Class<?>[] LITE_EXAMPLE_CLASS = new Class<?>[] {
-		IbrLiteExample.class
+		IbrLiteExample.class,
+		PingLiteExample.class
 	};
 	
 	private DeployMode deployMode;

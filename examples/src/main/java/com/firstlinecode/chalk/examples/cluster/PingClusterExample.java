@@ -1,4 +1,4 @@
-package com.firstlinecode.chalk.examples;
+package com.firstlinecode.chalk.examples.cluster;
 
 import com.firstlinecode.chalk.core.AuthFailureException;
 import com.firstlinecode.chalk.core.IChatClient;

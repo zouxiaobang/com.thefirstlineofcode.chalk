@@ -1,9 +1,11 @@
-package com.firstlinecode.chalk.examples;
+package com.firstlinecode.chalk.examples.cluster;
 
 import java.util.Collections;
 
 import org.bson.Document;
 
+import com.firstlinecode.chalk.examples.AbstractExample;
+import com.firstlinecode.chalk.examples.Options;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;

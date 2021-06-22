@@ -1,10 +1,11 @@
-package com.firstlinecode.chalk.examples;
+package com.firstlinecode.chalk.examples.lite;
 
 import com.firstlinecode.basalt.xeps.ibr.IqRegister;
 import com.firstlinecode.basalt.xeps.ibr.RegistrationField;
 import com.firstlinecode.basalt.xeps.ibr.RegistrationForm;
 import com.firstlinecode.chalk.core.IChatClient;
 import com.firstlinecode.chalk.core.StandardChatClient;
+import com.firstlinecode.chalk.examples.AbstractLiteExample;
 import com.firstlinecode.chalk.xeps.ibr.IRegistration;
 import com.firstlinecode.chalk.xeps.ibr.IRegistrationCallback;
 import com.firstlinecode.chalk.xeps.ibr.IbrPlugin;
