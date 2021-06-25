@@ -44,7 +44,6 @@ import com.firstlinecode.basalt.oxm.preprocessing.OutOfMaxBufferSizeException;
 import com.firstlinecode.basalt.oxm.preprocessing.XmlMessagePreprocessorAdapter;
 import com.firstlinecode.basalt.protocol.Constants;
 import com.firstlinecode.basalt.protocol.core.ProtocolException;
-import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.core.stream.keepalive.IKeepAliveManager;
 
 public class SocketConnection implements IConnection, HandshakeCompletedListener {
@@ -79,18 +78,22 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	private CharsetDecoder decoder;
 	
 	public SocketConnection() {
-		this(null);
+		this(Constants.MESSAGE_FORMAT_XML);
 	}
 	
-	public SocketConnection(Socket socket) {
-		this(socket, DEFAULT_READ_QUEUE_SIZE, DEFAULT_WRITE_QUEUE_SIZE);
+	public SocketConnection(String messageFormat) {
+		this(messageFormat, null);
 	}
 	
-	public SocketConnection(Socket socket, int readQueueSize, int writeQueueSize) {
-		this(socket, readQueueSize, writeQueueSize, DEFAULT_BLOCKING_TIMEOUT);
+	public SocketConnection(String messageFormat, Socket socket) {
+		this(messageFormat, socket, DEFAULT_READ_QUEUE_SIZE, DEFAULT_WRITE_QUEUE_SIZE);
 	}
 	
-	public SocketConnection(Socket socket, int readQueueSize, int writeQueueSize, int blockingTimeout) {
+	public SocketConnection(String messageFormat, Socket socket, int readQueueSize, int writeQueueSize) {
+		this(messageFormat, socket, readQueueSize, writeQueueSize, DEFAULT_BLOCKING_TIMEOUT);
+	}
+	
+	public SocketConnection(String messageFormat, Socket socket, int readQueueSize, int writeQueueSize, int blockingTimeout) {
 		this.socket = socket;
 		stopThreadsFlag = false;
 		this.blockingTimeout = blockingTimeout;
@@ -99,7 +102,6 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 		receivingQueue = new ArrayBlockingQueue<>(readQueueSize);
 		listeners = new CopyOnWriteArrayList<>();
 		
-		String messageFormat = System.getProperty(StreamConfig.PROPERTY_NAME_CHALK_MESSAGE_FORMAT);
 		if (Constants.MESSAGE_FORMAT_BINARY.equals(messageFormat)) {
 			useBinaryFormat = true;
 			try {
@@ -109,15 +111,22 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				useBinaryFormat = false;
 			}
 			
-			bxmppProtocolConverter = bxmppProtocolFactory.createConverter();
-			messagePreprocessor = bxmppProtocolFactory.createPreprocessor();
-		} else {
-			messagePreprocessor = new XmlMessagePreprocessorAdapter();
-			charset = Charset.forName(Constants.DEFAULT_CHARSET);
-			decoder = charset.newDecoder()
-					.onMalformedInput(CodingErrorAction.REPLACE)
-						.onUnmappableCharacter(CodingErrorAction.REPLACE);
+			if (bxmppProtocolFactory != null) {
+				bxmppProtocolConverter = bxmppProtocolFactory.createConverter();
+				messagePreprocessor = bxmppProtocolFactory.createPreprocessor();
+				return;
+			}
 		}
+		
+		if (!Constants.MESSAGE_FORMAT_XML.equals(messageFormat)) {
+			logger.warn("Illegal message format: {}. It will be ignored. Still use XML message format.", messageFormat);
+		}
+		
+		messagePreprocessor = new XmlMessagePreprocessorAdapter();
+		charset = Charset.forName(Constants.DEFAULT_CHARSET);
+		decoder = charset.newDecoder()
+				.onMalformedInput(CodingErrorAction.REPLACE)
+				.onUnmappableCharacter(CodingErrorAction.REPLACE);
 	}
 	
 	private IBinaryXmppProtocolFactory createBxmppProtocolConverterFactory() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -390,9 +399,10 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 						// break;
 						continue;
 					} else {
+						index = (index == 0) ? (num - 1) : (index + num);
+						
 						if (!useBinaryFormat) {
 							decoder.reset();
-							index = (index == 0) ? (num - 1) : (index + num);
 							CharBuffer charBuffer = CharBuffer.allocate(index + 1);
 							CoderResult coderResult = decoder.decode(ByteBuffer.wrap(buf, 0, index + 1),
 									charBuffer, false);
@@ -407,13 +417,13 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 									throw e;
 								}
 							} else if (coderResult.isUnderflow()) {
-								// Do nothing
+								continue;
 							} else {
 								// coderResult.isOverflow()
 								try {
 									coderResult.throwException();
 								} catch (Exception e) {									
-									throw new RuntimeException("Char buffer size is too short.???", e);
+									throw new RuntimeException("Char buffer size is too short???", e);
 								}
 							}
 						}

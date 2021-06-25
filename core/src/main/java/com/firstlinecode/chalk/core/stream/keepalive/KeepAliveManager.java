@@ -160,7 +160,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 				
 				if (getInactiveTime() > config.getInterval()) {
 					if (useBinaryFormat) {
-						stream.getConnection().write(new byte[BYTE_HEART_BEAT]);
+						stream.getConnection().write(new byte[] {BYTE_HEART_BEAT});
 					} else {
 						stream.getConnection().write(BYTES_OF_HEART_BEAT_CHAR);
 					}

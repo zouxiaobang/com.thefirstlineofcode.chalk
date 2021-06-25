@@ -26,6 +26,7 @@ import com.firstlinecode.basalt.oxm.IOxmFactory;
 import com.firstlinecode.basalt.oxm.OxmService;
 import com.firstlinecode.basalt.oxm.parsing.IParserFactory;
 import com.firstlinecode.basalt.oxm.translating.ITranslatorFactory;
+import com.firstlinecode.basalt.protocol.Constants;
 import com.firstlinecode.basalt.protocol.core.ProtocolChain;
 import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
 import com.firstlinecode.chalk.core.stream.INegotiationListener;
@@ -37,6 +38,7 @@ import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
 import com.firstlinecode.chalk.network.IConnection;
+import com.firstlinecode.chalk.network.SocketConnection;
 
 public abstract class AbstractChatClient extends ConnectionListenerAdapter implements IChatClient, INegotiationListener {
 	private Logger logger = LoggerFactory.getLogger(AbstractChatClient.class);
@@ -61,11 +63,10 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	public AbstractChatClient(StreamConfig streamConfig, IConnection connection) {
 		if (streamConfig == null)
 			throw new IllegalArgumentException("Null stream config.");
+		this.streamConfig = streamConfig;
 		
 		if (connection == null)
-			throw new IllegalArgumentException("Null connection.");
-		
-		this.streamConfig = streamConfig;
+			connection = createConnection(streamConfig);
 		this.connection = connection;
 		
 		state = State.CLOSED;
@@ -146,7 +147,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		stream = null;
 		
 		if (connection == null) {
-			connection = createConnection();
+			connection = createConnection(streamConfig);
 		}
 		
 		if (logger.isDebugEnabled())
@@ -156,7 +157,12 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		streamer.negotiate(authToken);
 	}
 	
-	protected abstract IConnection createConnection();
+	protected IConnection createConnection(StreamConfig streamConfig) {
+		String messageFormat = streamConfig.getProperty(StreamConfig.PROPERTY_NAME_CHALK_MESSAGE_FORMAT,
+				Constants.MESSAGE_FORMAT_XML);
+		return new SocketConnection(messageFormat);
+	}
+	
 	protected abstract IStreamer createStreamer(StreamConfig streamConfig, IConnection connection);
 	
 	@Override
@@ -640,7 +646,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	@Override
 	public IConnection getConnection() {
 		if (connection == null) {
-			connection = createConnection();
+			connection = createConnection(streamConfig);
 		}
 		
 		return connection;

@@ -174,9 +174,4 @@ public class ComponentClient extends AbstractChatClient {
 		}
 		
 	}
-
-	@Override
-	protected IConnection createConnection() {
-		return new SocketConnection();
-	}
 }

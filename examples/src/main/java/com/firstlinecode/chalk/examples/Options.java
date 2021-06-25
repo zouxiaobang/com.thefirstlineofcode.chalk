@@ -5,7 +5,6 @@ public class Options {
 	public int port = 5222;
 	public String messageFormat = "xml";
 	public String deployMode = "lite";
-	public String logLevel = "normal";
 	public String dbHost = "localhost";
 	public int dbPort = 27017;
 	public String dbName = "granite";

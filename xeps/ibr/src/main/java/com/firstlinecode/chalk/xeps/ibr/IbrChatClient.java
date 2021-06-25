@@ -19,13 +19,12 @@ import com.firstlinecode.chalk.core.stream.negotiants.InitialStreamNegotiant;
 import com.firstlinecode.chalk.core.stream.negotiants.tls.IPeerCertificateTruster;
 import com.firstlinecode.chalk.core.stream.negotiants.tls.TlsNegotiant;
 import com.firstlinecode.chalk.network.IConnection;
-import com.firstlinecode.chalk.network.SocketConnection;
 
 class IbrChatClient extends AbstractChatClient {
 	private IPeerCertificateTruster peerCertificateTruster;
 
 	public IbrChatClient(StreamConfig streamConfig) {
-		super(streamConfig, new SocketConnection());
+		super(streamConfig, null);
 	}
 	
 	public IbrChatClient(StreamConfig streamConfig, IConnection connection) {
@@ -130,11 +129,6 @@ class IbrChatClient extends AbstractChatClient {
 			super(hostName, lang, tlsPreferred);
 		}
 		
-	}
-
-	@Override
-	protected IConnection createConnection() {
-		return new SocketConnection();
 	}
 	
 }

@@ -1,11 +1,8 @@
 package com.firstlinecode.chalk.examples;
 
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.slf4j.LoggerFactory;
 
 import com.firstlinecode.basalt.protocol.Constants;
 import com.firstlinecode.chalk.examples.cluster.IbrClusterExample;
@@ -13,11 +10,6 @@ import com.firstlinecode.chalk.examples.cluster.ImClusterExample;
 import com.firstlinecode.chalk.examples.cluster.PingClusterExample;
 import com.firstlinecode.chalk.examples.lite.IbrLiteExample;
 import com.firstlinecode.chalk.examples.lite.PingLiteExample;
-
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class Main {
 	private enum DeployMode {
@@ -53,7 +45,6 @@ public class Main {
 			return;
 		}
 		
-		configureLog(options.logLevel);
 		deployMode = getDeployMode(options);
 		
 		if (options.examples == null) {
@@ -154,13 +145,6 @@ public class Main {
 				options.host = entry.getValue();
 			} else if ("port".equals(entry.getKey())) {
 				options.port = Integer.parseInt(entry.getValue());
-			} else if ("log-level".equals(entry.getKey())) {
-				String logLevel = entry.getValue();
-				if ("normal".equals(logLevel) || "debug".equals(logLevel) || "trace".equals(logLevel)) {
-					options.logLevel = logLevel;
-				} else {
-					throw new IllegalArgumentException(String.format("Illegal log level: %s. only 'normal' or 'debug' or 'trace' supported.", entry.getKey()));
-				}
 			} else if ("message-format".equals(entry.getKey())) {
 				String messageFormat = entry.getValue();
 				if (Constants.MESSAGE_FORMAT_XML.equals(messageFormat) || Constants.MESSAGE_FORMAT_BINARY.equals(messageFormat)) {
@@ -193,42 +177,12 @@ public class Main {
 		return options;
 	}
 	
-	private void configureLog(String logLevel) {
-		LoggerContext lc = (LoggerContext)LoggerFactory.getILoggerFactory();
-		
-		if ("debug".equals(logLevel)) {
-			configureSystemLogFile(lc, "logback_debug.xml");
-		} else if ("trace".equals(logLevel)) {
-			configureSystemLogFile(lc, "logback_trace.xml");
-		} else {
-			configureSystemLogFile(lc, "logback.xml");
-		}
-	}
-
-	private void configureSystemLogFile(LoggerContext lc, String logFile) {
-		configureLC(lc, getClass().getClassLoader().getResource(logFile));
-	}
-
-	private void configureLC(LoggerContext lc, URL url) {
-		try {
-			JoranConfigurator configurator = new JoranConfigurator();
-			lc.reset();
-			configurator.setContext(lc);
-			configurator.doConfigure(url);
-		} catch (JoranException e) {
-			// ignore, StatusPrinter will handle this
-		}
-		
-	    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
-	}
-	
 	private void printUsage() {
 		System.out.println("--------Usage--------");
 		System.out.println("java com.firstlinecode.chalk.examples.Main [OPTIONS] <EXAMPLE_NAMES>");
 		System.out.println("OPTIONS:");
 		System.out.println("--host=[]           Server address(Default is 'localhost'). ");
 		System.out.println("--port=[]           Server port(Default is '5222').");		
-		System.out.println("--log-level=[]      Log level('normal', 'debug' or 'trace'. Default is 'normal').");
 		System.out.println("--message-format=[] Chalk message format('xml' or 'binary'. Default is 'xml').");
 		System.out.println("--deploy-mode=[]    Server deploy mode('lite' or 'cluster'. Default is 'lite').");
 		System.out.println("--db-host=[]        Database host(Default is 'localhost').");

@@ -2,6 +2,7 @@ package com.firstlinecode.chalk.core;
 
 import javax.security.cert.X509Certificate;
 
+import com.firstlinecode.basalt.protocol.Constants;
 import com.firstlinecode.chalk.core.stream.IAuthenticationCallback;
 import com.firstlinecode.chalk.core.stream.IAuthenticationFailure;
 import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
@@ -23,7 +24,7 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 	private IAuthenticationFailure authFailure;
 	
 	public StandardChatClient(StandardStreamConfig streamConfig) {
-		super(streamConfig, new SocketConnection());
+		super(streamConfig, null);
 	}
 	
 	public StandardChatClient(StandardStreamConfig streamConfig, IConnection connection) {
@@ -131,7 +132,9 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 	}
 
 	@Override
-	protected IConnection createConnection() {
-		return new SocketConnection();
+	protected IConnection createConnection(StreamConfig streamConfig) {
+		String messageFormat = streamConfig.getProperty(StreamConfig.PROPERTY_NAME_CHALK_MESSAGE_FORMAT,
+				Constants.MESSAGE_FORMAT_XML);
+		return new SocketConnection(messageFormat);
 	}
 }

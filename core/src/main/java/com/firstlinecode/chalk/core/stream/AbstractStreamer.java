@@ -70,7 +70,8 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 	}
 
 	protected IConnection createConnection(StreamConfig streamConfig) {
-		return new SocketConnection();
+		String messageFormat = streamConfig.getProperty(StreamConfig.PROPERTY_NAME_CHALK_MESSAGE_FORMAT, "xml");
+		return new SocketConnection(messageFormat);
 	}
 	
 	@Override

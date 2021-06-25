@@ -27,6 +27,10 @@
 			<artifactId>chalk-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.firstlinecode.gem.client</groupId>
+			<artifactId>gem-client-bxmpp</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.firstlinecode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-ibr</artifactId>
 		</dependency>
