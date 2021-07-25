@@ -196,10 +196,6 @@ public class Stream implements IStream, IConnectionListener {
 		
 		@Override
 		public void run() {
-			for (IConnectionListener connectionListener : connectionListeners) {
-				connectionListener.messageReceived(message);
-			}
-			
 			Object object = null;
 			IError error = null;
 			try {
@@ -207,7 +203,7 @@ public class Stream implements IStream, IConnectionListener {
 			} catch (ProtocolException e) {
 				error = e.getError();
 			} catch (RuntimeException e) {
-				error = new InternalServerError(String.format("%s, %s", e.getClass().getName(), e.getMessage()));
+				error = new InternalServerError(String.format("Error description: '%s', '%s'.", e.getClass().getName(), e.getMessage()));
 			}
 			
 			if (error != null) {

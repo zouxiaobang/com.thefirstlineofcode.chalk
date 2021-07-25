@@ -51,7 +51,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	
 	private static final int DEFAULT_READ_QUEUE_SIZE = 64;
 	private static final int DEFAULT_WRITE_QUEUE_SIZE = 64;
-	private static final int DEFAULT_BLOCKING_TIMEOUT = 200;
+	private static final int DEFAULT_BLOCKING_TIMEOUT = 2 * 1000;
 	private static final int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
 	
 	private Socket socket;
@@ -175,6 +175,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	protected Socket createSocket() throws IOException {
 		Socket socket = new Socket();
 		socket.setSoTimeout(blockingTimeout);
+		socket.setTcpNoDelay(true);
 		
 		return socket;
 	}
@@ -302,6 +303,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 						continue;
 					
 					String[] messages = processMessages(bytes);
+					traceMessageReceived(bytes);
 					
 					if (messages.length != 0) {
 						for (String message : messages) {
@@ -313,7 +315,8 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 									listener.heartBeatsReceived(message.length());
 								}
 							} else {
-								traceMessageReceived(bytes);
+								if (logger.isTraceEnabled())
+									logger.trace("Message has received: {}", message);
 							
 								for (IConnectionListener listener : listeners) {
 									listener.messageReceived(message);
@@ -385,26 +388,27 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 			}
 			
 			byte[] buf = new byte[DEFAULT_BUFFER_SIZE];
-			int index = 0;
+			int length = 0;
 			while (true) {
 				try {
 					if (stopThreadsFlag) {
 						break;
 					}
 					
-					int num = input.read(buf, index, DEFAULT_BUFFER_SIZE - index);	
+					int num = input.read(buf, length, DEFAULT_BUFFER_SIZE - length);	
 					if (num == -1) {
-						// Did server interrupt the connection?
-						// processException(new ConnectionException(ConnectionException.Type.END_OF_STREAM));
-						// break;
-						continue;
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e) {
+							throw new RuntimeException("Unexpected exception.", e);
+						}
 					} else {
-						index = (index == 0) ? (num - 1) : (index + num);
+						length += num;
 						
 						if (!useBinaryFormat) {
 							decoder.reset();
-							CharBuffer charBuffer = CharBuffer.allocate(index + 1);
-							CoderResult coderResult = decoder.decode(ByteBuffer.wrap(buf, 0, index + 1),
+							CharBuffer charBuffer = CharBuffer.allocate(length);
+							CoderResult coderResult = decoder.decode(ByteBuffer.wrap(buf, 0, length),
 									charBuffer, false);
 							
 							if (coderResult.isUnmappable() || coderResult.isMalformed()) {
@@ -417,7 +421,8 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 									throw e;
 								}
 							} else if (coderResult.isUnderflow()) {
-								continue;
+								receivedMessage(buf, length);
+								length = 0;
 							} else {
 								// coderResult.isOverflow()
 								try {
@@ -426,12 +431,11 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 									throw new RuntimeException("Char buffer size is too short???", e);
 								}
 							}
+						} else {
+							receivedMessage(buf, length);
+							length = 0;
 						}
 					}
-					
-					receivingQueue.add(Arrays.copyOf(buf, index + 1));
-					Arrays.fill(buf, (byte)0);
-					index = 0;
 				} catch (SocketTimeoutException e) {
 					if (stopThreadsFlag) {
 						break;
@@ -441,6 +445,11 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 					break;
 				}
 			}
+		}
+
+		private void receivedMessage(byte[] buf, int length) {
+			receivingQueue.add(Arrays.copyOf(buf, length));
+			Arrays.fill(buf, (byte)0);
 		}
 		
 	}
@@ -597,7 +606,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	private SSLSocket getSslSocket() throws IOException, KeyManagementException, NoSuchAlgorithmException {
 		SSLContext sslContext = null;
 		try {
-			sslContext = SSLContext.getInstance("TLS");
+			sslContext = SSLContext.getInstance("TLSv1.2");
 		} catch (NoSuchAlgorithmException e) {
 			throw e;
 		}

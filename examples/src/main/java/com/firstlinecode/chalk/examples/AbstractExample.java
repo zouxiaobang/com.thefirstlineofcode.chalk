@@ -1,10 +1,12 @@
 package com.firstlinecode.chalk.examples;
 
+import com.firstlinecode.basalt.protocol.core.IError;
 import com.firstlinecode.basalt.protocol.core.JabberId;
 import com.firstlinecode.basalt.xeps.ibr.IqRegister;
 import com.firstlinecode.basalt.xeps.ibr.RegistrationField;
 import com.firstlinecode.basalt.xeps.ibr.RegistrationForm;
 import com.firstlinecode.chalk.core.IChatClient;
+import com.firstlinecode.chalk.core.IErrorListener;
 import com.firstlinecode.chalk.core.StandardChatClient;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
@@ -15,11 +17,14 @@ import com.firstlinecode.chalk.xeps.ibr.IRegistrationCallback;
 import com.firstlinecode.chalk.xeps.ibr.IbrPlugin;
 import com.firstlinecode.chalk.xeps.ibr.RegistrationException;
 
-public abstract class AbstractExample extends ConnectionListenerAdapter implements Example {
+public abstract class AbstractExample extends ConnectionListenerAdapter implements Example, IErrorListener {
 	protected Options options;
+	protected boolean stop;
 	
 	public AbstractExample() {
 		super();
+		
+		stop = false;
 	}
 
 	@Override
@@ -108,7 +113,13 @@ public abstract class AbstractExample extends ConnectionListenerAdapter implemen
 	}
 
 	@Override
-	public void exceptionOccurred(ConnectionException exception) {}
+	public void exceptionOccurred(ConnectionException exception) {
+		printException(exception);
+		
+		if (exception.getType() == ConnectionException.Type.CONNECTION_CLOSED) {
+			stop = true;
+		}
+	}
 
 	@Override
 	public void messageReceived(String message) {
@@ -127,6 +138,17 @@ public abstract class AbstractExample extends ConnectionListenerAdapter implemen
 	protected void printException(Exception e) {
 		System.out.println("Exception:");
 		e.printStackTrace(System.out);
+		System.out.println();
+	}
+	
+	@Override
+	public void occurred(IError error) {
+		printError(error);
+	}
+
+	protected void printError(IError error) {
+		System.out.println("Error:");
+		System.out.println(String.format("'%s', '%s'.", error.getDefinedCondition(), error.getText()));
 		System.out.println();
 	}
 

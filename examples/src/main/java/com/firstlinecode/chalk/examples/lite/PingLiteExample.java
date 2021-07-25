@@ -23,15 +23,24 @@ public class PingLiteExample extends AbstractLiteExample {
 		
 		chatClient.connect(new UsernamePasswordToken("dongger", "a_stupid_man"));
 		
+		chatClient.getConnection().removeListener(this);
+		chatClient.getStream().addConnectionListener(this);
+		chatClient.getStream().addErrorListener(this);
+		
 		KeepAliveConfig config = chatClient.getStream().getKeepAliveManager().getConfig();
 		KeepAliveConfig newConfig = new KeepAliveConfig(10 * 1000, config.getTimeout());
 		chatClient.getStream().getKeepAliveManager().changeConfig(newConfig);
 		
 		for (int i = 0; i < 5; i++) {
+			if (stop) {
+				chatClient.close();
+				return;
+			}
+			
 			Thread.sleep(30 * 1000);
 						
 			IPing ping = chatClient.createApi(IPing.class);
-			ping.setTimeout(5 * 60 * 1000);
+			ping.setTimeout(60 * 1000);
 			
 			IPing.Result result = ping.ping();
 			if (result == IPing.Result.PONG) {
