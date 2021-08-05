@@ -101,24 +101,29 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	}
 
 	@Override
-	public synchronized void connect(IAuthenticationToken authToken) throws ConnectionException,
+	public void connect(IAuthenticationToken authToken) throws ConnectionException,
 				AuthFailureException {
-		if (state == State.CONNECTED) {
-			throw new IllegalStateException("Client has already connected.");
-		}
-		
+		synchronized(this) {
+			if (state == State.CONNECTED) {
+				throw new IllegalStateException("Client has already connected.");
+			}
 			
-		if (state == State.CONNECTING) {
-			throw new IllegalStateException("Client is connecting now.");
+			
+			if (state == State.CONNECTING) {
+				throw new IllegalStateException("Client is connecting now.");
+			}
+			
+			state = State.CONNECTING;
 		}
 		
-		state = State.CONNECTING;
 		doConnect(authToken);
 		
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+		synchronized (this) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		
 		if (exception != null) {
@@ -397,7 +402,9 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		}
 		
 		if (stream == null && state == State.CONNECTING) {
-			connection.close();
+			if (connection != null && !connection.isClosed())
+				connection.close();
+			
 			connection = null;
 		}
 		
@@ -419,17 +426,19 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	}
 
 	@Override
-	public synchronized void occurred(NegotiationException exception) {
+	public void occurred(NegotiationException exception) {
 		for (INegotiationListener listener : negotiationListeners) {
 			listener.occurred(exception);
 		}
 		
 		this.exception = exception;
-		notify();
+		synchronized(this) {
+			notify();
+		}
 	}
-
+	
 	@Override
-	public synchronized void done(IStream stream) {
+	public void done(IStream stream) {
 		this.stream = stream;
 		
 		stream.setOxmFactory(oxmFactory);
@@ -437,17 +446,19 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		stream.addErrorListener(chatServices);
 		stream.addStanzaListener(chatServices);
 		
-		chatServices.start();
-		
-		state = State.CONNECTED;
+		synchronized(this) {
+			chatServices.start();
+			state = State.CONNECTED;
+		}
 		
 		if (logger.isDebugEnabled())
 			logger.debug("Chat client has connected to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
 		if (stream.getJid() != null)
 			stream.getKeepAliveManager().start();
-		
-		notify();
+		synchronized (this) {
+			notify();
+		}
 		
 		for (INegotiationListener listener : negotiationListeners) {
 			listener.done(stream);

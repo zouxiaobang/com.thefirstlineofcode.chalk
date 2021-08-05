@@ -162,19 +162,19 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 			chatClient.close();
 			print("Auth failed.");
 			
-			print("Reconnect...");
+			createChatClient();
 			chatClient.getConnection().addListener(this);
+			chatClient.addNegotiationListener(this);
+			
+			print("Reconnect...");
 			try {
 				chatClient.connect(userNameAndPassword[0], userNameAndPassword[1]);
 			} catch (AuthFailureException ae) {
-				chatClient.close();
 				print("Auth failed.");
 				print("Invoke auth failure callback.");
 				processAuthFailure(ae);
 			}
 		}
-		
-		print("Connected.");
 		
 		im = chatClient.createApi(IInstantingMessager2.class);
 		
@@ -352,15 +352,15 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 	}
 	
 	@Override
+	public void done(IStream stream) {
+		// Do nothing.
+	}
+	
+	@Override
 	public void occurred(NegotiationException exception) {
 		print(String.format("Negotiation error. Source is %s.", exception.getSource()));
 	}
 	
-	@Override
-	public void done(IStream stream) {
-		print("Negotiation has done.");
-	}
-
 	@Override
 	public void exceptionOccurred(ConnectionException exception) {
 		OutputStream os = new ByteArrayOutputStream();

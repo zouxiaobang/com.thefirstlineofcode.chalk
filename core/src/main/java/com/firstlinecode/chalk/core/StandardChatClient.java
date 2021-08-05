@@ -50,22 +50,25 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 			throw new IllegalArgumentException(String.format("Auth token type must be %s.", UsernamePasswordToken.class.getName()));
 		}
 		
-		authFailure = null;
-		
-		try {
+		if (authFailure != null && authFailure.isRetriable()) {
+			authFailure.retry(authToken);
+		} else {
+			close();
 			super.connect(authToken);
 			
-			if (authFailure != null) {
-				throw new AuthFailureException();
+			try {
+				if (authFailure != null) {
+					throw new AuthFailureException();
+				}
+			} catch (RuntimeException e) {
+				if ((e.getCause() instanceof NegotiationException) &&
+						isMaxFailureCountExcceed((NegotiationException)e.getCause())) {
+					throw new AuthFailureException();
+				}
+				
+				throw e;
 			}
-		} catch (RuntimeException e) {
-			if ((e.getCause() instanceof NegotiationException) &&
-					isMaxFailureCountExcceed((NegotiationException)e.getCause())) {
-				throw new AuthFailureException();
-			}
-			
-			throw e;
-		}
+		}		
 	}
 	
 	protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
@@ -97,9 +100,9 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 		if (authFailure != null) {
 			authFailure.abort();
 			authFailure = null;
+		} else {
+			super.close();			
 		}
-		
-		super.close();
 	}
 	
 	@Override
