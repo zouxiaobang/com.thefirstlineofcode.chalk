@@ -44,10 +44,11 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	private Logger logger = LoggerFactory.getLogger(AbstractChatClient.class);
 	
 	protected StreamConfig streamConfig;
-	protected volatile State state;
-	private volatile IStreamer streamer;
-	protected volatile IStream stream;
-	private Exception exception;
+	protected State state;
+	protected IStreamer streamer;
+	protected Exception exception;
+	protected IStream stream;
+	
 	private IErrorHandler errorHandler;
 	private IExceptionHandler exceptionHandler;
 	
@@ -71,7 +72,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		
 		state = State.CLOSED;
 		
-		negotiationListeners = new OrderedList<>(new CopyOnWriteArrayList<INegotiationListener>());
+		negotiationListeners = new OrderedList<>(new ArrayList<INegotiationListener>());
 		
 		oxmFactory = createOxmFactory();
 		
@@ -101,20 +102,8 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	}
 
 	@Override
-	public void connect(IAuthenticationToken authToken) throws ConnectionException,
-				AuthFailureException {
-		synchronized(this) {
-			if (state == State.CONNECTED) {
-				throw new IllegalStateException("Client has already connected.");
-			}
-			
-			
-			if (state == State.CONNECTING) {
-				throw new IllegalStateException("Client is connecting now.");
-			}
-			
-			state = State.CONNECTING;
-		}
+	public void connect(IAuthenticationToken authToken) throws AuthFailureException, ConnectionException {
+		beforeDoConnect();
 		
 		doConnect(authToken);
 		
@@ -122,16 +111,23 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
+				throw new RuntimeException("Unexpected exception.", e);
 			}
+			
 		}
 		
-		if (exception != null) {
+		afterDoConnect();
+	}
+
+	private void afterDoConnect() throws ConnectionException {
+		if (exception == null) {
+			synchronized(this) {				
+				state = State.CONNECTED;
+			}
+		} else {
 			try {
 				if (exception instanceof NegotiationException) {
-					throw new RuntimeException("Negotiation failed.", exception);
-				} else if (exception instanceof AuthFailureException) {
-					throw (AuthFailureException)exception;
+					throw (NegotiationException)exception;
 				} else if (exception instanceof ConnectionException) {
 					throw (ConnectionException)exception;
 				} else {
@@ -143,13 +139,24 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		}
 	}
 
+	private void beforeDoConnect() {
+		synchronized (this) {			
+			if (state == State.CONNECTED) {
+				throw new IllegalStateException("Client has already connected.");
+			}
+			
+			if (state == State.CONNECTING) {
+				throw new IllegalStateException("Client is connecting now.");
+			}
+			
+			state = State.CONNECTING;
+		}
+	}
+	
 	protected void doConnect(IAuthenticationToken authToken) {
 		if (streamConfig == null) {
 			throw new IllegalStateException("Null stream config.");
 		}
-		
-		exception = null;
-		stream = null;
 		
 		if (connection == null) {
 			connection = createConnection(streamConfig);
@@ -157,8 +164,10 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		
 		if (logger.isDebugEnabled())
 			logger.debug("Chat client is trying to connect to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
-				
+		
 		streamer = createStreamer(streamConfig, connection);
+		streamer.setNegotiationListener(this);
+		
 		streamer.negotiate(authToken);
 	}
 	
@@ -410,14 +419,14 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		
 		state = State.CLOSED;
 	}
-
+	
 	@Override
 	public void before(IStreamNegotiant source) {
 		for (INegotiationListener negotiationListener : negotiationListeners) {
 			negotiationListener.before(source);
 		}
 	}
-
+	
 	@Override
 	public void after(IStreamNegotiant source) {
 		for (INegotiationListener negotiationListener : negotiationListeners) {
@@ -446,9 +455,10 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		stream.addErrorListener(chatServices);
 		stream.addStanzaListener(chatServices);
 		
-		synchronized(this) {
-			chatServices.start();
+		chatServices.start();
+		synchronized (this) {
 			state = State.CONNECTED;
+			notify();
 		}
 		
 		if (logger.isDebugEnabled())
@@ -456,9 +466,6 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		
 		if (stream.getJid() != null)
 			stream.getKeepAliveManager().start();
-		synchronized (this) {
-			notify();
-		}
 		
 		for (INegotiationListener listener : negotiationListeners) {
 			listener.done(stream);
@@ -700,7 +707,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		}
 
 		@Override
-		public synchronized boolean add(T e) {
+		public boolean add(T e) {
 			List<T> tmp = new ArrayList<>();
 			
 			tmp.addAll(original);
@@ -711,112 +718,112 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 			
 			return result;
 		}
-
+		
 		@Override
 		public void add(int index, T element) {
 			original.add(index, element);
 		}
-
+		
 		@Override
 		public boolean addAll(Collection<? extends T> c) {
 			return original.addAll(c);
 		}
-
+		
 		@Override
 		public boolean addAll(int index, Collection<? extends T> c) {
 			return original.addAll(index, c);
 		}
-
+		
 		@Override
 		public void clear() {
 			original.clear();
 		}
-
+		
 		@Override
 		public boolean contains(Object o) {
 			return original.contains(o);
 		}
-
+		
 		@Override
 		public boolean containsAll(Collection<?> c) {
 			return original.containsAll(c);
 		}
-
+		
 		@Override
 		public T get(int index) {
 			return original.get(index);
 		}
-
+		
 		@Override
 		public int indexOf(Object o) {
 			return original.indexOf(o);
 		}
-
+		
 		@Override
 		public boolean isEmpty() {
 			return original.isEmpty();
 		}
-
+		
 		@Override
 		public Iterator<T> iterator() {
 			return original.iterator();
 		}
-
+		
 		@Override
 		public int lastIndexOf(Object o) {
 			return original.lastIndexOf(o);
 		}
-
+		
 		@Override
 		public ListIterator<T> listIterator() {
 			return original.listIterator();
 		}
-
+		
 		@Override
 		public ListIterator<T> listIterator(int index) {
 			return original.listIterator(index);
 		}
-
+		
 		@Override
 		public boolean remove(Object o) {
 			return original.remove(o);
 		}
-
+		
 		@Override
 		public T remove(int index) {
 			return original.remove(index);
 		}
-
+		
 		@Override
 		public boolean removeAll(Collection<?> c) {
 			return original.removeAll(c);
 		}
-
+		
 		@Override
 		public boolean retainAll(Collection<?> c) {
 			return original.retainAll(c);
 		}
-
+		
 		@Override
 		public T set(int index, T element) {
 			return original.set(index, element);
 		}
-
+		
 		@Override
 		public int size() {
 			return original.size();
 		}
-
+		
 		@Override
 		public List<T> subList(int fromIndex, int toIndex) {
 			return original.subList(fromIndex, toIndex);
 		}
-
+		
 		@Override
 		public Object[] toArray() {
 			return original.toArray();
 		}
-
+		
 		@Override
 		public <E> E[] toArray(E[] a) {
 			return original.toArray(a);

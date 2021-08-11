@@ -8,6 +8,7 @@ import com.firstlinecode.chalk.core.AuthFailureException;
 import com.firstlinecode.chalk.core.stream.IAuthenticationToken;
 import com.firstlinecode.chalk.core.stream.IStream;
 import com.firstlinecode.chalk.core.stream.IStreamer;
+import com.firstlinecode.chalk.core.stream.NegotiationException;
 import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.IConnection;
@@ -46,20 +47,20 @@ public class ComponentClient extends AbstractChatClient {
 	@Override
 	protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
 		ComponentStreamer componentStreamer = new ComponentStreamer((ComponentStreamConfig)streamConfig);
-		
-		componentStreamer.setConnectionListener(this);
 		componentStreamer.setNegotiationListener(this);
 		
 		return componentStreamer;
 	}
 	
-	public void connect(String secret) throws ConnectionException, AuthFailureException {
+	public void connect(String secret) throws ConnectionException,
+			AuthFailureException, NegotiationException {
 		this.secret = secret;
 		connect(new SecretToken(secret));
 	}
 	
 	@Override
-	public void connect(IAuthenticationToken authToken) throws ConnectionException, AuthFailureException {
+	public void connect(IAuthenticationToken authToken) throws ConnectionException,
+			AuthFailureException, NegotiationException {
 		if (!(authToken instanceof SecretToken)) {
 			throw new IllegalArgumentException(String.format("Auth token type must be %s.", SecretToken.class.getName()));
 		}

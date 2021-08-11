@@ -1,7 +1,7 @@
 package com.firstlinecode.chalk.core.stream;
 
 
-public class NegotiationException extends Exception {
+public class NegotiationException extends RuntimeException {
 
 	private static final long serialVersionUID = 5834897402216642798L;
 	

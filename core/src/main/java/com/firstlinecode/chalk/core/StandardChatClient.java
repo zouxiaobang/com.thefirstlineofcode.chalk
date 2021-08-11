@@ -40,7 +40,7 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 	}
 	
 	public void connect(String userName, String password) throws ConnectionException,
-			AuthFailureException {
+			AuthFailureException, NegotiationException {
 		connect(new UsernamePasswordToken(userName, password));
 	}
 	
@@ -52,6 +52,15 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 		
 		if (authFailure != null && authFailure.isRetriable()) {
 			authFailure.retry(authToken);
+			
+			synchronized (this) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					throw new RuntimeException("Unexpected exception.", e);
+				}
+				
+			}
 		} else {
 			close();
 			super.connect(authToken);
@@ -73,7 +82,6 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 	
 	protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
 		IStandardStreamer standardStreamer = new StandardStreamer((StandardStreamConfig)streamConfig, connection);
-		standardStreamer.setConnectionListener(this);
 		standardStreamer.setNegotiationListener(this);
 		standardStreamer.setAuthenticationCallback(this);
 		
@@ -100,18 +108,18 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 		if (authFailure != null) {
 			authFailure.abort();
 			authFailure = null;
-		} else {
-			super.close();			
 		}
+		
+		super.close();			
 	}
 	
 	@Override
-	public synchronized void failed(IAuthenticationFailure failure) {
-		authFailure = failure;
-		if (!authFailure.isRetriable())
-			state = State.CLOSED;
+	public void failed(IAuthenticationFailure authFailure) {
+		this.authFailure = authFailure;
 		
-		notify();
+		synchronized (this) {
+			notify();
+		}
 	}
 	
 	@Override

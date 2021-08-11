@@ -160,13 +160,13 @@ public class Registration implements IRegistration, INegotiationListener {
 		// Do nothing.
 		
 	}
-
+	
 	@Override
 	public void occurred(NegotiationException exception) {
 		// Do nothing.
 		
 	}
-
+	
 	@Override
 	public void done(IStream stream) {
 		if (stream.getKeepAliveManager() != null &&

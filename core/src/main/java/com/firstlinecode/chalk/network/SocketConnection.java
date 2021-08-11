@@ -289,6 +289,10 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 	}
 	
 	private class ProcessingThread extends Thread {
+		public ProcessingThread() {
+			super("Socket Connection Processing Thread");
+		}
+		
 		public void run() {
 			while (true) {
 				try {

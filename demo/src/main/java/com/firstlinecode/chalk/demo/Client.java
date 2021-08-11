@@ -147,17 +147,16 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 		}
 	}
 	
-	protected void runChatClient() throws ConnectionException, AuthFailureException {
+	protected void runChatClient() throws Exception {
 		createChatClient();
 		
 		beforeConnecting();
 		
 		chatClient.getConnection().addListener(this);
+		chatClient.addNegotiationListener(this);
 		String[] userNameAndPassword = getUserNameAndPassword();
 		try {
 			chatClient.connect(userNameAndPassword[0], userNameAndPassword[1]);
-		} catch (ConnectionException e) {
-			throw e;
 		} catch (AuthFailureException e) {
 			chatClient.close();
 			print("Auth failed.");
@@ -174,6 +173,8 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 				print("Invoke auth failure callback.");
 				processAuthFailure(ae);
 			}
+		} catch (ConnectionException e) {
+			exceptionOccurred(e);
 		}
 		
 		im = chatClient.createApi(IInstantingMessager2.class);
@@ -358,7 +359,7 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 	
 	@Override
 	public void occurred(NegotiationException exception) {
-		print(String.format("Negotiation error. Source is %s.", exception.getSource()));
+		// Do nothing
 	}
 	
 	@Override

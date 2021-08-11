@@ -34,14 +34,12 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 	protected IConnectionListener connectionListener;
 	protected IConnection connection;
 	
-	protected int connectTimeout;
+	protected ConnectionException connectionException;
 	
+	protected int connectTimeout;	
 	private volatile boolean done;
-	
 	protected IParsingFactory parsingFactory;
-	
 	protected IAuthenticationToken authToken;
-	
 	protected IAuthenticationCallback authenticationCallback;
 	
 	public AbstractStreamer(StreamConfig streamConfig) {
@@ -121,11 +119,11 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 						return;
 				}
 			} catch (NegotiationException e) {
-				if (!context.isClosed())
+				if (context.isClosed())
 					context.close();
 				
-				if (logger.isDebugEnabled())
-					logger.debug("Negotiation exception.", e);
+				if (logger.isWarnEnabled())
+					logger.warn("Negotiation exception.", e);
 				
 				if (negotiationListener != null) {
 					negotiationListener.occurred(e);
@@ -133,8 +131,8 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 				
 				return;
 			} catch (ConnectionException e) {
-				if (logger.isDebugEnabled())
-					logger.debug("Connection exception.", e);
+				if (logger.isWarnEnabled())
+					logger.warn("Connection exception.", e);
 				
 				if (!context.isClosed())
 					context.close();
@@ -152,7 +150,6 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 				negotiationListener.done(new Stream(jid, streamConfig, connection));
 			}
 		}
-		
 	}
 
 	protected void setNegotiationReadResponseTimeout(List<IStreamNegotiant> negotiants) {

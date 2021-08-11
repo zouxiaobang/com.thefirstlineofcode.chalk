@@ -8,6 +8,7 @@ import com.firstlinecode.basalt.protocol.im.stanza.Presence;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence.Show;
 import com.firstlinecode.chalk.core.AuthFailureException;
 import com.firstlinecode.chalk.core.ErrorException;
+import com.firstlinecode.chalk.core.stream.NegotiationException;
 import com.firstlinecode.chalk.core.stream.StandardStreamConfig;
 import com.firstlinecode.chalk.demo.Demo;
 import com.firstlinecode.chalk.network.ConnectionException;
@@ -127,7 +128,8 @@ public class DonggerHome extends StandardClient {
 	}
 	
 	@Override
-	protected void processAuthFailure(AuthFailureException e) throws AuthFailureException, ConnectionException {
+	protected void processAuthFailure(AuthFailureException e) throws AuthFailureException,
+			ConnectionException, NegotiationException {
 		chatClient.connect("dongger", "a_stupid_man");
 	}
 	

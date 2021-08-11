@@ -23,7 +23,6 @@ public class StandardChatClient extends com.firstlinecode.chalk.core.StandardCha
     @Override
     protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
         IStandardStreamer standardStreamer = new StandardStreamer((StandardStreamConfig)streamConfig, connection);
-        standardStreamer.setConnectionListener(this);
         standardStreamer.setNegotiationListener(this);
         standardStreamer.setAuthenticationCallback(this);
 

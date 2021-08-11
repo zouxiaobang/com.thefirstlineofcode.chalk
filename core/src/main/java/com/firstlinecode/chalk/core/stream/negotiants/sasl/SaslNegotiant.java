@@ -48,7 +48,7 @@ import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.utils.Base64;
 
 public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegotiant {
-	private static final int WAIT_AUTH_FAILURE_ACTION_TIMEOUT = 1000 * 20;
+	private static final int WAIT_AUTH_FAILURE_ACTION_TIMEOUT = 1000 * 60;
 	private static final int MAX_FAILURE_COUNT_EXCCEED_READ_RESPONSE_TIMEOUT = 500;
 	private static final int DEFAULT_SASL_PROCESS_TIMEOUT = 1000 * 2;
 	
@@ -203,10 +203,6 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
 					context.close();
 				}
 				
-				synchronized(this) {
-					notify();
-				}
-				
 				return;
 			}
 		} else {
@@ -226,12 +222,12 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
 		}
 	}
 	
-	private void processFailure(INegotiationContext context, Failure response) throws NegotiationException, ConnectionException {
+	private void processFailure(INegotiationContext context, final Failure failure)
+			throws NegotiationException, ConnectionException {
 		waitAuthFailureAction = true;
 		authToken = null;
 		failureCount++;
 		
-		Failure failure = response;
 		try {
 			String message = readResponse(MAX_FAILURE_COUNT_EXCCEED_READ_RESPONSE_TIMEOUT);
 			Stream closeStream = (Stream)oxmFactory.parse(message);
@@ -244,11 +240,18 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
 			throw new NegotiationException(this, SaslError.MAX_FAILURE_COUNT_EXCCEED);
 		} catch (ConnectionException e) {
 			if (e.getType() == ConnectionException.Type.READ_RESPONSE_TIMEOUT) {
-				authCallback.failed(new SaslAuthenticationFailure(this, failure.getErrorCondition(), true, failureCount));
-				return;
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						authCallback.failed(new SaslAuthenticationFailure(SaslNegotiant.this,
+								failure.getErrorCondition(), true, failureCount));						
+					}
+					
+				}).start();
+			} else {
+				throw e;				
 			}
-			
-			throw e;
 		}
 	}
 	
@@ -330,6 +333,8 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
 		this.authToken = (UsernamePasswordToken)authToken;
 		synchronized (this) {
 			waitAuthFailureAction = false;
+			abortSasl = false;
+			
 			notify();
 		}
 	}
@@ -340,13 +345,8 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
 		synchronized (this) {
 			waitAuthFailureAction = false;
 			abortSasl = true;
-			notify();
 			
-			try {
-				wait(DEFAULT_SASL_PROCESS_TIMEOUT);
-			} catch (InterruptedException e) {
-				throw new RuntimeException("Was negotiation thread interrupted.", e);
-			}
+			notify();
 		}
 	}
 	

@@ -11,11 +11,17 @@ import com.firstlinecode.basalt.protocol.core.stanza.Iq;
 import com.firstlinecode.basalt.protocol.core.stanza.error.StanzaError;
 import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.protocol.im.stanza.Presence;
+import com.firstlinecode.basalt.xeps.delay.Delay;
+import com.firstlinecode.basalt.xeps.disco.DiscoInfo;
+import com.firstlinecode.basalt.xeps.disco.DiscoItems;
+import com.firstlinecode.basalt.xeps.disco.Feature;
+import com.firstlinecode.basalt.xeps.disco.Item;
 import com.firstlinecode.basalt.xeps.muc.user.Continue;
 import com.firstlinecode.basalt.xeps.muc.user.Invite;
 import com.firstlinecode.basalt.xeps.muc.user.MucUser;
 import com.firstlinecode.basalt.xeps.muc.user.Status;
 import com.firstlinecode.basalt.xeps.muc.xconference.XConference;
+import com.firstlinecode.basalt.xeps.rsm.Set;
 import com.firstlinecode.chalk.core.ErrorException;
 import com.firstlinecode.chalk.core.IChatServices;
 import com.firstlinecode.chalk.core.ISyncTask;
@@ -44,12 +50,6 @@ import com.firstlinecode.chalk.xeps.muc.events.RoomMessage;
 import com.firstlinecode.chalk.xeps.muc.events.RoomMessageEvent;
 import com.firstlinecode.chalk.xeps.muc.events.RoomSubject;
 import com.firstlinecode.chalk.xeps.muc.events.RoomSubjectEvent;
-import com.firstlinecode.basalt.xeps.delay.Delay;
-import com.firstlinecode.basalt.xeps.disco.DiscoInfo;
-import com.firstlinecode.basalt.xeps.disco.DiscoItems;
-import com.firstlinecode.basalt.xeps.disco.Feature;
-import com.firstlinecode.basalt.xeps.disco.Item;
-import com.firstlinecode.basalt.xeps.rsm.Set;
 
 public class MucService implements IMucService, IMessageListener, IPresenceListener {
 	private IChatServices chatServices;
@@ -237,6 +237,9 @@ public class MucService implements IMucService, IMessageListener, IPresenceListe
 			@Override
 			public Integer processResult(Iq iq) {
 				DiscoItems discoItems = iq.getObject();
+				if (discoItems.getSet() == null)
+					return 0;
+				
 				return discoItems.getSet().getCount();
 			}
 		});

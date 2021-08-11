@@ -42,7 +42,6 @@ class IbrChatClient extends AbstractChatClient {
 	@Override
 	protected IStreamer createStreamer(StreamConfig streamConfig, IConnection connection) {
 		IbrStreamer streamer = new IbrStreamer(getStreamConfig(), connection);
-		streamer.setConnectionListener(this);
 		streamer.setNegotiationListener(this);
 		
 		if (peerCertificateTruster != null) {
