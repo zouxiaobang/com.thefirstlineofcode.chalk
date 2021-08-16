@@ -71,7 +71,8 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			lastMessageReceivedTime = currentTime.getTime();
 			
 			if (logger.isTraceEnabled())
-				logger.trace(String.format("Keep-alive thread has received a message at %s.", currentTime.toString()));
+				logger.trace("Keep-alive thread({}) has received a message at {}.",
+						stream.getJid(), currentTime.toString());
 		}
 		
 		@Override
@@ -79,7 +80,8 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			lastMessageSentTime = currentTime.getTime();
 			
 			if (logger.isTraceEnabled())
-				logger.trace(String.format("Keep-alive thread has sent a heartbeat at %s.", currentTime.toString()));
+				logger.trace("Keep-alive thread({}) has sent a heartbeat at {}.",
+						stream.getJid(), currentTime.toString());
 		}
 
 		@Override
@@ -126,7 +128,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 		
 		keepAliveThread.start();
 		if (logger.isInfoEnabled()) {
-			logger.info("Keep-alive thread of client connection({}) has started.", stream.getJid());
+			logger.info("Keep-alive thread({}) has started.", stream.getJid());
 		}
 		
 		stream.getConnection().addListener(this);
@@ -153,7 +155,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			while (!stop) {
 				if (stream.isClosed()) {
 					if (logger.isWarnEnabled()) {
-						logger.warn("Keep-alive thread of client connection({}) can't work. The stream has closed.", jid);
+						logger.warn("Keep-alive thread({}) can't work. The stream has closed.", jid);
 					}
 					return;
 				}
@@ -166,7 +168,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 					}
 					
 					if (logger.isTraceEnabled()) {
-						logger.trace("Keep-alive thread of client connection({}) sent a heart beat.", jid);
+						logger.trace("Keep-alive thread({}) sent a heart beat.", jid);
 					}
 					
 					callback.sent(currentTime(), true);
@@ -175,13 +177,12 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 				try {
 					Thread.sleep(config.getCheckingInterval());
 				} catch (InterruptedException e) {
-					throw new RuntimeException(String.format("Keep-alive thread of client connection(%s) throws an exception.", jid), e);
+					throw new RuntimeException(String.format("Keep-alive thread(%s) throws an exception.", jid), e);
 				}
 
 				if (getServerInactiveTime() > config.getTimeout()) {
-					System.out.println("config.getTimeout() = " + config.getTimeout());
 					if (logger.isWarnEnabled())
-						logger.warn("Keeping-alive thread of client connection({}) has timeouted. Keep-alive callback's timeout() will be called.", jid);
+						logger.warn("Keeping-alive thread({}) has timeouted. Keep-alive callback's timeout() will be called.", jid);
 					
 					callback.timeout(stream);
 					
@@ -190,7 +191,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			}
 			
 			if (logger.isInfoEnabled()) {
-				logger.info("Keep-alive thread of client connection({}) has stopped.", jid);
+				logger.info("Keep-alive thread({}) has stopped.", jid);
 			}
 			started = false;
 		}
@@ -224,7 +225,6 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 
 	@Override
 	public void messageReceived(String message) {
-		System.out.println(String.format("Message received: '%s'.", message));
 		callback.received(currentTime(), false);
 	}
 

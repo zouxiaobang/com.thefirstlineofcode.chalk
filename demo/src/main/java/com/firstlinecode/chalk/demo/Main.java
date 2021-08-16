@@ -16,6 +16,8 @@ import com.firstlinecode.chalk.core.stream.StreamConfig;
 import com.firstlinecode.chalk.demo.Demo.Protocol;
 import com.firstlinecode.chalk.network.ConnectionException;
 import com.firstlinecode.chalk.network.ConnectionListenerAdapter;
+import com.firstlinecode.chalk.utils.LogConfigurator;
+import com.firstlinecode.chalk.utils.LogConfigurator.LogLevel;
 import com.firstlinecode.chalk.xeps.ibr.IRegistration;
 import com.firstlinecode.chalk.xeps.ibr.IRegistrationCallback;
 import com.firstlinecode.chalk.xeps.ibr.IbrPlugin;
@@ -27,10 +29,11 @@ public class Main {
 	}
 	
 	private class Config {
-		public Protocol protocol = Protocol.LEP;
+		public Protocol protocol = Protocol.STANDARD;
 		public String host = "localhost";
 		public int port = 5222;
 		public String messageFormat = "xml";
+		public LogLevel logLevel = LogLevel.INFO;
 	}
 	
 	private void run(String[] args) throws RegistrationException {
@@ -42,6 +45,8 @@ public class Main {
 			return;
 		}
 		
+		configureLog(config.logLevel);
+		
 		createAccounts(config);
 		
 		System.setProperty("chalk.stream.config.host", config.host);
@@ -49,6 +54,11 @@ public class Main {
 		System.setProperty("chalk.stream.config.message.format", config.messageFormat.toString().toLowerCase());
 		
 		new com.firstlinecode.chalk.demo.Demo().run(config.protocol);
+	}
+
+	private void configureLog(LogLevel logLevel) {
+		LogConfigurator logConfigurator = new LogConfigurator();
+		logConfigurator.configure(logLevel);
 	}
 
 	private void createAccounts(Config config) throws RegistrationException {
@@ -182,6 +192,17 @@ public class Main {
 				} else {
 					throw new IllegalArgumentException(String.format("Invalid message format: %s.", value));
 				}
+			} else if ("log-level".equals(entry.getKey())) {
+				String value = entry.getValue();
+				if ("info".equals(value)) {
+					config.logLevel = LogLevel.INFO;
+				} else if ("debug".equals(value)) {
+					config.logLevel = LogLevel.DEBUG;
+				} else if ("trace".equals(value)) {
+					config.logLevel = LogLevel.TRACE;					
+				} else {
+					throw new IllegalArgumentException(String.format("Invalid log level: %s.", value));
+				}
 			} else {
 				throw new IllegalArgumentException();
 			}
@@ -193,9 +214,10 @@ public class Main {
 	private void printUsage() {
 		System.out.println("java com.firstlinecode.chalk.demo.Main [OPTIONS]");
 		System.out.println("OPTIONS:");
-		System.out.println("--protocol=[]\tProtocol(lep or standard)");
-		System.out.println("--host=[]\tServer address");
-		System.out.println("--port=[]\tServer port");
-		System.out.println("--message-format=[]\tMessage format(xml or binary)");
+		System.out.println("--protocol=<PROTOCOL>\t\tProtocol(lep or standard)");
+		System.out.println("--host=<SERVER_ADDRESS>\t\tServer address");
+		System.out.println("--port=<SERVER PORT>\t\tServer port");
+		System.out.println("--message-format=<MESSAGE_FORMAT>\t\tMessage format(xml or binary)");
+		System.out.println("--log-level=<LOG_LEVEL>\t\tLog level(info, debug or trace)");
 	}
 }
