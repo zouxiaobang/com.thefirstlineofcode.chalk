@@ -24,6 +24,8 @@ import com.firstlinecode.chalk.xeps.ibr.IbrPlugin;
 import com.firstlinecode.chalk.xeps.ibr.RegistrationException;
 
 public class Main {
+	private static final String APP_NAME_CHALK_DEMO = "chalk-demo";
+
 	public static void main(String[] args) throws RegistrationException {
 		new Main().run(args);
 	}
@@ -45,7 +47,7 @@ public class Main {
 			return;
 		}
 		
-		configureLog(config.logLevel);
+		new LogConfigurator().configure(APP_NAME_CHALK_DEMO, config.logLevel);
 		
 		createAccounts(config);
 		
@@ -55,12 +57,7 @@ public class Main {
 		
 		new com.firstlinecode.chalk.demo.Demo().run(config.protocol);
 	}
-
-	private void configureLog(LogLevel logLevel) {
-		LogConfigurator logConfigurator = new LogConfigurator();
-		logConfigurator.configure(logLevel);
-	}
-
+	
 	private void createAccounts(Config config) throws RegistrationException {
 		StandardStreamConfig streamConfig = new StandardStreamConfig(config.host, config.port);
 		streamConfig.setTlsPreferred(false);
