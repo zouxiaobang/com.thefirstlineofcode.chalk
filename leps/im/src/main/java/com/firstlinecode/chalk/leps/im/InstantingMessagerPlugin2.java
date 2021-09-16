@@ -8,12 +8,11 @@ import com.firstlinecode.basalt.leps.im.subscription.Subscribe;
 import com.firstlinecode.basalt.leps.im.subscription.Subscribed;
 import com.firstlinecode.basalt.leps.im.subscription.Unsubscribe;
 import com.firstlinecode.basalt.leps.im.subscription.Unsubscribed;
-import com.firstlinecode.basalt.protocol.core.ProtocolChain;
-import com.firstlinecode.basalt.protocol.core.stanza.Iq;
-import com.firstlinecode.basalt.protocol.im.stanza.Message;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
 import com.firstlinecode.basalt.oxm.parsers.SimpleObjectParserFactory;
+import com.firstlinecode.basalt.protocol.core.IqProtocolChain;
+import com.firstlinecode.basalt.protocol.core.MessageProtocolChain;
 import com.firstlinecode.chalk.core.IChatSystem;
 import com.firstlinecode.chalk.core.IPlugin;
 import com.firstlinecode.chalk.im.InstantingMessagerPlugin;
@@ -27,51 +26,44 @@ public class InstantingMessagerPlugin2 implements IPlugin {
 		chatSystem.register(InstantingMessagerPlugin.class);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Subscribe.PROTOCOL),
+				new IqProtocolChain(Subscribe.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						Subscribe.class
 				)
 		);
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Subscribed.PROTOCOL),
+				new IqProtocolChain(Subscribed.PROTOCOL),
 				new SimpleObjectParserFactory<>(
 						Subscribed.PROTOCOL,
 						Subscribed.class
 				)
 		);
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Unsubscribe.PROTOCOL),
+				new IqProtocolChain(Unsubscribe.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						Unsubscribe.class
 				)
 		);
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Unsubscribed.PROTOCOL),
+				new IqProtocolChain(Unsubscribed.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						Unsubscribed.class
 				)
 		);
 		chatSystem.registerParser(
-				ProtocolChain.first(Message.PROTOCOL).
-				next(Trace.PROTOCOL),
+				new MessageProtocolChain(Trace.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						Trace.class
 				)
 		);
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Trace.PROTOCOL),
+				new IqProtocolChain(Trace.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						Trace.class
 						)
 				);
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(MessageRead.PROTOCOL),
+				new IqProtocolChain(MessageRead.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						MessageRead.class
 						)
@@ -130,26 +122,19 @@ public class InstantingMessagerPlugin2 implements IPlugin {
 		chatSystem.unregisterTranslator(Subscribe.class);
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Message.PROTOCOL).
-				next(Trace.PROTOCOL));
+				new MessageProtocolChain(Trace.PROTOCOL));
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Trace.PROTOCOL));
+				new MessageProtocolChain(Trace.PROTOCOL));
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(MessageRead.PROTOCOL));
+				new IqProtocolChain(MessageRead.PROTOCOL));
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Unsubscribed.PROTOCOL));
+				new IqProtocolChain(Unsubscribed.PROTOCOL));
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Unsubscribe.PROTOCOL));
+				new IqProtocolChain(Unsubscribe.PROTOCOL));
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Subscribed.PROTOCOL));
+				new IqProtocolChain(Subscribed.PROTOCOL));
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(Subscribe.PROTOCOL));
+				new IqProtocolChain(Subscribe.PROTOCOL));
 		
 		chatSystem.unregister(InstantingMessagerPlugin.class);
 		chatSystem.unregister(DelayPlugin.class);

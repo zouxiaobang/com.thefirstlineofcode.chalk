@@ -272,12 +272,21 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 
 	@Override
 	public void addListener(IConnectionListener listener) {
-		listeners.add(listener);
+		if (!listeners.contains(listener))
+			listeners.add(listener);
 	}
 	
 	@Override
 	public boolean removeListener(IConnectionListener listener) {
 		return listeners.remove(listener);
+	}
+	
+	@Override
+	public IConnectionListener[] getListeners() {
+		if (listeners.size() == 0)
+			return new IConnectionListener[0];
+		
+		return listeners.toArray(new IConnectionListener[listeners.size()]);
 	}
 	
 	public void setSocket(Socket socket) {

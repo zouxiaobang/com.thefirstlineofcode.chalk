@@ -14,6 +14,7 @@ public interface IConnection {
 	
 	void addListener(IConnectionListener listener);
 	boolean removeListener(IConnectionListener listener);
+	IConnectionListener[] getListeners();
 	
 	boolean isTlsSupported();
 	boolean isTlsStarted();

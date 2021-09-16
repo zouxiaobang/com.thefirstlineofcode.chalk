@@ -2,17 +2,16 @@ package com.firstlinecode.chalk.xeps.disco;
 
 import java.util.Properties;
 
-import com.firstlinecode.basalt.protocol.core.ProtocolChain;
-import com.firstlinecode.basalt.protocol.core.stanza.Iq;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
+import com.firstlinecode.basalt.protocol.core.IqProtocolChain;
+import com.firstlinecode.basalt.xeps.disco.DiscoInfo;
+import com.firstlinecode.basalt.xeps.disco.DiscoItems;
+import com.firstlinecode.basalt.xeps.rsm.Set;
 import com.firstlinecode.basalt.xeps.xdata.XData;
 import com.firstlinecode.chalk.core.IChatSystem;
 import com.firstlinecode.chalk.core.IPlugin;
 import com.firstlinecode.chalk.xeps.rsm.RsmPlugin;
-import com.firstlinecode.basalt.xeps.disco.DiscoInfo;
-import com.firstlinecode.basalt.xeps.disco.DiscoItems;
-import com.firstlinecode.basalt.xeps.rsm.Set;
 
 public class DiscoPlugin implements IPlugin {
 
@@ -21,14 +20,13 @@ public class DiscoPlugin implements IPlugin {
 		chatSystem.register(RsmPlugin.class);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(DiscoInfo.PROTOCOL),
+				new IqProtocolChain(DiscoInfo.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						DiscoInfo.class)
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 				next(DiscoInfo.PROTOCOL).
 				next(XData.PROTOCOL),
 				new NamingConventionParserFactory<>(
@@ -36,15 +34,14 @@ public class DiscoPlugin implements IPlugin {
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(DiscoItems.PROTOCOL),
+				new IqProtocolChain(DiscoItems.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						DiscoItems.class
 				)
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 					next(DiscoItems.PROTOCOL).
 					next(Set.PROTOCOL),
 					new NamingConventionParserFactory<>(
@@ -77,22 +74,20 @@ public class DiscoPlugin implements IPlugin {
 		chatSystem.unregisterTranslator(DiscoInfo.class);
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 				next(DiscoItems.PROTOCOL).
 				next(Set.PROTOCOL)
 		);
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 				next(DiscoItems.PROTOCOL).
 				next(XData.PROTOCOL)
 		);
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(DiscoItems.PROTOCOL)
+				new IqProtocolChain(DiscoItems.PROTOCOL)
 		);
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(DiscoInfo.PROTOCOL)
+				new IqProtocolChain(DiscoInfo.PROTOCOL)
 		);
 		
 		chatSystem.unregister(RsmPlugin.class);

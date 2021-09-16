@@ -2,18 +2,17 @@ package com.firstlinecode.chalk.xeps.ibr;
 
 import java.util.Properties;
 
-import com.firstlinecode.basalt.protocol.core.ProtocolChain;
-import com.firstlinecode.basalt.protocol.core.stanza.Iq;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
+import com.firstlinecode.basalt.protocol.core.IqProtocolChain;
+import com.firstlinecode.basalt.xeps.ibr.IqRegister;
+import com.firstlinecode.basalt.xeps.ibr.oxm.IqRegisterParserFactory;
+import com.firstlinecode.basalt.xeps.ibr.oxm.IqRegisterTranslatorFactory;
+import com.firstlinecode.basalt.xeps.oob.XOob;
 import com.firstlinecode.basalt.xeps.xdata.XData;
 import com.firstlinecode.chalk.core.IChatSystem;
 import com.firstlinecode.chalk.core.IPlugin;
 import com.firstlinecode.chalk.xeps.oob.OobPlugin;
 import com.firstlinecode.chalk.xeps.xdata.XDataPlugin;
-import com.firstlinecode.basalt.xeps.ibr.IqRegister;
-import com.firstlinecode.basalt.xeps.ibr.oxm.IqRegisterParserFactory;
-import com.firstlinecode.basalt.xeps.ibr.oxm.IqRegisterTranslatorFactory;
-import com.firstlinecode.basalt.xeps.oob.XOob;
 
 public class InternalIbrPlugin implements IPlugin {
 	@Override
@@ -22,13 +21,12 @@ public class InternalIbrPlugin implements IPlugin {
 		chatSystem.register(XDataPlugin.class);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(IqRegister.PROTOCOL),
+				new IqProtocolChain(IqRegister.PROTOCOL),
 				new IqRegisterParserFactory()
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 				next(IqRegister.PROTOCOL).
 				next(XData.PROTOCOL),
 				new NamingConventionParserFactory<>(
@@ -37,7 +35,7 @@ public class InternalIbrPlugin implements IPlugin {
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 				next(IqRegister.PROTOCOL).
 				next(XOob.PROTOCOL),
 				new NamingConventionParserFactory<>(
@@ -56,18 +54,17 @@ public class InternalIbrPlugin implements IPlugin {
 		chatSystem.unregisterTranslator(IqRegister.class);
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-				next(IqRegister.PROTOCOL)
+				new IqProtocolChain(IqRegister.PROTOCOL)
 		);
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 				next(IqRegister.PROTOCOL).
 				next(XData.PROTOCOL)
 		);
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 				next(IqRegister.PROTOCOL).
 				next(XOob.PROTOCOL)
 		);

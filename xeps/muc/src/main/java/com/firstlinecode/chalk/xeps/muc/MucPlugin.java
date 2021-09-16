@@ -2,12 +2,11 @@ package com.firstlinecode.chalk.xeps.muc;
 
 import java.util.Properties;
 
-import com.firstlinecode.basalt.protocol.core.ProtocolChain;
-import com.firstlinecode.basalt.protocol.core.stanza.Iq;
-import com.firstlinecode.basalt.protocol.im.stanza.Message;
-import com.firstlinecode.basalt.protocol.im.stanza.Presence;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.firstlinecode.basalt.oxm.convention.NamingConventionTranslatorFactory;
+import com.firstlinecode.basalt.protocol.core.IqProtocolChain;
+import com.firstlinecode.basalt.protocol.core.MessageProtocolChain;
+import com.firstlinecode.basalt.protocol.core.PresenceProtocolChain;
 import com.firstlinecode.basalt.xeps.muc.Muc;
 import com.firstlinecode.basalt.xeps.muc.admin.MucAdmin;
 import com.firstlinecode.basalt.xeps.muc.owner.MucOwner;
@@ -34,39 +33,35 @@ public class MucPlugin implements IPlugin {
 		chatSystem.register(AddressPlugin.class);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Presence.PROTOCOL).
-					next(Muc.PROTOCOL),
+				new PresenceProtocolChain(Muc.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						Muc.class
 				)
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Presence.PROTOCOL).
-					next(MucUser.PROTOCOL),
+				new PresenceProtocolChain(MucUser.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						MucUser.class
 				)
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Message.PROTOCOL).
-					next(MucUser.PROTOCOL),
+				new PresenceProtocolChain(MucUser.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						MucUser.class
 				)
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-					next(MucOwner.PROTOCOL),
+				new IqProtocolChain(MucOwner.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						MucOwner.class
 				)
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 					next(MucOwner.PROTOCOL).
 					next(XData.PROTOCOL),
 				new NamingConventionParserFactory<>(
@@ -75,8 +70,7 @@ public class MucPlugin implements IPlugin {
 		);
 		
 		chatSystem.registerParser(
-				ProtocolChain.first(Message.PROTOCOL).
-					next(XConference.PROTOCOL),
+				new MessageProtocolChain(XConference.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						XConference.class
 				)
@@ -125,29 +119,25 @@ public class MucPlugin implements IPlugin {
 		chatSystem.unregisterApi(IMucService.class);
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Message.PROTOCOL).
-					next(XConference.PROTOCOL));
+			new MessageProtocolChain(
+					XConference.PROTOCOL));
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
+				new IqProtocolChain().
 					next(MucOwner.PROTOCOL).
 					next(XData.PROTOCOL));
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Iq.PROTOCOL).
-					next(MucOwner.PROTOCOL));
+				new IqProtocolChain(MucOwner.PROTOCOL));
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Message.PROTOCOL).
-					next(MucUser.PROTOCOL));
+				new MessageProtocolChain(MucUser.PROTOCOL));
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Presence.PROTOCOL).
-					next(MucUser.PROTOCOL));
+				new PresenceProtocolChain(MucUser.PROTOCOL));
 		
 		chatSystem.unregisterParser(
-				ProtocolChain.first(Presence.PROTOCOL).
-					next(Muc.PROTOCOL));
+				new PresenceProtocolChain(Muc.PROTOCOL));
 		
 		chatSystem.unregisterTranslator(XConference.class);
 		

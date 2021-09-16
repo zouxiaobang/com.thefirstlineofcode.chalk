@@ -54,6 +54,11 @@ public class NegotiationContext implements INegotiationContext {
 	public boolean removeListener(IConnectionListener listener) {
 		return connection.removeListener(listener);
 	}
+	
+	@Override
+	public IConnectionListener[] getListeners() {
+		return connection.getListeners();
+	}
 
 	@Override
 	public void setAttribute(Object key, Object value) {
