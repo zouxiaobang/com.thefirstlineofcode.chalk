@@ -125,16 +125,16 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 				state = State.CONNECTED;
 			}
 		} else {
-			try {
-				if (exception instanceof NegotiationException) {
-					throw (NegotiationException)exception;
-				} else if (exception instanceof ConnectionException) {
-					throw (ConnectionException)exception;
-				} else {
-					throw new RuntimeException("Unexpected exception.", exception);
-				}
-			} finally {
-				exception = null;
+			// close() will clear the exception, so remember the exception before calling it.
+			Exception exception = this.exception;
+			close(false);
+			
+			if (exception instanceof NegotiationException) {
+				throw (NegotiationException)exception;
+			} else if (exception instanceof ConnectionException) {
+				throw (ConnectionException)exception;
+			} else {
+				throw new RuntimeException("Unexpected exception.", exception);
 			}
 		}
 	}
@@ -166,6 +166,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 			logger.debug("Chat client is trying to connect to XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
 		streamer = createStreamer(streamConfig, connection);
+		streamer.setConnectionListener(this);
 		streamer.setNegotiationListener(this);
 		
 		streamer.negotiate(authToken);
@@ -399,15 +400,11 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		if (state == State.CLOSED)
 			return;
 		
-		exception = null;	
+		exception = null;
 		chatServices.stop();
 		
-		if (stream != null && !stream.isClosed()) {
+		if (isConnected()) {
 			stream.close(graceful);			
-			stream = null;
-			
-			if (logger.isDebugEnabled())
-				logger.debug("Chat client has disconnected from XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		}
 		
 		if (stream == null && state == State.CONNECTING) {
@@ -416,6 +413,11 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 			
 			connection = null;
 		}
+		
+		stream = null;
+		
+		if (logger.isDebugEnabled())
+			logger.debug("Chat client has disconnected from XMPP server({}).", String.format("%s: %d", streamConfig.getHost(), streamConfig.getPort()));
 		
 		state = State.CLOSED;
 	}
@@ -492,6 +494,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 
 	private synchronized void processNegotiationConnectionError(ConnectionException exception) {
 		this.exception = exception;
+		
 		notify();
 	}
 
@@ -507,12 +510,12 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 
 	@Override
 	public synchronized boolean isConnected() {
-		return state == State.CONNECTED;
+		return state == State.CONNECTED && stream != null && !stream.isClosed();
 	}
 
 	@Override
 	public synchronized boolean isClosed() {
-		return state == State.CLOSED;
+		return state == State.CLOSED || stream == null || stream.isClosed();
 	}
 	
 	@Override

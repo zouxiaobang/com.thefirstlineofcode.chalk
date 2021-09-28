@@ -206,6 +206,7 @@ public class SocketConnection implements IConnection, HandshakeCompletedListener
 				// ignore
 			}
 		}
+		socket = null;
 		
 		sendingQueue.clear();
 		receivingQueue.clear();
