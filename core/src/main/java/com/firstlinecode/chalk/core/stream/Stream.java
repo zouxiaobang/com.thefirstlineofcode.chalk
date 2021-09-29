@@ -181,7 +181,7 @@ public class Stream implements IStream, IConnectionListener {
 	}
 
 	@Override
-	public synchronized void exceptionOccurred(ConnectionException exception) {
+	public void exceptionOccurred(ConnectionException exception) {
 		for (IConnectionListener connectionListener : connectionListeners) {
 			connectionListener.exceptionOccurred(exception);
 		}

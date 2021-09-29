@@ -145,6 +145,7 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 			}
 			
 			done = true;
+			connection.removeListener(AbstractStreamer.this);
 			if (negotiationListener != null) {
 				JabberId jid = (JabberId)context.getAttribute(StandardStreamer.NEGOTIATION_KEY_BINDED_CHAT_ID);
 				negotiationListener.done(new Stream(jid, streamConfig, connection));
