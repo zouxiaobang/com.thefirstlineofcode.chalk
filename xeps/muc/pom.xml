@@ -6,34 +6,34 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-                <groupId>com.firstlinecode.chalk</groupId>
+                <groupId>com.thefirstlineofcode.chalk</groupId>
                 <artifactId>xeps</artifactId>
                 <version>0.2.0-RELEASE</version>
         </parent>
 
-	<groupId>com.firstlinecode.chalk.xeps</groupId>
+	<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 	<artifactId>chalk-xeps-muc</artifactId>
 	<name>Chalk XEPs MUC</name>
 	
 	<dependencies>
 		<dependency>
-			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-xdata</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-disco</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-delay</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-address</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>com.firstlinecode.basalt.xeps</groupId>
+		    <groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 			<artifactId>basalt-xeps-muc</artifactId>
 		</dependency>
 	</dependencies>

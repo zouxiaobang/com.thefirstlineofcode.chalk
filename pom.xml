@@ -4,8 +4,8 @@
 		http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.firstlinecode.chalk</groupId>
-	<artifactId>com.firstlinecode.chalk.parent</artifactId>
+	<groupId>com.thefirstlineofcode.chalk</groupId>
+	<artifactId>com.thefirstlineofcode.chalk.parent</artifactId>
 	<packaging>pom</packaging>
 	<version>0.2.0-RELEASE</version>
 	<name>Chalk XMPP Client Libraries</name>
@@ -79,13 +79,13 @@
 	
 	<repositories>
 		<repository>
-                        <id>com.firstlinecode.releases</id>
-                        <name>FirstLineCode Repository - Releases</name>
+                        <id>com.thefirstlineofcode.releases</id>
+                        <name>thefirstlineofcode Repository - Releases</name>
                         <url>http://47.115.36.99/repository/maven-releases/</url>
                 </repository>
                 <repository>
-			<id>com.firstlinecode.snapshots</id>
-                        <name>FirstLineCode Repository - Snapshots</name>
+			<id>com.thefirstlineofcode.snapshots</id>
+                        <name>thefirstlineofcode Repository - Snapshots</name>
                         <url>http://47.115.36.99/repository/maven-snapshots/</url>
                 </repository>	
 		<repository>
@@ -124,131 +124,131 @@
 				<version>1.2.5</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt</groupId>
+				<groupId>com.thefirstlineofcode.basalt</groupId>
 				<artifactId>basalt-oxm</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt</groupId>
+				<groupId>com.thefirstlineofcode.basalt</groupId>
 				<artifactId>basalt-xmpp-im</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-ping</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-disco</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-muc</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.leps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.leps</groupId>
 				<artifactId>basalt-leps-im</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-rsm</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-xdata</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-delay</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-address</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-oob</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.basalt.xeps</groupId>
+				<groupId>com.thefirstlineofcode.basalt.xeps</groupId>
 				<artifactId>basalt-xeps-ibr</artifactId>
 				<version>${basalt.version}</version>
 			</dependency>
 			
 			<dependency>
-				<groupId>com.firstlinecode.gem.client</groupId>
+				<groupId>com.thefirstlineofcode.gem.client</groupId>
 				<artifactId>gem-client-bxmpp</artifactId>
 				<version>${gem.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>com.firstlinecode.chalk</groupId>
+				<groupId>com.thefirstlineofcode.chalk</groupId>
 				<artifactId>chalk-core</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-disco</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-ping</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-rsm</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-xdata</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-delay</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-address</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-muc</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-oob</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-ibr</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.leps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.leps</groupId>
 				<artifactId>chalk-leps-im</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.firstlinecode.chalk.xeps</groupId>
+				<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 				<artifactId>chalk-xeps-component</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
@@ -257,14 +257,14 @@
 	
 	<distributionManagement>
                 <repository>
-                        <id>com.firstlinecode.releases</id>
-                        <name>FirstLineCode Repository - Releases</name>
+                        <id>com.thefirstlineofcode.releases</id>
+                        <name>thefirstlineofcode Repository - Releases</name>
                         <url>http://47.115.36.99/repository/maven-releases/</url>
                 </repository>
 
                 <snapshotRepository>
-                        <id>com.firstlinecode.snapshots</id>
-                        <name>FirstLineCode Repository - Snapshots</name>
+                        <id>com.thefirstlineofcode.snapshots</id>
+                        <name>thefirstlineofcode Repository - Snapshots</name>
                         <url>http://47.115.36.99/repository/maven-snapshots/</url>
                 </snapshotRepository>
         </distributionManagement>	

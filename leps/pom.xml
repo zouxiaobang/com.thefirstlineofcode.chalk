@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.firstlinecode.chalk</groupId>
-		<artifactId>com.firstlinecode.chalk.parent</artifactId>
+		<groupId>com.thefirstlineofcode.chalk</groupId>
+		<artifactId>com.thefirstlineofcode.chalk.parent</artifactId>
 		<version>0.2.0-RELEASE</version>
 	</parent>
-	<groupId>com.firstlinecode.chalk</groupId>
+	<groupId>com.thefirstlineofcode.chalk</groupId>
 	<artifactId>leps</artifactId>
 	<packaging>pom</packaging>
 	<name>Chalk XMPP Client LEPs Libraries</name>

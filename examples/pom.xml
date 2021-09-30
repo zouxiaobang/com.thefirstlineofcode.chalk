@@ -6,12 +6,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.firstlinecode.chalk</groupId>
-		<artifactId>com.firstlinecode.chalk.parent</artifactId>
+		<groupId>com.thefirstlineofcode.chalk</groupId>
+		<artifactId>com.thefirstlineofcode.chalk.parent</artifactId>
 		<version>0.2.0-RELEASE</version>
 	</parent>
 
-	<groupId>com.firstlinecode.chalk</groupId>
+	<groupId>com.thefirstlineofcode.chalk</groupId>
 	<artifactId>chalk-examples</artifactId>
 	<name>Chark Examples</name>
 	<packaging>jar</packaging>
@@ -23,27 +23,27 @@
 			<version>3.5.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.chalk</groupId>
+			<groupId>com.thefirstlineofcode.chalk</groupId>
 			<artifactId>chalk-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.gem.client</groupId>
+			<groupId>com.thefirstlineofcode.gem.client</groupId>
 			<artifactId>gem-client-bxmpp</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-ibr</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.chalk.leps</groupId>
+			<groupId>com.thefirstlineofcode.chalk.leps</groupId>
 			<artifactId>chalk-leps-im</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-ping</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.firstlinecode.chalk.xeps</groupId>
+			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-muc</artifactId>
 		</dependency>
 	</dependencies>
