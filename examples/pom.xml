@@ -26,10 +26,10 @@
 			<groupId>com.thefirstlineofcode.chalk</groupId>
 			<artifactId>chalk-core</artifactId>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.thefirstlineofcode.gem.client</groupId>
 			<artifactId>gem-client-bxmpp</artifactId>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-ibr</artifactId>
