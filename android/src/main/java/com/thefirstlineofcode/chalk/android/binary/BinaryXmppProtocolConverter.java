@@ -10,6 +10,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.thefirstlineofcode.basalt.oxm.android.IXmlParserFactory;
 import com.thefirstlineofcode.basalt.oxm.android.XmlParserFactory;
 import com.thefirstlineofcode.basalt.oxm.binary.AbstractBinaryXmppProtocolConverter;
+import com.thefirstlineofcode.basalt.oxm.binary.Element;
+import com.thefirstlineofcode.basalt.oxm.binary.Element.NameAndValue;
 import com.thefirstlineofcode.basalt.oxm.parsing.BadMessageException;
 
 /**
@@ -38,14 +40,14 @@ public class BinaryXmppProtocolConverter extends AbstractBinaryXmppProtocolConve
     }
 
     @Override
-    protected AbstractBinaryXmppProtocolConverter.Element readDocument(XmlPullParser parser) {
+    protected Element readDocument(XmlPullParser parser) {
         try {
             int eventType = parser.next();
             if (eventType != XmlPullParser.START_TAG) {
                 throw new BadMessageException("No element start tag.");
             }
 
-            AbstractBinaryXmppProtocolConverter.Element element = readProtocol(parser, null);
+            Element element = readProtocol(parser, null);
 
             int next = parser.next();
             if (next != XmlPullParser.END_DOCUMENT) {
@@ -58,13 +60,13 @@ public class BinaryXmppProtocolConverter extends AbstractBinaryXmppProtocolConve
         }
     }
 
-    private AbstractBinaryXmppProtocolConverter.Element readProtocol(XmlPullParser parser, Element parent) throws XmlPullParserException, IOException {
+    private Element readProtocol(XmlPullParser parser, Element parent) throws XmlPullParserException, IOException {
         return readElement(parser, parent);
     }
 
     @Override
-    protected AbstractBinaryXmppProtocolConverter.Element readElement(XmlPullParser parser, AbstractBinaryXmppProtocolConverter.Element parent) throws XmlPullParserException, IOException {
-        AbstractBinaryXmppProtocolConverter.Element element = new AbstractBinaryXmppProtocolConverter.Element();
+    protected Element readElement(XmlPullParser parser, Element parent) throws XmlPullParserException, IOException {
+        Element element = new Element();
         element.namespace = parser.getNamespace();
         element.localName = parser.getName();
         if (parser.getPrefix() != null && !parser.getPrefix().equals("")) {
