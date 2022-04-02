@@ -17,6 +17,7 @@ import javax.security.sasl.SaslException;
 import com.thefirstlineofcode.basalt.oxm.IOxmFactory;
 import com.thefirstlineofcode.basalt.oxm.OxmService;
 import com.thefirstlineofcode.basalt.oxm.annotation.AnnotatedParserFactory;
+import com.thefirstlineofcode.basalt.oxm.binary.Base64;
 import com.thefirstlineofcode.basalt.oxm.parsers.SimpleObjectParserFactory;
 import com.thefirstlineofcode.basalt.oxm.parsers.core.stream.BindParser;
 import com.thefirstlineofcode.basalt.oxm.parsers.core.stream.sasl.FailureParserFactory;
@@ -45,7 +46,6 @@ import com.thefirstlineofcode.chalk.core.stream.StandardStreamer;
 import com.thefirstlineofcode.chalk.core.stream.UsernamePasswordToken;
 import com.thefirstlineofcode.chalk.core.stream.negotiants.InitialStreamNegotiant;
 import com.thefirstlineofcode.chalk.network.ConnectionException;
-import com.thefirstlineofcode.chalk.utils.Base64;
 
 public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegotiant {
 	private static final int WAIT_AUTH_FAILURE_ACTION_TIMEOUT = 1000 * 60;
