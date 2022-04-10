@@ -25,9 +25,9 @@ import com.thefirstlineofcode.chalk.core.stream.keepalive.IKeepAliveManager;
 import com.thefirstlineofcode.chalk.core.stream.keepalive.KeepAliveConfig;
 import com.thefirstlineofcode.chalk.core.stream.keepalive.KeepAliveManager;
 import com.thefirstlineofcode.chalk.network.ConnectionException;
+import com.thefirstlineofcode.chalk.network.ConnectionException.Type;
 import com.thefirstlineofcode.chalk.network.IConnection;
 import com.thefirstlineofcode.chalk.network.IConnectionListener;
-import com.thefirstlineofcode.chalk.network.ConnectionException.Type;
 
 public class Stream implements IStream, IConnectionListener {
 	public enum State {
@@ -141,7 +141,7 @@ public class Stream implements IStream, IConnectionListener {
 		
 		if (connection == null)
 			return;
-				
+		
 		if (graceful) {
 			String closeStreamMessage = getCloseStreamMessage();
 			connection.write(closeStreamMessage);
@@ -268,13 +268,40 @@ public class Stream implements IStream, IConnectionListener {
 					stanzaWatcher.received(stanza, message);
 				}
 				
-				for (IStanzaListener stanzaListener : stanzaListeners) {
-					stanzaListener.received(stanza);
+				try {					
+					for (IStanzaListener stanzaListener : stanzaListeners) {
+						stanzaListener.received(stanza);
+					}
+				} catch (ProtocolException pe) {
+					IError e = pe.getError();
+					if (e instanceof StanzaError)
+						setErrorAttributes(stanza, (StanzaError)e);
+					
+					send(e);
+				} catch (RuntimeException re) {
+					StanzaError e = new InternalServerError("Unexpected exception.", re);
+					setErrorAttributes(stanza, e);
+					
+					send((Stanza)e);
 				}
 			} else {
 				// ???
 				throw new RuntimeException(String.format("Unknown object[%s] received.", object.getClass().getName()));
 			}
+		}
+
+		private void setErrorAttributes(Stanza stanza, StanzaError e) {
+			e.setId(stanza.getId());
+			
+			if (stanza.getTo() != null &&
+					!stanza.getTo().equals(getJid()) &&
+					stanza.getTo().getBareId().equals(getJid().getBareId())) {
+				e.setFrom(getJid().getBareId());
+			}
+			
+			if (stanza.getFrom() != null &&
+					!stanza.getFrom().toString().equals(streamConfig.getHost()))
+				e.setTo(stanza.getFrom());
 		}
 
 		private boolean removeFlawed(Stanza stanza) {
@@ -388,5 +415,15 @@ public class Stream implements IStream, IConnectionListener {
 		for (IConnectionListener connectionListener : connectionListeners) {
 			connectionListener.heartBeatsReceived(length);
 		}
+	}
+
+	@Override
+	public void send(IError error) {
+		if (error instanceof StanzaError) {
+			send((Stanza)error);
+			return;
+		}
+		
+		connection.write(getOxmFactory().translate(error));
 	}
 }

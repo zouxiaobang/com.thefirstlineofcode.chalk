@@ -1,6 +1,7 @@
 package com.thefirstlineofcode.chalk.core.stream;
 
 import com.thefirstlineofcode.basalt.oxm.IOxmFactory;
+import com.thefirstlineofcode.basalt.protocol.core.IError;
 import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.protocol.core.stanza.Stanza;
 import com.thefirstlineofcode.chalk.core.IErrorListener;
@@ -14,6 +15,7 @@ public interface IStream {
 	StreamConfig getStreamConfig();
 	
 	void send(Stanza stanza);
+	void send(IError error);
 	
 	void close();
 	void close(boolean graceful);
