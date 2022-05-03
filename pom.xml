@@ -80,14 +80,9 @@
 	<repositories>
 		<repository>
                         <id>com.thefirstlineofcode.releases</id>
-                        <name>thefirstlineofcode Repository - Releases</name>
+                        <name>TheFirstLineOfCode Repository - Releases</name>
                         <url>http://47.115.36.99/repository/maven-releases/</url>
                 </repository>
-                <repository>
-			<id>com.thefirstlineofcode.snapshots</id>
-                        <name>thefirstlineofcode Repository - Snapshots</name>
-                        <url>http://47.115.36.99/repository/maven-snapshots/</url>
-                </repository>	
 		<repository>
                         <id>jcenter</id>
                         <name>JCenter Repository</name>
@@ -258,15 +253,9 @@
 	<distributionManagement>
                 <repository>
                         <id>com.thefirstlineofcode.releases</id>
-                        <name>thefirstlineofcode Repository - Releases</name>
+                        <name>TheFirstLineOfCode Repository - Releases</name>
                         <url>http://47.115.36.99/repository/maven-releases/</url>
                 </repository>
-
-                <snapshotRepository>
-                        <id>com.thefirstlineofcode.snapshots</id>
-                        <name>thefirstlineofcode Repository - Snapshots</name>
-                        <url>http://47.115.36.99/repository/maven-snapshots/</url>
-                </snapshotRepository>
         </distributionManagement>	
 </project>
 
