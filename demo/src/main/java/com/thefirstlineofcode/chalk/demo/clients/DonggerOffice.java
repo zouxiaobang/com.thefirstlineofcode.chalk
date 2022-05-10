@@ -1,4 +1,4 @@
-package com.thefirstlineofcode.chalk.demo.standard;
+package com.thefirstlineofcode.chalk.demo.clients;
 
 import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.chalk.core.ErrorException;

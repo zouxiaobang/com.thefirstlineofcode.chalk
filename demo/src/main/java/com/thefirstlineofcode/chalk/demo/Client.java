@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.thefirstlineofcode.basalt.leps.im.message.traceable.MessageRead;
-import com.thefirstlineofcode.basalt.leps.im.message.traceable.MsgStatus;
-import com.thefirstlineofcode.basalt.leps.im.message.traceable.Trace;
 import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.protocol.core.LangText;
 import com.thefirstlineofcode.basalt.protocol.core.stanza.error.StanzaError;
@@ -27,13 +24,13 @@ import com.thefirstlineofcode.chalk.core.stream.IStreamNegotiant;
 import com.thefirstlineofcode.chalk.core.stream.NegotiationException;
 import com.thefirstlineofcode.chalk.core.stream.StandardStreamConfig;
 import com.thefirstlineofcode.chalk.core.stream.StreamConfig;
+import com.thefirstlineofcode.chalk.im.IInstantingMessager;
 import com.thefirstlineofcode.chalk.im.roster.IRosterListener;
 import com.thefirstlineofcode.chalk.im.roster.RosterError;
+import com.thefirstlineofcode.chalk.im.stanza.IMessageListener;
 import com.thefirstlineofcode.chalk.im.stanza.IPresenceListener;
-import com.thefirstlineofcode.chalk.leps.im.IInstantingMessager2;
-import com.thefirstlineofcode.chalk.leps.im.IMessageListener2;
-import com.thefirstlineofcode.chalk.leps.im.subscription.ISubscriptionListener2;
-import com.thefirstlineofcode.chalk.leps.im.subscription.SubscriptionError2;
+import com.thefirstlineofcode.chalk.im.subscription.ISubscriptionListener;
+import com.thefirstlineofcode.chalk.im.subscription.SubscriptionError;
 import com.thefirstlineofcode.chalk.network.ConnectionException;
 import com.thefirstlineofcode.chalk.network.ConnectionListenerAdapter;
 import com.thefirstlineofcode.chalk.xeps.muc.IMucService;
@@ -57,8 +54,8 @@ import com.thefirstlineofcode.chalk.xeps.muc.events.RoomEvent;
 import com.thefirstlineofcode.chalk.xeps.muc.events.RoomMessageEvent;
 import com.thefirstlineofcode.chalk.xeps.muc.events.RoomSubjectEvent;
 
-public abstract class Client extends ConnectionListenerAdapter implements Runnable, INegotiationListener, IMessageListener2,
-		IPresenceListener, IRosterListener, ISubscriptionListener2, IRoomListener {
+public abstract class Client extends ConnectionListenerAdapter implements Runnable, INegotiationListener, IMessageListener,
+		IPresenceListener, IRosterListener, ISubscriptionListener, IRoomListener {
 	
 	protected static final String host = getHost();
 	protected static final int port = getPort();
@@ -77,7 +74,7 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 	
 	protected String clientName;
 	protected StandardChatClient chatClient;
-	protected IInstantingMessager2 im;
+	protected IInstantingMessager im;
 	protected IMucService muc;
 	protected JabberId mucHost;
 	
@@ -177,7 +174,7 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 			exceptionOccurred(e);
 		}
 		
-		im = chatClient.createApi(IInstantingMessager2.class);
+		im = chatClient.createApi(IInstantingMessager.class);
 		
 		im.addMessageListener(this);
 		im.addPresenceListener(this);
@@ -247,19 +244,6 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 	}
 	
 	@Override
-	public void traced(Trace trace) {
-		for (MsgStatus msgStatus : trace.getMsgStatuses()) {
-			print(String.format("Message traced. id: %s, status: %s, from: %s, stamp: %s.", msgStatus.getId(),
-					msgStatus.getStatus(), msgStatus.getFrom(), msgStatus.getStamp()));
-		}
-	}
-	
-	@Override
-	public void read(MessageRead read) {
-		print(String.format("Message Read. from: %s, stamp: %s.", read.getFrom(), read.getStamp()));
-	}
-	
-	@Override
 	public void retrieved(Roster roster) {
 		print(String.format("Roster retrieved(size: %d).", roster.getItems().length));
 		for (Item item : roster.getItems()) {
@@ -304,7 +288,7 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 	}
 	
 	@Override
-	public void asked(JabberId user, String message) {
+	public void asked(JabberId user) {
 		print(String.format("User %s requested your subscription.", user));
 	}
 
@@ -314,12 +298,12 @@ public abstract class Client extends ConnectionListenerAdapter implements Runnab
 	}
 
 	@Override
-	public void refused(JabberId contact, String reason) {
+	public void refused(JabberId contact) {
 		print(String.format("Contact %s refused your subscription request.", contact));
 	}
 
 	@Override
-	public void occurred(SubscriptionError2 error) {
+	public void occurred(SubscriptionError error) {
 		print(String.format("Subscription error: %s, %s.", error.getReason(), error.getDetail()));
 	}
 	

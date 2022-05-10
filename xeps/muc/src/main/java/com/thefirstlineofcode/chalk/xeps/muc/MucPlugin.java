@@ -47,7 +47,7 @@ public class MucPlugin implements IPlugin {
 		);
 		
 		chatSystem.registerParser(
-				new PresenceProtocolChain(MucUser.PROTOCOL),
+				new MessageProtocolChain(MucUser.PROTOCOL),
 				new NamingConventionParserFactory<>(
 						MucUser.class
 				)

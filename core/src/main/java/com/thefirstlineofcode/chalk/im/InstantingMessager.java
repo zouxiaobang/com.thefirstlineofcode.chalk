@@ -16,6 +16,8 @@ import com.thefirstlineofcode.chalk.im.subscription.SubscriptionService;
 
 public class InstantingMessager implements IInstantingMessager,
 		IPresenceListener, IMessageListener {
+	private static final String CLASS_NAME_BASALT_XEPS_DELAY = "com.thefirstlineofcode.basalt.xeps.delay.Delay";
+	
 	private IChatServices chatServices;
 	private ISubscriptionService subscriptionService;
 	private IRosterService rosterService;
@@ -89,8 +91,13 @@ public class InstantingMessager implements IInstantingMessager,
 
 	@Override
 	public void received(Message message) {
-		if (message.getObject() != null)
+		for (Object object : message.getObjects()) {
+			if (CLASS_NAME_BASALT_XEPS_DELAY.equals(object.getClass().getName())) {
+				continue;
+			}
+			
 			return;
+		}
 		
 		if (message.getType() == Message.Type.GROUPCHAT)
 			return;

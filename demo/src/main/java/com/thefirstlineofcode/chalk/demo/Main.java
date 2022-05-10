@@ -13,7 +13,6 @@ import com.thefirstlineofcode.chalk.core.IChatClient;
 import com.thefirstlineofcode.chalk.core.StandardChatClient;
 import com.thefirstlineofcode.chalk.core.stream.StandardStreamConfig;
 import com.thefirstlineofcode.chalk.core.stream.StreamConfig;
-import com.thefirstlineofcode.chalk.demo.Demo.Protocol;
 import com.thefirstlineofcode.chalk.network.ConnectionException;
 import com.thefirstlineofcode.chalk.network.ConnectionListenerAdapter;
 import com.thefirstlineofcode.chalk.utils.LogConfigurator;
@@ -31,7 +30,6 @@ public class Main {
 	}
 	
 	private class Config {
-		public Protocol protocol = Protocol.STANDARD;
 		public String host = "localhost";
 		public int port = 5222;
 		public String messageFormat = "xml";
@@ -55,7 +53,7 @@ public class Main {
 		System.setProperty("chalk.stream.config.port", Integer.toString(config.port));
 		System.setProperty("chalk.stream.config.message.format", config.messageFormat.toString().toLowerCase());
 		
-		new com.thefirstlineofcode.chalk.demo.Demo().run(config.protocol);
+		new com.thefirstlineofcode.chalk.demo.Demo().run();
 	}
 	
 	private void createAccounts(Config config) throws RegistrationException {
@@ -168,17 +166,7 @@ public class Main {
 		}
 		
 		for (Map.Entry<String, String> entry : mArgs.entrySet()) {
-			if ("protocol".equals(entry.getKey())) {
-				String value = entry.getValue();
-				if ("lep".equals(value)) {
-					config.protocol = Protocol.LEP;
-				} else if ("standard".equals(value)) {
-					config.protocol = Protocol.STANDARD;
-				} else {
-					throw new IllegalArgumentException();
-				}
-				
-			} else if ("host".equals(entry.getKey())) {
+			if ("host".equals(entry.getKey())) {
 				config.host = entry.getValue();
 			} else if ("port".equals(entry.getKey())) {
 				config.port = Integer.parseInt(entry.getValue());
@@ -211,7 +199,6 @@ public class Main {
 	private void printUsage() {
 		System.out.println("java com.thefirstlineofcode.chalk.demo.Main [OPTIONS]");
 		System.out.println("OPTIONS:");
-		System.out.println("--protocol=<PROTOCOL>\t\tProtocol(lep or standard)");
 		System.out.println("--host=<SERVER_ADDRESS>\t\tServer address");
 		System.out.println("--port=<SERVER PORT>\t\tServer port");
 		System.out.println("--message-format=<MESSAGE_FORMAT>\t\tMessage format(xml or binary)");

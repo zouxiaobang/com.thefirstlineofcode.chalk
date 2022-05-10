@@ -20,7 +20,6 @@
 	<modules>
 		<module>core</module>
 		<module>xeps</module>
-		<module>leps</module>
 		<module>demo</module>
 		<module>examples</module>
 		<module>android</module>

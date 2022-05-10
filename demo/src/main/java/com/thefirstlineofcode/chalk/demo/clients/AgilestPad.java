@@ -1,8 +1,6 @@
-package com.thefirstlineofcode.chalk.demo.lep;
+package com.thefirstlineofcode.chalk.demo.clients;
 
 import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.im.roster.Item;
-import com.thefirstlineofcode.basalt.protocol.im.roster.Roster;
 import com.thefirstlineofcode.basalt.protocol.im.stanza.Message;
 import com.thefirstlineofcode.basalt.protocol.im.stanza.Presence;
 import com.thefirstlineofcode.basalt.xeps.muc.RoomConfig;
@@ -18,12 +16,12 @@ import com.thefirstlineofcode.chalk.xeps.muc.events.InvitationEvent;
 import com.thefirstlineofcode.chalk.xeps.muc.events.RoomEvent;
 import com.thefirstlineofcode.chalk.xeps.muc.events.RoomMessageEvent;
 
-public class AgilestPad extends LepClient {
+public class AgilestPad extends StandardClient {
 
 	public AgilestPad(Demo demo) {
 		super(demo, "Agilest/pad");
 	}
-	
+
 	@Override
 	protected void configureStreamConfig(StandardStreamConfig streamConfig) {
 		streamConfig.setResource("pad");
@@ -36,12 +34,8 @@ public class AgilestPad extends LepClient {
 	}
 	
 	@Override
-	public void updated(Roster roster) {
-		super.updated(roster);
-		
-		Item item = roster.getItem(new JabberId("dongger", host));
-		if (item == null || item.getSubscription() != Item.Subscription.BOTH)
-			return;
+	public void approved(JabberId contact) {
+		super.approved(contact);
 		
 		setPresenceAndSendMessageToDongger();
 	}
@@ -100,7 +94,7 @@ public class AgilestPad extends LepClient {
 						
 						@Override
 						protected RoomConfig configure(RoomConfig roomConfig) {
-							roomConfig.setRoomName("Agilest's first room");
+							roomConfig.setRoomName("agilest's first room");
 							roomConfig.setRoomDesc("Hope you have happy hours here!");
 							roomConfig.setMembersOnly(true);
 							roomConfig.setAllowInvites(true);

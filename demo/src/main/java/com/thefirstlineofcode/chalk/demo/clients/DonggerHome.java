@@ -1,4 +1,4 @@
-package com.thefirstlineofcode.chalk.demo.standard;
+package com.thefirstlineofcode.chalk.demo.clients;
 
 import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.protocol.core.LangText;
@@ -51,7 +51,7 @@ public class DonggerHome extends StandardClient {
 				e.printStackTrace();
 			}
 			
-			im.getSubscriptionService().subscribe(BARE_JID_AGILEST, "Hello!");
+			im.getSubscriptionService().subscribe(BARE_JID_AGILEST);
 			
 			demo.startClient(this.getClass(), AgilestMobile.class);
 		}
@@ -66,8 +66,8 @@ public class DonggerHome extends StandardClient {
 	}
 	
 	@Override
-	public void asked(JabberId user, String message) {
-		super.asked(user, message);
+	public void asked(JabberId user) {
+		super.asked(user);
 		
 		im.getSubscriptionService().approve(user);
 		
@@ -84,8 +84,8 @@ public class DonggerHome extends StandardClient {
 	}
 	
 	@Override
-	public void refused(JabberId contact, String reason) {
-		super.refused(contact, reason);
+	public void refused(JabberId contact) {
+		super.refused(contact);
 		
 		try {
 			Thread.sleep(500);
@@ -96,7 +96,7 @@ public class DonggerHome extends StandardClient {
 		
 		demo.stopClient(this.getClass(), AgilestMobile.class);
 		
-		im.getSubscriptionService().subscribe(BARE_JID_AGILEST, "I'm Dongger!");
+		im.getSubscriptionService().subscribe(BARE_JID_AGILEST);
 		
 		demo.startClient(this.getClass(), AgilestMobile.class);
 		demo.startClient(this.getClass(), AgilestPad.class);

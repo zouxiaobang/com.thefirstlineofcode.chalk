@@ -4,11 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Demo implements IClientController {
-	public enum Protocol {
-		LEP,
-		STANDARD
-	}
-	
 	private Map<Class<? extends Client>, Client> runningClients = new HashMap<>();
 	
 	@Override
@@ -60,10 +55,7 @@ public class Demo implements IClientController {
 		}
 	}
 
-	public void run(Protocol protocol) {
-		if (protocol == Protocol.LEP)
-			startClient(null, com.thefirstlineofcode.chalk.demo.lep.DonggerHome.class);
-		else
-			startClient(null, com.thefirstlineofcode.chalk.demo.standard.DonggerHome.class);
+	public void run() {
+		startClient(null, com.thefirstlineofcode.chalk.demo.clients.DonggerHome.class);
 	}
 }

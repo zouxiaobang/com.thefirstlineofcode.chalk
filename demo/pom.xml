@@ -26,10 +26,6 @@
 			<artifactId>chalk-xeps-ibr</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.thefirstlineofcode.chalk.leps</groupId>
-			<artifactId>chalk-leps-im</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-ping</artifactId>
 		</dependency>

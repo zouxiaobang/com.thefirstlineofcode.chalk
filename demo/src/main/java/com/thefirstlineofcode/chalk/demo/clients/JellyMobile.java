@@ -1,4 +1,4 @@
-package com.thefirstlineofcode.chalk.demo.lep;
+package com.thefirstlineofcode.chalk.demo.clients;
 
 import com.thefirstlineofcode.chalk.core.ErrorException;
 import com.thefirstlineofcode.chalk.core.stream.StandardStreamConfig;
@@ -7,7 +7,7 @@ import com.thefirstlineofcode.chalk.xeps.muc.events.Invitation;
 import com.thefirstlineofcode.chalk.xeps.muc.events.InvitationEvent;
 import com.thefirstlineofcode.chalk.xeps.muc.events.RoomEvent;
 
-public class JellyMobile extends LepClient {
+public class JellyMobile extends StandardClient {
 
 	public JellyMobile(Demo demo) {
 		super(demo, "Jelly/mobile");

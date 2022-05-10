@@ -1,4 +1,4 @@
-package com.thefirstlineofcode.chalk.demo.lep;
+package com.thefirstlineofcode.chalk.demo.clients;
 
 import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.protocol.im.stanza.Message;
@@ -17,7 +17,7 @@ import com.thefirstlineofcode.chalk.xeps.muc.events.RoomEvent;
 import com.thefirstlineofcode.chalk.xeps.muc.events.RoomMessage;
 import com.thefirstlineofcode.chalk.xeps.muc.events.RoomMessageEvent;
 
-public class SmartSheepMobile extends LepClient {
+public class SmartSheepMobile extends StandardClient {
 
 	public SmartSheepMobile(Demo demo) {
 		super(demo, "SmartSheep/mobile");
@@ -66,7 +66,7 @@ public class SmartSheepMobile extends LepClient {
 			if ("jelly".equals(enter.getNick())) {
 				IRoom room = muc.getRoom(event.getRoomJid());
 				try {
-					room.kick("Jelly", "I'm sorry. You needn't attend the meeting");
+					room.kick("jelly", "I'm sorry. You needn't attend the meeting.");
 				} catch (ErrorException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

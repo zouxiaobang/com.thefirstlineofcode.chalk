@@ -1,4 +1,4 @@
-package com.thefirstlineofcode.chalk.demo.lep;
+package com.thefirstlineofcode.chalk.demo.clients;
 
 import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.protocol.im.roster.Item;
@@ -11,18 +11,18 @@ import com.thefirstlineofcode.chalk.xeps.muc.events.Invitation;
 import com.thefirstlineofcode.chalk.xeps.muc.events.InvitationEvent;
 import com.thefirstlineofcode.chalk.xeps.muc.events.RoomEvent;
 
-public class AgilestMobile extends LepClient {
+public class AgilestMobile extends StandardClient {
 
 	public AgilestMobile(Demo demo) {
 		super(demo, "Agilest/mobile");
 	}
 
 	@Override
-	public void asked(JabberId user, String message) {
-		super.asked(user, message);
+	public void asked(JabberId user) {
+		super.asked(user);
 		
 		if (getRunCount().intValue() == 1) {
-			im.getSubscriptionService().refuse(user, "Who are you?");
+			im.getSubscriptionService().refuse(user);
 		} else {
 			Roster roster = new Roster();
 			Item item = new Item();
@@ -32,8 +32,6 @@ public class AgilestMobile extends LepClient {
 			roster.addOrUpdate(item);
 			
 			im.getRosterService().add(roster);
-			
-			demo.startClient(this.getClass(), DonggerOffice.class);
 			
 			new Thread(new ApproveAndSubscribeThread(user)).start();
 		}
@@ -56,6 +54,15 @@ public class AgilestMobile extends LepClient {
 			}
 			
 			im.getSubscriptionService().approve(jid);
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			im.getSubscriptionService().subscribe(jid);
 		}
 		
 	}
