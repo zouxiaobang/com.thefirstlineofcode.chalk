@@ -63,11 +63,12 @@ public class StandardChatClient extends AbstractChatClient implements IAuthentic
 			}
 		} else {
 			close();
-			super.connect(authToken);
 			
 			try {
+				super.connect(authToken);
+				
 				if (authFailure != null) {
-					throw new AuthFailureException();
+					throw new AuthFailureException(authFailure.getErrorCondition());
 				}
 			} catch (RuntimeException e) {
 				if ((e.getCause() instanceof NegotiationException) &&

@@ -157,10 +157,10 @@ public class SaslNegotiant extends InitialStreamNegotiant implements ISaslNegoti
                 String saslResponse = getSaslResponse(saslClient, (Challenge) response);
                 context.write(oxmFactory.translate(new Response(saslResponse)));
             } else if (response instanceof Failure) {
-                processFailure(context, (Failure) response);
+                processFailure(context, (Failure)response);
                 break;
             }else if(response instanceof IError){
-                processError((IError) response, context, oxmFactory);
+                processError((IError)response, context, oxmFactory);
             }else{
                 //success
                 return;
