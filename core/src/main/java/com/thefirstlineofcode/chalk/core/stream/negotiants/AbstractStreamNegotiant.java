@@ -1,8 +1,8 @@
 package com.thefirstlineofcode.chalk.core.stream.negotiants;
 
 import java.util.EmptyStackException;
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.thefirstlineofcode.basalt.oxm.IOxmFactory;
 import com.thefirstlineofcode.basalt.protocol.core.IError;
@@ -18,7 +18,7 @@ public abstract class AbstractStreamNegotiant extends ConnectionListenerAdapter 
 	protected static final long DEFAULT_READ_RESPONSE_TIMEOUT = 1000 * 15;
 	protected static final long DEFAULT_READ_RESPONSE_INTERVAL = 200;
 	
-	protected Queue<String> responses = new LinkedList<>();
+	protected Queue<String> responses = new LinkedBlockingQueue<>();
 	protected ConnectionException exception;
 	protected Object lock = new Object();
 	

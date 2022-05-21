@@ -28,7 +28,7 @@ public class PingLiteExample extends AbstractLiteExample {
 		chatClient.getStream().addErrorListener(this);
 		
 		KeepAliveConfig config = chatClient.getStream().getKeepAliveManager().getConfig();
-		KeepAliveConfig newConfig = new KeepAliveConfig(10 * 1000, config.getTimeout());
+		KeepAliveConfig newConfig = new KeepAliveConfig(10 * 1000, 20 * 1000, config.getTimeout());
 		chatClient.getStream().getKeepAliveManager().changeConfig(newConfig);
 		
 		for (int i = 0; i < 5; i++) {

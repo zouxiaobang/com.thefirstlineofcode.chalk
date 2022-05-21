@@ -17,11 +17,6 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.12</version>
-		</dependency>
-		<dependency>
 			<groupId>com.thefirstlineofcode.chalk</groupId>
 			<artifactId>chalk-core</artifactId>
 		</dependency>

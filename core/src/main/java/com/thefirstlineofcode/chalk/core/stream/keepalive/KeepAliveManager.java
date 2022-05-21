@@ -160,7 +160,8 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 					return;
 				}
 				
-				if (getInactiveTime() > config.getInterval()) {
+				if (getClientInactiveTime() > config.getClientKeepAliveInterval() ||
+						getServerInactiveTime() > config.getServerKeepAliveInterval()) {
 					if (useBinaryFormat) {
 						stream.getConnection().write(new byte[] {BYTE_HEART_BEAT});
 					} else {
@@ -196,7 +197,7 @@ public class KeepAliveManager implements IKeepAliveManager, IConnectionListener 
 			started = false;
 		}
 
-		protected long getInactiveTime() {
+		protected long getClientInactiveTime() {
 			return currentTime().getTime() - lastMessageSentTime;
 		}
 

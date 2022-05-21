@@ -1,31 +1,42 @@
 package com.thefirstlineofcode.chalk.core.stream.keepalive;
 
 public class KeepAliveConfig {
-	private static int DEFAULT_CHECK_INTERVAL = 500;
-	private static int DEFAULT_INTERVAL = 30 * 1000;
-	private static int DEFAULT_TIMEOUT = 120 * 1000;
+	private static int DEFAULT_CHECK_INTERVAL = 1000;
+	private static int DEFAULT_CLIENT_KEEP_ALIVE_INTERVAL = 30 * 1000;
+	private static int DEFAULT_SERVER_KEEP_ALIVE_INTERVAL = 60 * 1000;
+	private static int DEFAULT_TIMEOUT = 240 * 1000;
 	
 	private int checkingInterval;
-	private int interval;
+	private int clientKeepAliveInterval;
+	private int serverKeepAliveInterval;
 	private int timeout;
 	
 	public KeepAliveConfig() {
-		this(DEFAULT_CHECK_INTERVAL, DEFAULT_INTERVAL, DEFAULT_TIMEOUT);
+		this(DEFAULT_CHECK_INTERVAL, DEFAULT_CLIENT_KEEP_ALIVE_INTERVAL,
+				DEFAULT_SERVER_KEEP_ALIVE_INTERVAL, DEFAULT_TIMEOUT);
 	}
 	
-	public KeepAliveConfig(int interval, int timeout) {
-		this(DEFAULT_CHECK_INTERVAL, interval, timeout);
+	public KeepAliveConfig(int clientKeepAliveInterval, int serverKeepAliveInterval, int timeout) {
+		this(DEFAULT_CHECK_INTERVAL, clientKeepAliveInterval, serverKeepAliveInterval, timeout);
 	}
 	
-	public KeepAliveConfig(int checkingInterval, int interval, int timeout) {
-		if (checkingInterval > interval)
-			throw new IllegalArgumentException("Interval shouldn't be less than checking interval");
+	public KeepAliveConfig(int checkingInterval, int clientKeepAliveInterval,
+			int serverKeepAliveInterval, int timeout) {
+		if (checkingInterval > clientKeepAliveInterval)
+			throw new IllegalArgumentException("Client keep-alive interval shouldn't be less than checking interval");
 		
-		if (interval > timeout)
-			throw new IllegalArgumentException("Timeout shouldn't be less than interval.");
+		if (checkingInterval > serverKeepAliveInterval)
+			throw new IllegalArgumentException("Server keep-alive interval shouldn't be less than checking interval");
+		
+		if (clientKeepAliveInterval > timeout)
+			throw new IllegalArgumentException("Timeout shouldn't be less than client keep-alive interval.");
+		
+		if (serverKeepAliveInterval > timeout)
+			throw new IllegalArgumentException("Timeout shouldn't be less than server-alive-interval interval.");
 		
 		this.checkingInterval = checkingInterval;
-		this.interval = interval;
+		this.clientKeepAliveInterval = clientKeepAliveInterval;
+		this.serverKeepAliveInterval = serverKeepAliveInterval;
 		this.timeout = timeout;
 	}
 	
@@ -33,8 +44,12 @@ public class KeepAliveConfig {
 		return checkingInterval;
 	}
 
-	public int getInterval() {
-		return interval;
+	public int getClientKeepAliveInterval() {
+		return clientKeepAliveInterval;
+	}
+	
+	public int getServerKeepAliveInterval() {
+		return serverKeepAliveInterval;
 	}
 	
 	public int getTimeout() {
@@ -45,7 +60,9 @@ public class KeepAliveConfig {
 	public boolean equals(Object obj) {
 		if (obj instanceof KeepAliveConfig) {
 			KeepAliveConfig other = (KeepAliveConfig)obj;
-			return other.interval == this.interval && other.timeout == this.timeout;
+			return other.clientKeepAliveInterval == this.clientKeepAliveInterval &&
+					other.serverKeepAliveInterval == this.serverKeepAliveInterval &&
+					other.timeout == this.timeout;
 		}
 		
 		return false;
