@@ -94,7 +94,7 @@ public class Registration implements IRegistration, INegotiationListener {
 
 		@Override
 		public void trigger(IUnidirectionalStream<Iq> stream) {
-			Iq iq = new Iq(iqRegister, Iq.Type.SET, Stanza.generateId("ibr"));
+			Iq iq = new Iq(Iq.Type.SET, iqRegister, Stanza.generateId("ibr"));
 			iq.setObject(iqRegister);
 			
 			stream.send(iq);
@@ -112,7 +112,7 @@ public class Registration implements IRegistration, INegotiationListener {
 
 			@Override
 			public void trigger(IUnidirectionalStream<Iq> stream) {
-				Iq iq = new Iq(new IqRegister(), Iq.Type.GET, Stanza.generateId("ibr"));
+				Iq iq = new Iq(Iq.Type.GET, new IqRegister(), Stanza.generateId("ibr"));
 				stream.send(iq);
 			}
 
