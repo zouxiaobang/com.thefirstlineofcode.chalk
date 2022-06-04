@@ -3,6 +3,8 @@ package com.thefirstlineofcode.chalk.core.stream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thefirstlineofcode.chalk.utils.LogConfigurator;
+
 public class StreamConfig {
 	public static final String PROPERTY_NAME_CHALK_MESSAGE_FORMAT = "chalk.message.format";
 	
@@ -16,6 +18,14 @@ public class StreamConfig {
 		this.port = port;
 		
 		properties = new HashMap<>();
+		
+		configureLogIfRequired();
+	}
+
+	private void configureLogIfRequired() {
+		String appName = System.getProperty(LogConfigurator.PROPERTY_KEY_CHALK_APP_NAME);
+		if (appName == null)
+			new LogConfigurator().configure(LogConfigurator.APP_NAME_CHALK, LogConfigurator.LogLevel.INFO);
 	}
 
 	public String getHost() {

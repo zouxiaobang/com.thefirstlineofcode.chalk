@@ -10,7 +10,8 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class LogConfigurator {
-	private static final String APP_NAME_CHALK = "chalk";
+	public static final String PROPERTY_KEY_CHALK_APP_NAME = "chalk.app.name";
+	public static final String APP_NAME_CHALK = "chalk_app";
 
 	public enum LogLevel {
 		INFO,
@@ -22,7 +23,7 @@ public class LogConfigurator {
 		if (appName == null || appName.isEmpty()) {
 			appName = APP_NAME_CHALK;
 		}
-		System.setProperty("app.name", appName);
+		System.setProperty(PROPERTY_KEY_CHALK_APP_NAME, appName);
 		
 		LoggerContext lc = (LoggerContext)LoggerFactory.getILoggerFactory();
 		
