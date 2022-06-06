@@ -19,6 +19,7 @@
 
 	<modules>
 		<module>core</module>
+		<module>logger</module>
 		<module>xeps</module>
 		<module>demo</module>
 		<module>examples</module>
@@ -187,6 +188,11 @@
 			<dependency>
 				<groupId>com.thefirstlineofcode.chalk</groupId>
 				<artifactId>chalk-core</artifactId>
+				<version>${chalk.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.thefirstlineofcode.chalk</groupId>
+				<artifactId>chalk-logger</artifactId>
 				<version>${chalk.version}</version>
 			</dependency>
 			<dependency>

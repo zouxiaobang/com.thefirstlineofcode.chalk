@@ -1,4 +1,4 @@
-package com.thefirstlineofcode.chalk.utils;
+package com.thefirstlineofcode.chalk.logger;
 
 import java.net.URL;
 
@@ -10,6 +10,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class LogConfigurator {
+	public static final String PROPERTY_KEY_DATA_DIR = "chalk.data.dir";
 	public static final String PROPERTY_KEY_CHALK_APP_NAME = "chalk.app.name";
 	public static final String APP_NAME_CHALK = "chalk_app";
 
@@ -18,13 +19,19 @@ public class LogConfigurator {
 		DEBUG,
 		TRACE
 	}
-	
+
 	public void configure(String appName, LogLevel logLevel) {
+		System.setProperty(PROPERTY_KEY_DATA_DIR, System.getProperty("user.home"));
+		
 		if (appName == null || appName.isEmpty()) {
 			appName = APP_NAME_CHALK;
 		}
 		System.setProperty(PROPERTY_KEY_CHALK_APP_NAME, appName);
 		
+		configure(logLevel);
+	}
+	
+	protected void configure(LogLevel logLevel) {
 		LoggerContext lc = (LoggerContext)LoggerFactory.getILoggerFactory();
 		
 		if (logLevel != null) {			
@@ -40,11 +47,11 @@ public class LogConfigurator {
 		}
 	}
 	
-	private void configureLog(LoggerContext lc, String logFile) {
+	protected void configureLog(LoggerContext lc, String logFile) {
 		configureLC(lc, getClass().getClassLoader().getResource(logFile));
 	}
 	
-	private void configureLC(LoggerContext lc, URL url) {
+	protected void configureLC(LoggerContext lc, URL url) {
 		try {
 			JoranConfigurator configurator = new JoranConfigurator();
 			lc.reset();

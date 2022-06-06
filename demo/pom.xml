@@ -22,6 +22,10 @@
 			<artifactId>chalk-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.thefirstlineofcode.chalk</groupId>
+			<artifactId>chalk-logger</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.thefirstlineofcode.chalk.xeps</groupId>
 			<artifactId>chalk-xeps-ibr</artifactId>
 		</dependency>

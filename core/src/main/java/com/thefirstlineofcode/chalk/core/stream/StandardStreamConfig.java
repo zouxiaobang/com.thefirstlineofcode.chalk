@@ -8,19 +8,23 @@ public class StandardStreamConfig extends StreamConfig {
 	private KeepAliveConfig keepAliveConfig;
 	
 	public StandardStreamConfig(String host, int port) {
-		this(host, port, createDefaultKeepAliveConfig());
+		this(host, port, false);
+	}
+	
+	public StandardStreamConfig(String host, int port, boolean tlsPreferred) {
+		this(host, port, tlsPreferred, createDefaultKeepAliveConfig());
 	}
 	
 	private static KeepAliveConfig createDefaultKeepAliveConfig() {
 		return new KeepAliveConfig();
 	}
 
-	public StandardStreamConfig(String host, int port, KeepAliveConfig keepAliveConfig) {
+	public StandardStreamConfig(String host, int port, boolean tlsPreferred, KeepAliveConfig keepAliveConfig) {
 		super(host, port);
 		
+		this.tlsPreferred = tlsPreferred;
 		this.keepAliveConfig = keepAliveConfig;
 		this.resource = null;
-		this.tlsPreferred = false;
 	}
 	
 	public boolean isTlsPreferred() {
