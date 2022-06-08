@@ -2,8 +2,8 @@ package com.thefirstlineofcode.chalk.core.stream.keepalive;
 
 public class KeepAliveConfig {
 	private static int DEFAULT_CHECK_INTERVAL = 1000;
-	private static int DEFAULT_CLIENT_KEEP_ALIVE_INTERVAL = 30 * 1000;
-	private static int DEFAULT_SERVER_KEEP_ALIVE_INTERVAL = 60 * 1000;
+	private static int DEFAULT_CLIENT_KEEP_ALIVE_INTERVAL = 60 * 1000;
+	private static int DEFAULT_SERVER_KEEP_ALIVE_INTERVAL = 120 * 1000;
 	private static int DEFAULT_TIMEOUT = 240 * 1000;
 	
 	private int checkingInterval;
