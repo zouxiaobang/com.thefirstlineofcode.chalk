@@ -30,11 +30,6 @@ import com.thefirstlineofcode.chalk.network.IConnection;
 import com.thefirstlineofcode.chalk.network.IConnectionListener;
 
 public class Stream implements IStream, IConnectionListener {
-	public enum State {
-		DONE,
-		CLOSED
-	}
-	
 	private IConnection connection;
 	private volatile IOxmFactory oxmFactory;
 	
@@ -50,6 +45,8 @@ public class Stream implements IStream, IConnectionListener {
 	private ExecutorService threadPool;
 	
 	private IKeepAliveManager keepAliveManager;
+	
+	private boolean closing;
 	
 	public Stream(JabberId jid, StreamConfig streamConfig, IConnection connection) {
 		this(jid, streamConfig, connection, null);
@@ -70,6 +67,8 @@ public class Stream implements IStream, IConnectionListener {
 		
 		threadPool = Executors.newCachedThreadPool();
 		keepAliveManager = new KeepAliveManager(this, getKeepaliveConfig());
+		
+		closing = false;
 	}
 
 	private KeepAliveConfig getKeepaliveConfig() {
@@ -135,6 +134,8 @@ public class Stream implements IStream, IConnectionListener {
 	
 	@Override
 	public void close(boolean graceful) {
+		closing = true;
+		
 		if (keepAliveManager != null && keepAliveManager.isStarted()) {
 			keepAliveManager.stop();
 		}
@@ -146,10 +147,13 @@ public class Stream implements IStream, IConnectionListener {
 			String closeStreamMessage = getCloseStreamMessage();
 			connection.write(closeStreamMessage);
 			
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// Ignore.
+			synchronized (this) {
+				try {
+					wait(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -231,6 +235,14 @@ public class Stream implements IStream, IConnectionListener {
 					(com.thefirstlineofcode.basalt.protocol.core.stream.Stream)object;
 				
 				if (closeStream.isClose()) {
+					if (closing) {
+						synchronized (Stream.this) {
+							Stream.this.notify();
+						}
+						
+						return;
+					}
+					
 					exceptionOccurred(new ConnectionException(Type.CONNECTION_CLOSED));
 				}
 			} else if (object instanceof Stanza) {
