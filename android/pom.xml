@@ -21,10 +21,6 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.thefirstlineofcode.basalt</groupId>
-			<artifactId>basalt-xmpp-im</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.thefirstlineofcode.chalk</groupId>
 			<artifactId>chalk-core</artifactId>
 		</dependency>
