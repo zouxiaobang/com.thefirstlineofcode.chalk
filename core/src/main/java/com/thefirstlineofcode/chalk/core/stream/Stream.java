@@ -306,9 +306,8 @@ public class Stream implements IStream, IConnectionListener {
 			e.setId(stanza.getId());
 			
 			if (stanza.getTo() != null &&
-					!stanza.getTo().equals(getJid()) &&
 					stanza.getTo().getBareId().equals(getJid().getBareId())) {
-				e.setFrom(getJid().getBareId());
+				e.setFrom(stanza.getTo());
 			}
 			
 			if (stanza.getFrom() != null &&
