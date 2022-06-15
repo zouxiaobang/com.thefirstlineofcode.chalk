@@ -520,7 +520,8 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	
 	@Override
 	public void addNegotiationListener(INegotiationListener negotiationListener) {
-		negotiationListeners.add(negotiationListener);
+		if (!negotiationListeners.contains(negotiationListener))
+			negotiationListeners.add(negotiationListener);
 	}
 
 	@Override
