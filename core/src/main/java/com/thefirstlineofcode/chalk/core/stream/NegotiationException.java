@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.core.stream;
 
-import com.thefirstlineofcode.basalt.protocol.core.IError;
+import com.thefirstlineofcode.basalt.xmpp.core.IError;
 
 public class NegotiationException extends RuntimeException {
 

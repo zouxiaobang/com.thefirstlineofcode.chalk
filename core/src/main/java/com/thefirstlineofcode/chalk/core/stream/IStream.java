@@ -1,9 +1,9 @@
 package com.thefirstlineofcode.chalk.core.stream;
 
 import com.thefirstlineofcode.basalt.oxm.IOxmFactory;
-import com.thefirstlineofcode.basalt.protocol.core.IError;
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Stanza;
+import com.thefirstlineofcode.basalt.xmpp.core.IError;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Stanza;
 import com.thefirstlineofcode.chalk.core.IErrorListener;
 import com.thefirstlineofcode.chalk.core.stanza.IStanzaListener;
 import com.thefirstlineofcode.chalk.core.stream.keepalive.IKeepAliveManager;

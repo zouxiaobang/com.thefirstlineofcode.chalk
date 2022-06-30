@@ -7,8 +7,8 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thefirstlineofcode.basalt.protocol.Constants;
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.Constants;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 import com.thefirstlineofcode.chalk.core.stream.IStream;
 import com.thefirstlineofcode.chalk.core.stream.StreamConfig;
 import com.thefirstlineofcode.chalk.network.ConnectionException;

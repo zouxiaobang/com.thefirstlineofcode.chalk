@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.core;
 
-import com.thefirstlineofcode.basalt.protocol.core.IError;
+import com.thefirstlineofcode.basalt.xmpp.core.IError;
 
 public class ErrorException extends Exception {
 	private static final long serialVersionUID = 6739863800967990840L;

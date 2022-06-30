@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.core;
 
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Stanza;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Stanza;
 
 public interface ISyncTask<K extends Stanza, V> {
 	void trigger(IUnidirectionalStream<K> stream);

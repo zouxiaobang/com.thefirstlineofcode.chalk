@@ -42,8 +42,8 @@ import com.thefirstlineofcode.basalt.oxm.binary.IBinaryXmppProtocolFactory;
 import com.thefirstlineofcode.basalt.oxm.preprocessing.IMessagePreprocessor;
 import com.thefirstlineofcode.basalt.oxm.preprocessing.OutOfMaxBufferSizeException;
 import com.thefirstlineofcode.basalt.oxm.preprocessing.XmlMessagePreprocessorAdapter;
-import com.thefirstlineofcode.basalt.protocol.Constants;
-import com.thefirstlineofcode.basalt.protocol.core.ProtocolException;
+import com.thefirstlineofcode.basalt.xmpp.Constants;
+import com.thefirstlineofcode.basalt.xmpp.core.ProtocolException;
 import com.thefirstlineofcode.chalk.core.stream.keepalive.IKeepAliveManager;
 
 public class SocketConnection implements IConnection, HandshakeCompletedListener {

@@ -1,7 +1,7 @@
 package com.thefirstlineofcode.chalk.xeps.muc.events;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Stanza;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Stanza;
 
 public class KickedEvent extends RoomEvent<Kicked> {
 

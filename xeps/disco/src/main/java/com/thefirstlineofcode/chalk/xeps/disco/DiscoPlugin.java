@@ -4,11 +4,11 @@ import java.util.Properties;
 
 import com.thefirstlineofcode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.thefirstlineofcode.basalt.oxm.convention.NamingConventionTranslatorFactory;
-import com.thefirstlineofcode.basalt.protocol.core.IqProtocolChain;
 import com.thefirstlineofcode.basalt.xeps.disco.DiscoInfo;
 import com.thefirstlineofcode.basalt.xeps.disco.DiscoItems;
 import com.thefirstlineofcode.basalt.xeps.rsm.Set;
 import com.thefirstlineofcode.basalt.xeps.xdata.XData;
+import com.thefirstlineofcode.basalt.xmpp.core.IqProtocolChain;
 import com.thefirstlineofcode.chalk.core.IChatSystem;
 import com.thefirstlineofcode.chalk.core.IPlugin;
 import com.thefirstlineofcode.chalk.xeps.rsm.RsmPlugin;

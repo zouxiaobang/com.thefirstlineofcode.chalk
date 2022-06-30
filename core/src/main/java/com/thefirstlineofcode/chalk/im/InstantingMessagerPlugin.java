@@ -3,11 +3,11 @@ package com.thefirstlineofcode.chalk.im;
 import java.util.Properties;
 
 import com.thefirstlineofcode.basalt.oxm.annotation.AnnotatedParserFactory;
-import com.thefirstlineofcode.basalt.protocol.core.ProtocolChain;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Iq;
-import com.thefirstlineofcode.basalt.protocol.im.roster.Roster;
-import com.thefirstlineofcode.basalt.protocol.im.roster.RosterParser;
-import com.thefirstlineofcode.basalt.protocol.im.roster.RosterTranslatorFactory;
+import com.thefirstlineofcode.basalt.xmpp.core.ProtocolChain;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Iq;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.Roster;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.RosterParser;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.RosterTranslatorFactory;
 import com.thefirstlineofcode.chalk.core.IChatSystem;
 import com.thefirstlineofcode.chalk.core.IPlugin;
 

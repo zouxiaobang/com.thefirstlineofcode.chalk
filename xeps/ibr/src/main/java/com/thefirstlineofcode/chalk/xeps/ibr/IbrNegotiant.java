@@ -2,8 +2,8 @@ package com.thefirstlineofcode.chalk.xeps.ibr;
 
 import java.util.List;
 
-import com.thefirstlineofcode.basalt.protocol.core.stream.Feature;
 import com.thefirstlineofcode.basalt.xeps.ibr.Register;
+import com.thefirstlineofcode.basalt.xmpp.core.stream.Feature;
 import com.thefirstlineofcode.chalk.core.stream.AbstractStreamer;
 import com.thefirstlineofcode.chalk.core.stream.INegotiationContext;
 import com.thefirstlineofcode.chalk.core.stream.NegotiationException;

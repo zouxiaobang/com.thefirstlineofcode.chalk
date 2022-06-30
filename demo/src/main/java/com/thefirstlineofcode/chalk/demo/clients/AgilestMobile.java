@@ -1,9 +1,9 @@
 package com.thefirstlineofcode.chalk.demo.clients;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.im.roster.Item;
-import com.thefirstlineofcode.basalt.protocol.im.roster.Roster;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Message;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.Item;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.Roster;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Message;
 import com.thefirstlineofcode.chalk.core.ErrorException;
 import com.thefirstlineofcode.chalk.core.stream.StandardStreamConfig;
 import com.thefirstlineofcode.chalk.demo.Demo;

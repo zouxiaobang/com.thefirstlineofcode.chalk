@@ -3,12 +3,12 @@ package com.thefirstlineofcode.chalk.im.subscription;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Iq;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.error.StanzaError;
-import com.thefirstlineofcode.basalt.protocol.im.roster.Item;
-import com.thefirstlineofcode.basalt.protocol.im.roster.Roster;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Presence;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Iq;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.error.StanzaError;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.Item;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.Roster;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Presence;
 import com.thefirstlineofcode.chalk.core.IChatServices;
 import com.thefirstlineofcode.chalk.core.ITask;
 import com.thefirstlineofcode.chalk.core.IUnidirectionalStream;

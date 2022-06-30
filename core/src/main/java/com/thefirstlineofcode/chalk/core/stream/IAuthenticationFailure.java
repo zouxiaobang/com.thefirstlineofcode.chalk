@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.core.stream;
 
-import com.thefirstlineofcode.basalt.protocol.core.stream.sasl.Failure;
+import com.thefirstlineofcode.basalt.xmpp.core.stream.sasl.Failure;
 
 public interface IAuthenticationFailure {
 	boolean isRetriable();

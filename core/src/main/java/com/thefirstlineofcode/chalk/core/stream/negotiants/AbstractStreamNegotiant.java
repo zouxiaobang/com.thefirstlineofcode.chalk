@@ -5,9 +5,9 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.thefirstlineofcode.basalt.oxm.IOxmFactory;
-import com.thefirstlineofcode.basalt.protocol.core.IError;
-import com.thefirstlineofcode.basalt.protocol.core.stream.Stream;
-import com.thefirstlineofcode.basalt.protocol.core.stream.error.StreamError;
+import com.thefirstlineofcode.basalt.xmpp.core.IError;
+import com.thefirstlineofcode.basalt.xmpp.core.stream.Stream;
+import com.thefirstlineofcode.basalt.xmpp.core.stream.error.StreamError;
 import com.thefirstlineofcode.chalk.core.stream.INegotiationContext;
 import com.thefirstlineofcode.chalk.core.stream.IStreamNegotiant;
 import com.thefirstlineofcode.chalk.core.stream.NegotiationException;

@@ -4,8 +4,8 @@ import java.util.Properties;
 
 import com.thefirstlineofcode.basalt.oxm.parsers.SimpleObjectParserFactory;
 import com.thefirstlineofcode.basalt.oxm.translators.SimpleObjectTranslatorFactory;
-import com.thefirstlineofcode.basalt.protocol.core.IqProtocolChain;
 import com.thefirstlineofcode.basalt.xeps.ping.Ping;
+import com.thefirstlineofcode.basalt.xmpp.core.IqProtocolChain;
 import com.thefirstlineofcode.chalk.core.IChatSystem;
 import com.thefirstlineofcode.chalk.core.IPlugin;
 

@@ -1,8 +1,8 @@
 package com.thefirstlineofcode.chalk.xeps.muc.events;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.xeps.muc.Affiliation;
 import com.thefirstlineofcode.basalt.xeps.muc.Role;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 
 public class ChangeNick {
 	private String oldNick;

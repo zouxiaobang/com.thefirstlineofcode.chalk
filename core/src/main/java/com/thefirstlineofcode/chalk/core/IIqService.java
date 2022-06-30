@@ -2,8 +2,8 @@ package com.thefirstlineofcode.chalk.core;
 
 import java.util.List;
 
-import com.thefirstlineofcode.basalt.protocol.core.Protocol;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Iq;
+import com.thefirstlineofcode.basalt.xmpp.core.Protocol;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Iq;
 import com.thefirstlineofcode.chalk.core.stanza.IIqListener;
 
 public interface IIqService {

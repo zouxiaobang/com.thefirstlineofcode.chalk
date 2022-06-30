@@ -1,7 +1,7 @@
 package com.thefirstlineofcode.chalk.core;
 
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Stanza;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.error.StanzaError;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Stanza;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.error.StanzaError;
 
 public interface ITask<T extends Stanza> {
 	void trigger(IUnidirectionalStream<T> stream);

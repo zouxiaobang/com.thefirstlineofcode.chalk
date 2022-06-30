@@ -9,16 +9,16 @@ import java.util.concurrent.Executors;
 import com.thefirstlineofcode.basalt.oxm.IOxmFactory;
 import com.thefirstlineofcode.basalt.oxm.OxmService;
 import com.thefirstlineofcode.basalt.oxm.parsing.FlawedProtocolObject;
-import com.thefirstlineofcode.basalt.protocol.core.IError;
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.core.ProtocolException;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Iq;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Stanza;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.error.InternalServerError;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.error.ServiceUnavailable;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.error.StanzaError;
-import com.thefirstlineofcode.basalt.protocol.core.stream.error.StreamError;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Message;
+import com.thefirstlineofcode.basalt.xmpp.core.IError;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.ProtocolException;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Iq;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Stanza;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.error.InternalServerError;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.error.ServiceUnavailable;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.error.StanzaError;
+import com.thefirstlineofcode.basalt.xmpp.core.stream.error.StreamError;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Message;
 import com.thefirstlineofcode.chalk.core.IErrorListener;
 import com.thefirstlineofcode.chalk.core.stanza.IStanzaListener;
 import com.thefirstlineofcode.chalk.core.stream.keepalive.IKeepAliveManager;
@@ -171,7 +171,7 @@ public class Stream implements IStream, IConnectionListener {
 			if (closeStreamMessage != null)
 				return closeStreamMessage;
 			
-			closeStreamMessage = oxmFactory.translate(new com.thefirstlineofcode.basalt.protocol.core.stream.Stream(true));
+			closeStreamMessage = oxmFactory.translate(new com.thefirstlineofcode.basalt.xmpp.core.stream.Stream(true));
 			return closeStreamMessage;
 		}
 	}
@@ -230,9 +230,9 @@ public class Stream implements IStream, IConnectionListener {
 				for (IErrorListener errorListener : errorListeners) {
 					errorListener.occurred((IError)object);
 				}
-			} else if (object instanceof com.thefirstlineofcode.basalt.protocol.core.stream.Stream) {
-				com.thefirstlineofcode.basalt.protocol.core.stream.Stream closeStream =
-					(com.thefirstlineofcode.basalt.protocol.core.stream.Stream)object;
+			} else if (object instanceof com.thefirstlineofcode.basalt.xmpp.core.stream.Stream) {
+				com.thefirstlineofcode.basalt.xmpp.core.stream.Stream closeStream =
+					(com.thefirstlineofcode.basalt.xmpp.core.stream.Stream)object;
 				
 				if (closeStream.isClose()) {
 					if (closing) {

@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.xeps.muc.events;
 
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Presence;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Presence;
 
 public class ChangeAvailabilityStatus {
 	private String nick;

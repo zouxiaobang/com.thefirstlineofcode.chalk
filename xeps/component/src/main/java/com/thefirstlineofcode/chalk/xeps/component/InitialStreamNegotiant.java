@@ -2,9 +2,9 @@ package com.thefirstlineofcode.chalk.xeps.component;
 
 import com.thefirstlineofcode.basalt.oxm.IOxmFactory;
 import com.thefirstlineofcode.basalt.oxm.OxmService;
-import com.thefirstlineofcode.basalt.protocol.Constants;
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.core.stream.Stream;
+import com.thefirstlineofcode.basalt.xmpp.Constants;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.stream.Stream;
 import com.thefirstlineofcode.chalk.core.stream.INegotiationContext;
 import com.thefirstlineofcode.chalk.core.stream.NegotiationException;
 import com.thefirstlineofcode.chalk.core.stream.negotiants.AbstractStreamNegotiant;

@@ -4,8 +4,8 @@ import java.util.Properties;
 
 import com.thefirstlineofcode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.thefirstlineofcode.basalt.oxm.convention.NamingConventionTranslatorFactory;
-import com.thefirstlineofcode.basalt.protocol.core.MessageProtocolChain;
 import com.thefirstlineofcode.basalt.xeps.address.Addresses;
+import com.thefirstlineofcode.basalt.xmpp.core.MessageProtocolChain;
 import com.thefirstlineofcode.chalk.core.IChatSystem;
 import com.thefirstlineofcode.chalk.core.IPlugin;
 

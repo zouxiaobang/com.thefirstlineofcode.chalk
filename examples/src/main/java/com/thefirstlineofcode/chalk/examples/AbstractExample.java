@@ -1,10 +1,10 @@
 package com.thefirstlineofcode.chalk.examples;
 
-import com.thefirstlineofcode.basalt.protocol.core.IError;
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.xeps.ibr.IqRegister;
 import com.thefirstlineofcode.basalt.xeps.ibr.RegistrationField;
 import com.thefirstlineofcode.basalt.xeps.ibr.RegistrationForm;
+import com.thefirstlineofcode.basalt.xmpp.core.IError;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 import com.thefirstlineofcode.chalk.core.IChatClient;
 import com.thefirstlineofcode.chalk.core.IErrorListener;
 import com.thefirstlineofcode.chalk.core.StandardChatClient;

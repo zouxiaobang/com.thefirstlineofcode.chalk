@@ -4,15 +4,15 @@ import java.util.Properties;
 
 import com.thefirstlineofcode.basalt.oxm.convention.NamingConventionParserFactory;
 import com.thefirstlineofcode.basalt.oxm.convention.NamingConventionTranslatorFactory;
-import com.thefirstlineofcode.basalt.protocol.core.IqProtocolChain;
-import com.thefirstlineofcode.basalt.protocol.core.MessageProtocolChain;
-import com.thefirstlineofcode.basalt.protocol.core.PresenceProtocolChain;
 import com.thefirstlineofcode.basalt.xeps.muc.Muc;
 import com.thefirstlineofcode.basalt.xeps.muc.admin.MucAdmin;
 import com.thefirstlineofcode.basalt.xeps.muc.owner.MucOwner;
 import com.thefirstlineofcode.basalt.xeps.muc.user.MucUser;
 import com.thefirstlineofcode.basalt.xeps.muc.xconference.XConference;
 import com.thefirstlineofcode.basalt.xeps.xdata.XData;
+import com.thefirstlineofcode.basalt.xmpp.core.IqProtocolChain;
+import com.thefirstlineofcode.basalt.xmpp.core.MessageProtocolChain;
+import com.thefirstlineofcode.basalt.xmpp.core.PresenceProtocolChain;
 import com.thefirstlineofcode.chalk.core.IChatSystem;
 import com.thefirstlineofcode.chalk.core.IPlugin;
 import com.thefirstlineofcode.chalk.xeps.address.AddressPlugin;

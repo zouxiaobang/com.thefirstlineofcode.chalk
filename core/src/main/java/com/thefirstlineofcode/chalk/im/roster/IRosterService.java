@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.im.roster;
 
-import com.thefirstlineofcode.basalt.protocol.im.roster.Roster;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.Roster;
 
 public interface IRosterService {
 	void retrieve();

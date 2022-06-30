@@ -4,10 +4,10 @@ import java.util.concurrent.CountDownLatch;
 
 import org.bson.Document;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.im.roster.Roster;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Message;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Presence;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.im.roster.Roster;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Message;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Presence;
 import com.thefirstlineofcode.chalk.core.StandardChatClient;
 import com.thefirstlineofcode.chalk.examples.AbstractClientThread;
 import com.thefirstlineofcode.chalk.im.IInstantingMessager;

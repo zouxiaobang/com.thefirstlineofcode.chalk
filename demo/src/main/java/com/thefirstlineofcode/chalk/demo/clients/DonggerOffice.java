@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.demo.clients;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 import com.thefirstlineofcode.chalk.core.ErrorException;
 import com.thefirstlineofcode.chalk.core.stream.StandardStreamConfig;
 import com.thefirstlineofcode.chalk.demo.Demo;

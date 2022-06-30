@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.xeps.muc;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 
 public class PublicRoom {
 	private JabberId jid;

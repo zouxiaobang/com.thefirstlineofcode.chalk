@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.thefirstlineofcode.basalt.protocol.Constants;
+import com.thefirstlineofcode.basalt.xmpp.Constants;
 import com.thefirstlineofcode.chalk.examples.cluster.IbrClusterExample;
 import com.thefirstlineofcode.chalk.examples.cluster.ImClusterExample;
 import com.thefirstlineofcode.chalk.examples.cluster.PingClusterExample;

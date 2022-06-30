@@ -1,8 +1,8 @@
 package com.thefirstlineofcode.chalk.xeps.muc;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.xeps.muc.Affiliation;
 import com.thefirstlineofcode.basalt.xeps.muc.Role;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 
 public class Occupant {
 	private JabberId jid;

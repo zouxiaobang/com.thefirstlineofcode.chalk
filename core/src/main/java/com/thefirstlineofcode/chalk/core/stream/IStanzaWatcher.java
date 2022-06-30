@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.core.stream;
 
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Stanza;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Stanza;
 
 public interface IStanzaWatcher {
 	void sent(Stanza stanza, String message);

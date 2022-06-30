@@ -3,12 +3,12 @@ package com.thefirstlineofcode.chalk.xeps.ibr;
 import java.util.Properties;
 
 import com.thefirstlineofcode.basalt.oxm.convention.NamingConventionParserFactory;
-import com.thefirstlineofcode.basalt.protocol.core.IqProtocolChain;
 import com.thefirstlineofcode.basalt.xeps.ibr.IqRegister;
 import com.thefirstlineofcode.basalt.xeps.ibr.oxm.IqRegisterParserFactory;
 import com.thefirstlineofcode.basalt.xeps.ibr.oxm.IqRegisterTranslatorFactory;
 import com.thefirstlineofcode.basalt.xeps.oob.XOob;
 import com.thefirstlineofcode.basalt.xeps.xdata.XData;
+import com.thefirstlineofcode.basalt.xmpp.core.IqProtocolChain;
 import com.thefirstlineofcode.chalk.core.IChatSystem;
 import com.thefirstlineofcode.chalk.core.IPlugin;
 import com.thefirstlineofcode.chalk.xeps.oob.OobPlugin;

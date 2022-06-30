@@ -9,9 +9,9 @@ import com.thefirstlineofcode.basalt.oxm.OxmService;
 import com.thefirstlineofcode.basalt.oxm.annotation.AnnotatedParserFactory;
 import com.thefirstlineofcode.basalt.oxm.parsers.core.stream.StreamParser;
 import com.thefirstlineofcode.basalt.oxm.parsing.IParsingFactory;
-import com.thefirstlineofcode.basalt.protocol.Constants;
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.core.ProtocolChain;
+import com.thefirstlineofcode.basalt.xmpp.Constants;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.ProtocolChain;
 import com.thefirstlineofcode.chalk.core.stream.negotiants.AbstractStreamNegotiant;
 import com.thefirstlineofcode.chalk.network.ConnectionException;
 import com.thefirstlineofcode.chalk.network.ConnectionListenerAdapter;
@@ -61,7 +61,7 @@ public abstract class AbstractStreamer extends ConnectionListenerAdapter impleme
 		connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 		
 		parsingFactory = OxmService.createParsingFactory();
-		parsingFactory.register(ProtocolChain.first(com.thefirstlineofcode.basalt.protocol.core.stream.Stream.PROTOCOL),
+		parsingFactory.register(ProtocolChain.first(com.thefirstlineofcode.basalt.xmpp.core.stream.Stream.PROTOCOL),
 			new AnnotatedParserFactory<>(StreamParser.class));
 		
 		done = false;

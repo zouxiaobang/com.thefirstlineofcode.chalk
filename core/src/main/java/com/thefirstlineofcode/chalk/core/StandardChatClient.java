@@ -2,7 +2,7 @@ package com.thefirstlineofcode.chalk.core;
 
 import javax.security.cert.X509Certificate;
 
-import com.thefirstlineofcode.basalt.protocol.Constants;
+import com.thefirstlineofcode.basalt.xmpp.Constants;
 import com.thefirstlineofcode.chalk.core.stream.IAuthenticationCallback;
 import com.thefirstlineofcode.chalk.core.stream.IAuthenticationFailure;
 import com.thefirstlineofcode.chalk.core.stream.IAuthenticationToken;

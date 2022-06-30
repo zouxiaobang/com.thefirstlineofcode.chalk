@@ -1,11 +1,11 @@
 package com.thefirstlineofcode.chalk.xeps.disco;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.core.stanza.Iq;
 import com.thefirstlineofcode.basalt.xeps.disco.DiscoInfo;
 import com.thefirstlineofcode.basalt.xeps.disco.DiscoItems;
 import com.thefirstlineofcode.basalt.xeps.disco.Identity;
 import com.thefirstlineofcode.basalt.xeps.disco.Item;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.stanza.Iq;
 import com.thefirstlineofcode.chalk.core.ErrorException;
 import com.thefirstlineofcode.chalk.core.IChatServices;
 import com.thefirstlineofcode.chalk.core.ISyncTask;

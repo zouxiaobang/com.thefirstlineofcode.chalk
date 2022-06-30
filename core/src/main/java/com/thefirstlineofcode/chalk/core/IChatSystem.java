@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import com.thefirstlineofcode.basalt.oxm.parsing.IParserFactory;
 import com.thefirstlineofcode.basalt.oxm.translating.ITranslatorFactory;
-import com.thefirstlineofcode.basalt.protocol.core.ProtocolChain;
+import com.thefirstlineofcode.basalt.xmpp.core.ProtocolChain;
 import com.thefirstlineofcode.chalk.core.stream.StreamConfig;
 
 public interface IChatSystem {

@@ -3,9 +3,9 @@ package com.thefirstlineofcode.chalk.im;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Message;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Presence;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Message;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Presence;
 import com.thefirstlineofcode.chalk.core.IChatServices;
 import com.thefirstlineofcode.chalk.im.roster.IRosterService;
 import com.thefirstlineofcode.chalk.im.roster.RosterService;

@@ -3,7 +3,6 @@ package com.thefirstlineofcode.chalk.xeps.muc;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
 import com.thefirstlineofcode.basalt.xeps.muc.GetMemberList;
 import com.thefirstlineofcode.basalt.xeps.muc.PresenceBroadcast;
 import com.thefirstlineofcode.basalt.xeps.muc.RoomConfig;
@@ -11,6 +10,7 @@ import com.thefirstlineofcode.basalt.xeps.muc.RoomConfig.AllowPm;
 import com.thefirstlineofcode.basalt.xeps.muc.RoomConfig.WhoIs;
 import com.thefirstlineofcode.basalt.xeps.xdata.Field;
 import com.thefirstlineofcode.basalt.xeps.xdata.XData;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 
 public abstract class StandardRoomConfigurator implements IRoomConfigurator {
 

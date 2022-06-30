@@ -2,7 +2,7 @@ package com.thefirstlineofcode.chalk.core;
 
 import java.util.List;
 
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Message;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Message;
 import com.thefirstlineofcode.chalk.im.stanza.IMessageListener;
 
 public interface IMessageService {

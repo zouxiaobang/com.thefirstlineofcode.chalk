@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.im.subscription;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 
 public interface ISubscriptionService {
 	void subscribe(JabberId contact);

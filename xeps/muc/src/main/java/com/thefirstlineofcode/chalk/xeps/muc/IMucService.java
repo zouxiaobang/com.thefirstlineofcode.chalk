@@ -1,6 +1,6 @@
 package com.thefirstlineofcode.chalk.xeps.muc;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
 import com.thefirstlineofcode.chalk.core.ErrorException;
 
 public interface IMucService {

@@ -1,8 +1,8 @@
 package com.thefirstlineofcode.chalk.im;
 
-import com.thefirstlineofcode.basalt.protocol.core.JabberId;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Message;
-import com.thefirstlineofcode.basalt.protocol.im.stanza.Presence;
+import com.thefirstlineofcode.basalt.xmpp.core.JabberId;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Message;
+import com.thefirstlineofcode.basalt.xmpp.im.stanza.Presence;
 import com.thefirstlineofcode.chalk.im.roster.IRosterService;
 import com.thefirstlineofcode.chalk.im.stanza.IMessageListener;
 import com.thefirstlineofcode.chalk.im.stanza.IPresenceListener;
