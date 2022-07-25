@@ -24,10 +24,7 @@ public class TaskModePing implements IPing {
 
 				@Override
 				public void trigger(IUnidirectionalStream<Iq> stream) {
-					Iq iq = new Iq(Iq.Type.SET);
-					iq.setObject(new Ping());
-
-					stream.send(iq, timeout);
+					stream.send(new Iq(Iq.Type.GET, new Ping()), timeout);
 				}
 
 				@Override

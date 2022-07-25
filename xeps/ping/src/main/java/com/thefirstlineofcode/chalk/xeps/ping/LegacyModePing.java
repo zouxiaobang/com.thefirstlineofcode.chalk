@@ -29,8 +29,7 @@ public class LegacyModePing implements IPing {
 
 				@Override
 				public void trigger(IUnidirectionalStream<Iq> stream) {
-					Iq iq = new Iq(Iq.Type.SET);
-					iq.setObject(new Ping());
+					Iq iq = new Iq(Iq.Type.GET, new Ping());
 					id = iq.getId();
 					
 					stream.send(iq, timeout);

@@ -57,7 +57,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 	protected ChatServices chatServices;
 	
 	private Map<Class<? extends IPlugin>, CounterPluginWrapper> plugins;
-	private ConcurrentMap<Class<?>, Api> apis;
+	private ConcurrentMap<Class<?>, Api<?>> apis;
 	private List<INegotiationListener> negotiationListeners;
 	private IConnection connection;
 	
@@ -246,10 +246,20 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T createApi(Class<T> apiType) {
-		Api api = apis.get(apiType);
+		return createApi(apiType, new Class<?>[] {}, new Object[] {});
+	}
+	
+	@Override
+	public <T> T createApi(Class<T> apiType, Class<?> constuctorParamType, Object constuctorParam) {
+		return createApi(apiType, new Class<?>[] {constuctorParamType}, new Object[] {constuctorParam});
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T createApi(Class<T> apiType, Class<?>[] constuctorParamTypes, Object[] constuctorParams) {
+		Api<T> api = (Api<T>)apis.get(apiType);
 		
 		if (api == null)
 			throw new RuntimeException(String.format("Api %s not be registered.", apiType.getName()));
@@ -263,28 +273,39 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 				if (api.singletonObject != null)
 					return (T)api.singletonObject;
 				
-				api.singletonObject = doCreateApiObject(api);
+				api.singletonObject = createApiImpl(api.implType, constuctorParamTypes, constuctorParams, api.properties);
 				
 				return (T)api.singletonObject;
 			}
 		}
 		
-		return (T)doCreateApiObject(api);
+		return createApiImpl(api.implType, constuctorParamTypes, constuctorParams, api.properties);
 	}
-
-	private Object doCreateApiObject(Api api) {
-		Object object = null;
+	
+	public <T> T createApiImpl(Class<? extends T> apiImplType, Class<?>[] constuctorParamTypes, Object[] constuctorParams) {
+		return createApiImpl(apiImplType, constuctorParamTypes, constuctorParams, new Properties());
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> T createApiImpl(Class<? extends T> apiImplType, Class<?>[] constuctorParamTypes, Object[] constuctorParams, Properties properties) {
+		if (constuctorParamTypes == null || constuctorParams == null)
+			throw new IllegalArgumentException("Null constructor param types or constructor params.");
+		
+		if (constuctorParamTypes.length != constuctorParams.length)
+			throw new IllegalArgumentException("Length of constructor param types must equal to length of constrctor params.");
 		
 		Constructor<?> constructor = null;
 		try {
-			constructor = api.implClass.getConstructor(IChatServices.class);
+			constructor = apiImplType.getConstructor(getConstuctorParamTypesWithIChatServices(
+					constuctorParamTypes));
 		} catch (Exception e) {
 			// ignore
 		}
 		
+		Object object = null;
 		if (constructor != null) {
 			try {
-				object = constructor.newInstance(chatServices);
+				object = constructor.newInstance(getConstuctorParamsWithChatServices(constuctorParams, chatServices));
 			} catch (Exception e) {
 				throw new RuntimeException("Can't create api object.", e);
 			}
@@ -292,23 +313,33 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		
 		if (object == null) {
 			try {
-				object = api.implClass.newInstance();
+				constructor = apiImplType.getConstructor(constuctorParamTypes);
+			} catch (Exception e) {
+				// ignore
+			}
+			
+			if (constructor == null)
+				throw new RuntimeException(String.format(
+						"Can't find suitable constructor for API implementation which's type is %s.", apiImplType));
+			
+			try {
+				object = constructor.newInstance(constuctorParams);
 			} catch (Exception e) {
 				throw new RuntimeException("Can't create api object.", e);
 			}
 			
-			setChatServicesToApiObject(api, object);
+			setChatServicesToApiObject(apiImplType, object);
 		}
 		
-		for (Object key : api.properties.keySet()) {
-			Object value = api.properties.get(key);
+		for (Object key : properties.keySet()) {
+			Object value = properties.get(key);
 			
 			try {
-				Method writer = getWriter(key.toString(), api.implClass, value.getClass());
+				Method writer = getWriter(key.toString(), apiImplType, value.getClass());
 				if (writer != null) {
 					writer.invoke(object, new Object[] {value});
 				} else {
-					Field field = api.implClass.getDeclaredField(key.toString());
+					Field field = apiImplType.getDeclaredField(key.toString());
 					if (field != null) {
 						boolean oldAccessible = field.isAccessible();
 						try {
@@ -324,13 +355,35 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 			}
 		}
 		
-		return object;
+		return (T)object;
 	}
 
-	private void setChatServicesToApiObject(Api api, Object object) {
+	private Class<?>[] getConstuctorParamTypesWithIChatServices(Class<?>[] constuctorParamTypes) {
+		Class<?>[] constuctorParamTypesWithIChatServices = new Class<?>[constuctorParamTypes.length + 1];
+		constuctorParamTypesWithIChatServices[0] = IChatServices.class;
+		
+		for (int i = 0; i < constuctorParamTypes.length; i++) {
+			constuctorParamTypesWithIChatServices[i + 1] = constuctorParamTypes[i];
+		}
+		
+		return constuctorParamTypesWithIChatServices;
+	}
+	
+	private Object[] getConstuctorParamsWithChatServices(Object[] constuctorParams, IChatServices chatServices) {
+		Object[] constuctorParamsWithChatServices = new Object[constuctorParams.length + 1];
+		constuctorParamsWithChatServices[0] = chatServices;
+		
+		for (int i = 0; i < constuctorParams.length; i++) {
+			constuctorParamsWithChatServices[i + 1] = constuctorParams[i];
+		}
+		
+		return constuctorParamsWithChatServices;
+	}
+
+	private void setChatServicesToApiObject(Class<?> apiImplType, Object object) {
 		Method method = null;
 		try {
-			method = api.implClass.getDeclaredMethod("setChatServices", IChatServices.class);
+			method = apiImplType.getDeclaredMethod("setChatServices", IChatServices.class);
 		} catch (Exception e) {
 			// ignore
 		}
@@ -347,7 +400,7 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		
 		Field field = null;
 		try {
-			field = api.implClass.getDeclaredField("chatServices");
+			field = apiImplType.getDeclaredField("chatServices");
 		} catch (Exception e1) {
 			// ignore
 		}
@@ -619,7 +672,8 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		@Override
 		public <T> void registerApi(Class<T> apiType, Class<? extends T> apiImplType,
 				Properties properties, boolean singleton) {
-			apis.putIfAbsent(apiType, new Api(apiImplType, properties, singleton));
+			Api<T> api = new Api<T>(apiType, apiImplType, properties, singleton);
+			apis.putIfAbsent(api.apiType, api);
 		}
 
 		@Override
@@ -639,14 +693,16 @@ public abstract class AbstractChatClient extends ConnectionListenerAdapter imple
 		
 	}
 	
-	private class Api {
-		public Class<?> implClass;
+	private class Api<T> {
+		public Class<T> apiType;
+		public Class<? extends T> implType;
 		public Properties properties;
 		public boolean singleton;
 		public volatile Object singletonObject;
 		
-		public Api(Class<?> implClass, Properties properties, boolean singleton) {
-			this.implClass = implClass;
+		public Api(Class<T> apiClass, Class<? extends T> implClass, Properties properties, boolean singleton) {
+			this.apiType = apiClass;
+			this.implType = implClass;
 			this.properties = properties;
 			if (this.properties == null) {
 				this.properties = new Properties();

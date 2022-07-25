@@ -40,6 +40,8 @@ public interface IChatClient {
 	void unregister(Class<? extends IPlugin> pluginClass);
 	
 	<T> T createApi(Class<T> apiType);
+	<T> T createApi(Class<T> apiType, Class<?> constructorParamType, Object constuctorParam);
+	<T> T createApi(Class<T> apiType, Class<?>[] constructorParamTypes, Object[] constuctorParams);
 	
 	IStream getStream();
 	IConnection getConnection();
